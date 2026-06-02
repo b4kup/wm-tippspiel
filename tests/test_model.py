@@ -9,7 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data.bracket import ROUND_OF_32, N_THIRD_PLACE
+from data.bracket import ROUND_OF_32, N_THIRD_PLACE, is_third, third_allowed_groups
 from src.model import DEFAULT_PARAMS, expected_goals, win_expectancy
 from src.simulate import run
 from src.tournament import groups_from_teams, load_teams
@@ -25,8 +25,12 @@ def test_teams_loaded():
 
 def test_bracket_well_formed():
     assert len(ROUND_OF_32) == 16
-    thirds = sum(1 for tie in ROUND_OF_32 for slot in tie if slot == "3")
+    thirds = sum(1 for tie in ROUND_OF_32 for slot in tie if is_third(slot))
     assert thirds == N_THIRD_PLACE == 8
+    # A third-place slot never admits its tie-mate winner's own group.
+    for a, b in ROUND_OF_32:
+        if is_third(b):
+            assert a[0] == "1" and a[1] not in third_allowed_groups(b)
 
 
 def test_expected_goals_favour_stronger_team():

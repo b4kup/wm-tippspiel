@@ -18,7 +18,7 @@ from .tournament import (
     run_knockout,
     select_best_thirds,
 )
-from data.bracket import N_THIRD_PLACE, ROUND_OF_32
+from data.bracket import N_THIRD_PLACE, ROUND_OF_32, is_third
 
 
 @dataclass
@@ -71,17 +71,15 @@ def simulate_tournament_once(groups, rng, p, stats: Stats):
     for _letter, team in third_teams:
         stats.advance[team.name] += 1
 
-    # Build concrete Round-of-32 ties.
+    # Build concrete Round-of-32 ties. Third-place slots stay as their slot
+    # string (e.g. "3:ABCDF") and are filled by the constrained matching below.
     def resolve(slot):
-        kind, letter = slot[0], slot[1]
-        return winners_by_group[letter] if kind == "1" else runners_by_group[letter]
+        if is_third(slot):
+            return slot
+        return winners_by_group[slot[1]] if slot[0] == "1" else runners_by_group[slot[1]]
 
-    seeded = []
-    for a, b in ROUND_OF_32:
-        ta = resolve(a) if a != "3" else "3"
-        tb = resolve(b) if b != "3" else "3"
-        seeded.append((ta, tb))
-    ties = assign_thirds_to_slots(seeded, winners_by_group, third_teams, rng)
+    seeded = [(resolve(a), resolve(b)) for a, b in ROUND_OF_32]
+    ties = assign_thirds_to_slots(seeded, third_teams, rng)
 
     reached = run_knockout(ties, rng, p)
     for t in reached["R32"]:

@@ -91,9 +91,9 @@ which columns to fill. You can also re-tune the model constants in
 ## Caveats
 
 - Ratings are a hand-assembled **June-2026 snapshot**, not a live feed.
-- The knockout **bracket tree** is a faithful reconstruction of FIFA's published
-  pairings and rules (group winners face third-placed teams; same-group teams
-  kept apart until the quarter-finals), arranged so the top seeds are spread
-  across the four quarters. It is editable config in `data/bracket.py`.
+- The knockout bracket is the **official** FIFA bracket — real match numbers,
+  third-place cluster codes and tree (`data/bracket.py`). The specific
+  third-placed team filling each slot depends on the qualifying groups and is
+  resolved by a constraint-respecting matching.
 - No model captures injuries, red cards, or a hot goalkeeper. These are
   probabilities, not prophecies.

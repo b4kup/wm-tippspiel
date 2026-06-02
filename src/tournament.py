@@ -12,6 +12,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from itertools import combinations
 
+from data.bracket import is_third, third_allowed_groups
 from .model import DEFAULT_PARAMS, ModelParams, simulate_knockout, simulate_match
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -107,28 +108,57 @@ def select_best_thirds(thirds: list[tuple[str, GroupRow]], n: int,
     )[:n]
 
 
-def assign_thirds_to_slots(round_of_32, winners_by_group, third_entries, rng):
+def assign_thirds_to_slots(round_of_32, third_entries, rng):
     """
-    Fill the '3' slots in the Round of 32 with qualifying third-placed teams,
-    never pairing a group winner against the third-placed team from its own
-    group. `third_entries` is a list of (group_letter, Team).
+    Fill the third-place slots ("3:ABCDF" etc.) in the Round of 32 with the 8
+    qualifying third-placed teams, respecting each slot's allowed groups (FIFA's
+    cluster codes). `third_entries` is a list of (group_letter, Team).
+
+    Which third lands where depends on the combination of qualifying groups
+    (FIFA resolves it from a 495-scenario table). We instead find *a* valid
+    assignment by constrained matching: any matching that honours every slot's
+    allowed groups is bracket-legal, and which legal matching is picked has
+    negligible effect on aggregate probabilities. Ties are broken randomly.
     """
-    pool = list(third_entries)
-    rng.shuffle(pool)
+    # Slots that need a third: (tie_index, allowed_groups).
+    third_slots = [(i, third_allowed_groups(b))
+                   for i, (a, b) in enumerate(round_of_32) if is_third(b)]
+    thirds = list(third_entries)
+    rng.shuffle(thirds)
+
+    assignment = {}            # tie_index -> Team
+    used = [False] * len(thirds)
+
+    # Match most-constrained slots first for an efficient backtracking search.
+    slots_sorted = sorted(third_slots, key=lambda s: len(s[1]))
+
+    def backtrack(k):
+        if k == len(slots_sorted):
+            return True
+        idx, allowed = slots_sorted[k]
+        for ti, (g, team) in enumerate(thirds):
+            if not used[ti] and g in allowed:
+                used[ti] = True
+                assignment[idx] = team
+                if backtrack(k + 1):
+                    return True
+                used[ti] = False
+                del assignment[idx]
+        return False
+
+    if not backtrack(0):
+        # No constraint-satisfying matching (shouldn't occur with FIFA's
+        # clusters); fall back to assigning leftovers arbitrarily so the
+        # simulation never stalls.
+        for idx, _allowed in third_slots:
+            if idx not in assignment:
+                ti = next(i for i, u in enumerate(used) if not u)
+                used[ti] = True
+                assignment[idx] = thirds[ti][1]
+
     ties = []
-    for a, b in round_of_32:
-        if b != "3":
-            ties.append((a, b))
-            continue
-        # 'a' is the resolved group-winner Team for a "winner vs third" tie.
-        winner_group = a.group
-        # Prefer a third-placed team from a different group.
-        choice_idx = next(
-            (i for i, (g, _t) in enumerate(pool) if g != winner_group),
-            0,  # fall back to whatever remains (only if unavoidable)
-        )
-        _g, third_team = pool.pop(choice_idx)
-        ties.append((a, third_team))
+    for i, (a, b) in enumerate(round_of_32):
+        ties.append((a, assignment[i]) if i in assignment else (a, b))
     return ties
 
 

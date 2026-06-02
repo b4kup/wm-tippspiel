@@ -145,9 +145,10 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
         "- Ratings are a hand-assembled snapshot, not a live feed — replace "
         "`data/teams.csv` with better numbers to improve fidelity "
         "(see `DATA_SOURCES.md`).\n"
-        "- The knockout bracket is a faithful reconstruction of FIFA's rules "
-        "(winners face third-placed teams; same-group teams kept apart until the "
-        "quarter-finals), encoded as editable config in `data/bracket.py`.\n"
+        "- The knockout bracket is the **official** FIFA bracket (match numbers, "
+        "third-place cluster codes and tree), encoded in `data/bracket.py`. Which "
+        "third-placed team fills each slot depends on the qualifying groups; it is "
+        "resolved by a constraint-respecting matching.\n"
         "- No model captures injuries, momentum, red cards or a hot goalkeeper. "
         "Treat these as probabilities, not prophecies.\n")
     return "\n".join(L)
