@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.bracket import ROUND_OF_32, N_THIRD_PLACE, is_third, third_allowed_groups
-from src.model import DEFAULT_PARAMS, expected_goals, win_expectancy
+from src.model import DEFAULT_PARAMS, _sample_goals, expected_goals, win_expectancy
 from src.simulate import run
 from src.tournament import groups_from_teams, load_teams
 
@@ -44,6 +44,22 @@ def test_expected_goals_favour_stronger_team():
 def test_win_expectancy_monotonic():
     assert win_expectancy(2000, 1700) > 0.5
     assert abs(win_expectancy(1800, 1800) - 0.5) < 1e-9
+
+
+def test_dixon_coles_lifts_low_scores():
+    # Negative rho should produce more 0-0 / 1-1 draws than independent Poisson.
+    la = lb = 1.3
+    n = 40000
+
+    def low_draw_rate(rho):
+        r = random.Random(3)
+        hits = 0
+        for _ in range(n):
+            x, y = _sample_goals(la, lb, r, rho)
+            if (x, y) in ((0, 0), (1, 1)):
+                hits += 1
+        return hits / n
+    assert low_draw_rate(-0.12) > low_draw_rate(0.0)
 
 
 def test_probabilities_are_consistent():

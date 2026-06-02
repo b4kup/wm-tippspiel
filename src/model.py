@@ -49,6 +49,11 @@ class ModelParams:
     # the favourites being over-confident and fattens the upset tail. Set 0 to
     # disable (pure point-estimate Monte Carlo).
     rating_sigma_elo: float = 45.0
+    # Dixon-Coles low-score correlation. Independent Poisson under-counts 0-0,
+    # 1-0 and 1-1; a small negative rho pushes probability into those cells
+    # (more low-scoring games and draws), matching real football. Set 0 to
+    # disable (pure independent Poisson). Typical range ~[-0.15, 0].
+    dc_rho: float = -0.10
 
 
 DEFAULT_PARAMS = ModelParams()
@@ -99,11 +104,38 @@ def _poisson(lam: float, rng: random.Random) -> int:
         k += 1
 
 
+def _dc_tau(x: int, y: int, la: float, lb: float, rho: float) -> float:
+    """Dixon-Coles correction factor for the four low-score cells."""
+    if x == 0 and y == 0:
+        return max(0.0, 1.0 - la * lb * rho)
+    if x == 0 and y == 1:
+        return max(0.0, 1.0 + la * rho)
+    if x == 1 and y == 0:
+        return max(0.0, 1.0 + lb * rho)
+    if x == 1 and y == 1:
+        return max(0.0, 1.0 - rho)
+    return 1.0
+
+
+def _sample_goals(la: float, lb: float, rng: random.Random, rho: float):
+    """Draw a scoreline. With rho == 0 this is independent Poisson; otherwise
+    it samples exactly from the Dixon-Coles distribution by rejection (the
+    only cells where tau != 1 are the four low-score corners)."""
+    if rho == 0.0:
+        return _poisson(la, rng), _poisson(lb, rng)
+    # tau peaks at the (0,0) / (1,1) cells when rho < 0; bound the ratio there.
+    m = max(1.0, 1.0 - la * lb * rho, 1.0 - rho)
+    while True:
+        x, y = _poisson(la, rng), _poisson(lb, rng)
+        if rng.random() * m <= _dc_tau(x, y, la, lb, rho):
+            return x, y
+
+
 def simulate_match(team_a, team_b, rng: random.Random,
                    p: ModelParams = DEFAULT_PARAMS):
     """Simulate a group match. Returns (goals_a, goals_b)."""
     la, lb = expected_goals(team_a, team_b, p)
-    return _poisson(la, rng), _poisson(lb, rng)
+    return _sample_goals(la, lb, rng, p.dc_rho)
 
 
 def simulate_knockout(team_a, team_b, rng: random.Random,

@@ -35,6 +35,9 @@ def main(argv=None):
                     help="std-dev (Elo) of per-tournament team strength; "
                          "0 disables uncertainty (default %d)"
                          % DEFAULT_PARAMS.rating_sigma_elo)
+    ap.add_argument("--dc-rho", type=float, default=None,
+                    help="Dixon-Coles low-score correlation; 0 disables it "
+                         "(default %g)" % DEFAULT_PARAMS.dc_rho)
     ap.add_argument("--out", default=os.path.join("output", "predictions.md"),
                     help="output Markdown path (default output/predictions.md)")
     args = ap.parse_args(argv)
@@ -42,6 +45,8 @@ def main(argv=None):
     params = DEFAULT_PARAMS
     if args.rating_sigma is not None:
         params = replace(params, rating_sigma_elo=args.rating_sigma)
+    if args.dc_rho is not None:
+        params = replace(params, dc_rho=args.dc_rho)
 
     print(f"Simulating the 2026 World Cup {args.sims:,} times "
           f"(seed {args.seed}, rating σ {params.rating_sigma_elo:g} Elo)...")

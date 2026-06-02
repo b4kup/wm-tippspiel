@@ -40,10 +40,10 @@ documented snapshot, not a feed.
   Shrink team strengths toward market-implied values by a tunable weight.
 
 ## 2. Match-model sophistication
-- **Dixon-Coles low-score correction** — ⭐⭐⭐ / 🔨
+- **Dixon-Coles low-score correction** — ⭐⭐⭐ / 🔨 — ✅ **DONE**
   Independent Poisson *understates* 0-0, 1-0 and 1-1 — the scorelines that decide
-  tournaments. Cheap, standard, materially more accurate. Best bang-for-buck
-  modelling change.
+  tournaments. Implemented via `ModelParams.dc_rho` (default −0.10), sampled
+  exactly by rejection in `_sample_goals()`; tune with `--dc-rho`.
 - **Bivariate / correlated goals** — ⭐⭐ / 🔨🔨
   Model the correlation between the two teams' goals rather than assuming
   independence.
