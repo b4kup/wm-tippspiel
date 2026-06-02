@@ -52,14 +52,16 @@ def points(pred, actual, rule: ScoringRule) -> int:
     return rule.tendency
 
 
-# Named scoring presets. CHECK24's per-match scheme is 4/3/2 with a correct
-# (non-exact) draw counting as tendency only; it additionally has bonus
-# questions worth 10 pts each, which are separate from per-match scoring and so
-# don't change the optimal per-match tip.
+# Named scoring presets. CHECK24: 4 (exact) / 3 (right tendency AND goal
+# difference) / 2 (right winner only). The 2-point tier is "richtiger Gewinner",
+# which only exists for a non-draw; a correct but non-exact DRAW has the right
+# tendency and the right goal difference (0), so it scores 3 -> diff applies to
+# draws. Bonus questions (10 pts each) are separate from per-match scoring and
+# so don't change the optimal per-match tip.
 PRESETS = {
     "check24": ScoringRule(
-        exact=4, diff=3, tendency=2, diff_applies_to_draws=False,
-        name="CHECK24 (4 exact / 3 goal-diff / 2 tendency)"),
+        exact=4, diff=3, tendency=2, diff_applies_to_draws=True,
+        name="CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)"),
     "kicktipp": ScoringRule(name="kicktipp (4/3/2)"),
 }
 

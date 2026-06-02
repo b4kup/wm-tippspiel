@@ -1,6 +1,6 @@
 # 2026 World Cup — Tippspiel tips (point-maximizing)
 
-*Generated 2026-06-02. Scoring: **CHECK24 (4 exact / 3 goal-diff / 2 tendency)** — exact 4, goal-difference 3, tendency 2 pts.*
+*Generated 2026-06-02. Scoring: **CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)** — exact 4, goal-difference 3, tendency 2 pts.*
 
 > For each match the **tip** below maximizes expected points under your scoring rule. It is **not always the most likely score** — when an exact score is unlikely, a safer tendency/goal-difference tip can score more on average. The most likely score is shown alongside for comparison.
 
@@ -52,7 +52,7 @@
 | United States – Australia | **2–1** ⚠️ | 1.37 | 52% · 26% · 22% | 1–1 |
 | Türkiye – Paraguay | **1–0** ⚠️ | 1.17 | 43% · 29% · 28% | 1–1 |
 | Türkiye – Australia | **2–1** ⚠️ | 1.22 | 46% · 27% · 28% | 1–1 |
-| Paraguay – Australia | **1–0** ⚠️ | 1.01 | 35% · 32% · 33% | 1–1 |
+| Paraguay – Australia | **1–1** | 1.10 | 35% · 32% · 33% | 1–1 |
 
 **Group E**
 
@@ -83,7 +83,7 @@
 | Belgium – IR Iran | **1–0** ⚠️ | 1.33 | 50% · 27% · 23% | 1–1 |
 | Belgium – Egypt | **2–1** ⚠️ | 1.45 | 56% · 24% · 19% | 1–1 |
 | Belgium – New Zealand | **2–0** | 1.79 | 73% · 17% · 9.4% | 2–0 |
-| IR Iran – Egypt | **1–0** ⚠️ | 1.09 | 38% · 32% · 30% | 1–1 |
+| IR Iran – Egypt | **1–1** | 1.09 | 38% · 32% · 30% | 1–1 |
 | IR Iran – New Zealand | **1–0** | 1.46 | 54% · 28% · 18% | 1–0 |
 | Egypt – New Zealand | **1–0** ⚠️ | 1.38 | 51% · 28% · 21% | 1–1 |
 
@@ -149,4 +149,5 @@
 - Knockout fixtures aren't listed: the participants aren't known until the bracket resolves. Re-run once the matchups are set.
 - Adjust the scoring rule (`--exact/--diff/--tendency/--diff-draws`) to match your pool — the optimal tips shift with the rule.
 
-- **CHECK24 extras:** each correctly answered **bonus question** is worth **10 points** (separate from per-match scoring, so it doesn't change the optimal tips above — but it's high-value, answer them). A correct exact draw scores the full 4; a correct but non-exact draw scores tendency (2) under the assumption here — toggle `--diff-draws` if your round scores it as 3.
+- **CHECK24 scoring:** 4 pts exact result · 3 pts right tendency **and** goal difference · 2 pts right winner only. A correct **draw** that isn't exact (e.g. tip 2-2, result 1-1) scores **3** (its tendency and goal difference are both right; the 2-pt 'winner' tier can't apply to a draw).
+- **Bonus questions** are worth **10 points** each — separate from per-match scoring, so they don't change the optimal tips above, but they're high-value: answer them.

@@ -51,12 +51,14 @@ def main(argv=None):
     extra_note = ""
     if args.preset == "check24":
         extra_note = (
-            "- **CHECK24 extras:** each correctly answered **bonus question** is "
-            "worth **10 points** (separate from per-match scoring, so it doesn't "
-            "change the optimal tips above — but it's high-value, answer them). A "
-            "correct exact draw scores the full 4; a correct but non-exact draw "
-            "scores tendency (2) under the assumption here — toggle `--diff-draws` "
-            "if your round scores it as 3.")
+            "- **CHECK24 scoring:** 4 pts exact result · 3 pts right tendency **and** "
+            "goal difference · 2 pts right winner only. A correct **draw** that "
+            "isn't exact (e.g. tip 2-2, result 1-1) scores **3** (its tendency and "
+            "goal difference are both right; the 2-pt 'winner' tier can't apply to a "
+            "draw).\n"
+            "- **Bonus questions** are worth **10 points** each — separate from "
+            "per-match scoring, so they don't change the optimal tips above, but "
+            "they're high-value: answer them.")
     teams = load_teams()
     groups = groups_from_teams(teams)
 

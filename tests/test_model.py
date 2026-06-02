@@ -71,11 +71,13 @@ def test_scoring_rule_points():
     assert points((0, 1), (2, 1), r) == 0          # wrong tendency
     assert points((2, 2), (1, 1), r) == 2          # draw, non-exact -> tendency
     assert points((2, 2), (1, 1), ScoringRule(diff_applies_to_draws=True)) == 3
-    # CHECK24 preset: 4/3/2, exact draw scores 4, non-exact draw scores tendency.
+    # CHECK24: 4/3/2; exact draw -> 4; non-exact correct draw -> 3 (right
+    # tendency AND goal difference); right winner with wrong difference -> 2.
     c = PRESETS["check24"]
     assert (c.exact, c.diff, c.tendency) == (4, 3, 2)
     assert points((1, 1), (1, 1), c) == 4
-    assert points((2, 2), (1, 1), c) == 2
+    assert points((2, 2), (1, 1), c) == 3
+    assert points((3, 0), (2, 1), c) == 2
 
 
 def test_optimal_tip_is_ev_maximal():

@@ -36,7 +36,8 @@ python tipps.py                                  # kicktipp 4/3/2
 python tipps.py --exact 3 --diff 2 --tendency 1  # match any pool's rules
 ```
 
-Built-in presets: **`check24`** (4 exact / 3 goal-difference / 2 tendency; bonus
+Built-in presets: **`check24`** (4 exact / 3 right tendency **and** goal
+difference / 2 right winner — so a correct non-exact draw scores 3; bonus
 questions worth 10 pts are separate) and `kicktipp` (4/3/2). The committed
 [`output/tipps.md`](output/tipps.md) uses the CHECK24 ruleset.
 
