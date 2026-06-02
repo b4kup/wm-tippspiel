@@ -9,7 +9,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from .model import ModelParams
+from .model import ModelParams, perturb_team
 from .tournament import (
     Team,
     assign_thirds_to_slots,
@@ -45,6 +45,13 @@ class Stats:
 def simulate_tournament_once(groups, rng, p, stats: Stats):
     winners_by_group, runners_by_group = {}, {}
     third_entries = []  # (group_letter, Team)
+
+    # Sample each team's true strength for this tournament (rating uncertainty
+    # + form). Done once per simulation so a team's bonus persists across all
+    # its matches, which is what produces realistic deep runs and upsets.
+    if p.rating_sigma_elo > 0:
+        groups = {letter: [perturb_team(t, p.rating_sigma_elo, rng) for t in teams]
+                  for letter, teams in groups.items()}
 
     for letter, teams in groups.items():
         table = play_group(teams, rng, p)

@@ -4,6 +4,7 @@ Render a Monte Carlo `Stats` object into a Markdown predictions report.
 
 from __future__ import annotations
 
+import math
 from datetime import date
 
 from .simulate import Stats
@@ -57,9 +58,12 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
     # ---- Most likely final & champion -----------------------------------
     top_final = max(stats.finals.items(), key=lambda kv: kv[1])
     (fa, fb), fc = top_final
+    # 95% Monte Carlo sampling error on the favourite's title probability.
+    cp = champ_sorted[0][1]
+    ci = 1.96 * math.sqrt(max(cp * (1 - cp), 0) / n_sims)
     L.append("## 🎯 Headline calls\n")
     L.append(f"- **Most likely champion:** {champ_sorted[0][0]} "
-             f"({_pct(champ_sorted[0][1])})")
+             f"({_pct(champ_sorted[0][1])}, ±{ci*100:.1f}% Monte Carlo 95% CI)")
     L.append(f"- **Most likely final pairing:** {fa} vs {fb} "
              f"({_pct(fc / n_sims)} of simulations)")
     podium = ", ".join(f"{n} {_pct(p)}" for n, p in champ_sorted[:4])
@@ -123,6 +127,14 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
         "`λ_A = attack_A · defense_B / LG_AVG`, then scorelines are drawn from "
         "independent Poisson distributions. Hosts get a small home edge; drawn "
         "knockout games are settled by an Elo-weighted shootout.\n"
+        "- **Rating uncertainty:** each team's *true* tournament strength is "
+        f"resampled every simulation from a Gaussian (σ = {params.rating_sigma_elo:.0f} "
+        "Elo) around its rating, capturing both rating error and tournament-level "
+        "form. Without this a point-estimate model is over-confident in the "
+        "favourites; resampling fattens the upset tail toward reality.\n"
+        "- **Sampling error:** probabilities carry Monte Carlo noise of "
+        "≈ √(p(1−p)/N); the favourite's 95% interval is shown above. More "
+        "`--sims` tightens it.\n"
         "- **Ratings:** derived from a June-2026 Elo strength snapshot plus a "
         "per-team offensive/defensive style tilt (see `data/derive_ratings.py`).\n"
         "- **Tie-breakers:** group tables rank by points, goal difference, then "

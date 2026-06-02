@@ -18,6 +18,8 @@ import time
 # Allow running as a plain script (python run.py) as well as a module.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from dataclasses import replace
+
 from src.model import DEFAULT_PARAMS
 from src.report import build_report
 from src.simulate import run
@@ -29,17 +31,25 @@ def main(argv=None):
                     help="number of Monte Carlo simulations (default 20000)")
     ap.add_argument("--seed", type=int, default=2026,
                     help="random seed for reproducibility (default 2026)")
+    ap.add_argument("--rating-sigma", type=float, default=None,
+                    help="std-dev (Elo) of per-tournament team strength; "
+                         "0 disables uncertainty (default %d)"
+                         % DEFAULT_PARAMS.rating_sigma_elo)
     ap.add_argument("--out", default=os.path.join("output", "predictions.md"),
                     help="output Markdown path (default output/predictions.md)")
     args = ap.parse_args(argv)
 
+    params = DEFAULT_PARAMS
+    if args.rating_sigma is not None:
+        params = replace(params, rating_sigma_elo=args.rating_sigma)
+
     print(f"Simulating the 2026 World Cup {args.sims:,} times "
-          f"(seed {args.seed})...")
+          f"(seed {args.seed}, rating σ {params.rating_sigma_elo:g} Elo)...")
     t0 = time.time()
-    stats, groups = run(args.sims, DEFAULT_PARAMS, seed=args.seed)
+    stats, groups = run(args.sims, params, seed=args.seed)
     elapsed = time.time() - t0
 
-    report = build_report(stats, groups, args.sims, args.seed, DEFAULT_PARAMS)
+    report = build_report(stats, groups, args.sims, args.seed, params)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)

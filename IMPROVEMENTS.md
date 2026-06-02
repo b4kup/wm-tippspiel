@@ -67,11 +67,13 @@ documented snapshot, not a feed.
   Use the real fixture list and rest days per team.
 
 ## 4. Uncertainty & validation — what makes it trustworthy
-- **Propagate rating uncertainty** — ⭐⭐⭐ / 🔨🔨
+- **Propagate rating uncertainty** — ⭐⭐⭐ / 🔨🔨 — ✅ **DONE**
   Draw each team's *true* strength from a distribution every simulation.
   Point-estimate Monte Carlo is **overconfident** — almost certainly why the
-  model shows Spain ~22% vs the market's ~15%. This widens the tails toward
-  reality. **Top recommendation.**
+  model showed Spain ~22% vs the market's ~15%. Implemented via
+  `ModelParams.rating_sigma_elo` (default 45) and `perturb_team()`; tune with
+  `--rating-sigma`. Spain now ~20% and the upset tail is fatter. The *value* of
+  σ should be fixed by the backtest below.
 - **Backtest & calibrate on 2018 & 2022** — ⭐⭐⭐ / 🔨🔨
   Score the model with log-loss / Brier against past tournaments and *fit* the
   constants (goal scale, home edge, style weights). Turns guesses into

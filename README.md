@@ -30,6 +30,7 @@ No dependencies — pure Python 3.10+ standard library.
 ```bash
 python run.py                  # 20,000 sims -> output/predictions.md
 python run.py --sims 100000    # more sims = tighter probabilities (slower)
+python run.py --rating-sigma 0 # disable rating uncertainty (point estimates)
 python run.py --seed 7 --out output/run7.md
 python tests/test_model.py     # smoke tests
 ```
@@ -56,6 +57,11 @@ A sharp attack meeting a leaky defence produces goals; two compact sides grind
 out a low-scoring game. Scorelines are drawn from Poisson distributions, hosts
 get a small home edge, and a drawn knockout match is resolved by an
 Elo-weighted shootout.
+
+To avoid the over-confidence of a pure point-estimate model, each team's *true*
+tournament strength is **resampled every simulation** from a Gaussian around its
+rating (`--rating-sigma`, in Elo points), capturing rating error and
+tournament-level form. This fattens the upset tail toward reality.
 
 The tournament structure is the real 48-team format: 12 groups of 4, then the
 top 2 of each group plus the 8 best third-placed teams into a Round of 32 and a

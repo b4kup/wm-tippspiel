@@ -25,12 +25,14 @@ from __future__ import annotations
 
 import math
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 HOSTS = {"United States", "Canada", "Mexico"}
 
 # Must match data/derive_ratings.py (average goals scored by one team per match).
 LG_AVG = 1.35
+# Must match data/derive_ratings.py: how Elo quality maps to attack/defence.
+K_Q = 0.70
 
 
 @dataclass(frozen=True)
@@ -41,9 +43,29 @@ class ModelParams:
     host_defense_mult: float = 0.92
     # Floor on a team's expected goals so even huge underdogs can score.
     min_lambda: float = 0.15
+    # Std-dev (in Elo points) of each team's *true* tournament strength around
+    # its rating, sampled once per simulation. Captures rating uncertainty and
+    # tournament-level form, which a point-estimate model ignores -> it stops
+    # the favourites being over-confident and fattens the upset tail. Set 0 to
+    # disable (pure point-estimate Monte Carlo).
+    rating_sigma_elo: float = 45.0
 
 
 DEFAULT_PARAMS = ModelParams()
+
+
+def perturb_team(team, sigma_elo: float, rng: random.Random):
+    """Return a copy of `team` with its strength shifted by a random draw.
+
+    Drawn once per simulation: a positive draw makes the team better this
+    tournament (sharper attack, meaner defence), mapped through the same
+    Elo->goals relationship used to build the ratings."""
+    if sigma_elo <= 0:
+        return team
+    d = rng.gauss(0.0, sigma_elo)
+    f = math.exp(K_Q * d / 400.0)
+    return replace(team, attack=team.attack * f, defense=team.defense / f,
+                   elo=team.elo + d)
 
 
 def win_expectancy(elo_a: float, elo_b: float) -> float:
