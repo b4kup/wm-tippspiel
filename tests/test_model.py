@@ -62,6 +62,35 @@ def test_dixon_coles_lifts_low_scores():
     assert low_draw_rate(-0.12) > low_draw_rate(0.0)
 
 
+def test_scoring_rule_points():
+    from src.tippspiel import ScoringRule, points
+    r = ScoringRule()  # 4 / 3 / 2
+    assert points((2, 1), (2, 1), r) == 4          # exact
+    assert points((3, 2), (2, 1), r) == 3          # same +1 difference
+    assert points((3, 0), (2, 1), r) == 2          # home win, wrong difference
+    assert points((0, 1), (2, 1), r) == 0          # wrong tendency
+    assert points((2, 2), (1, 1), r) == 2          # draw, non-exact -> tendency
+    assert points((2, 2), (1, 1), ScoringRule(diff_applies_to_draws=True)) == 3
+
+
+def test_optimal_tip_is_ev_maximal():
+    from src.tippspiel import (ScoringRule, optimal_tip, points,
+                               score_distribution)
+    teams = {t.name: t for t in load_teams()}
+    rule = ScoringRule()
+    grid = score_distribution(teams["Spain"], teams["Haiti"])
+    tip, ev = optimal_tip(grid, rule)
+    n = len(grid)
+    # No other candidate tip beats the reported expected value.
+    for tx in range(7):
+        for ty in range(7):
+            alt = sum(grid[ax][ay] * points((tx, ty), (ax, ay), rule)
+                      for ax in range(n) for ay in range(n))
+            assert alt <= ev + 1e-9
+    # A strong favourite should be tipped to win.
+    assert tip[0] > tip[1]
+
+
 def test_probabilities_are_consistent():
     stats, groups = run(400, DEFAULT_PARAMS, seed=1)
     names = [t.name for g in groups.values() for t in g]

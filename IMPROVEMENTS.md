@@ -90,12 +90,15 @@ A prediction *pool* rewards **points under its scoring rules**, which is **not**
 the same as picking the most likely outcome — if everyone picks the favorite,
 the EV-maximizing play can be a contrarian champion.
 
-- **Point-maximizing picks under your pool's rules** — ⭐⭐⭐ / 🔨🔨
-  Given the scoring system (exact score vs. tendency, knockout bonuses, etc.),
-  compute the bracket / score picks that **maximize expected points**, optionally
-  accounting for what the rest of the pool is likely to pick.
-- **Exact-score predictions per fixture** — ⭐⭐ / 🔨
-  Most likely scoreline for each of the 104 matches.
+- **Point-maximizing picks under your pool's rules** — ⭐⭐⭐ / 🔨🔨 — ✅ **DONE**
+  `tipps.py` + `src/tippspiel.py` compute, for every group match, the scoreline
+  that **maximizes expected points** under a configurable rule (default kicktipp
+  4/3/2). Confirms the key insight: the EV-optimal tip differs from the most
+  likely score in ~80% of matches. Still **TODO**: contrarian/pool-aware picks
+  (account for what others tip) and knockout tips once matchups resolve.
+- **Exact-score predictions per fixture** — ⭐⭐ / 🔨 — ✅ **DONE** (group stage)
+  `tipps.py` lists the most likely scoreline alongside the EV-optimal tip and the
+  win/draw/loss split for each group match.
 - **Risk profiles** — ⭐ / 🔨🔨
   "Safe" (maximize expected points) vs. "aggressive" (maximize chance of *winning*
   the pool) pick sets.

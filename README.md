@@ -23,6 +23,21 @@ The full report (title odds for all 48 teams, group-by-group probabilities,
 round-by-round chances, most-likely final, and a model-vs-betting-market
 comparison) is written to [`output/predictions.md`](output/predictions.md).
 
+## Tippspiel tips
+
+Playing a prediction pool? `tipps.py` computes the **point-maximizing** scoreline
+for every group match under your pool's scoring rule — which is usually **not**
+the most likely score (predicting the unlikely 1–1 every game scores poorly; a
+representative favourite win scores more on average).
+
+```bash
+python tipps.py                                  # kicktipp 4/3/2 -> output/tipps.md
+python tipps.py --exact 3 --diff 2 --tendency 1  # match your pool's rules
+```
+
+Output: [`output/tipps.md`](output/tipps.md) — the EV-optimal tip, its expected
+points, the win/draw/loss split, and the most likely score for each match.
+
 ## Quick start
 
 No dependencies — pure Python 3.10+ standard library.
