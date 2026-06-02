@@ -42,7 +42,7 @@ class Stats:
         return counter[name] / self.n if self.n else 0.0
 
 
-def simulate_tournament_once(groups, rng, p, stats: Stats):
+def simulate_tournament_once(groups, rng, p, stats: Stats, results=None):
     winners_by_group, runners_by_group = {}, {}
     third_entries = []  # (group_letter, Team)
 
@@ -54,7 +54,7 @@ def simulate_tournament_once(groups, rng, p, stats: Stats):
                   for letter, teams in groups.items()}
 
     for letter, teams in groups.items():
-        table = play_group(teams, rng, p)
+        table = play_group(teams, rng, p, results)
         winner, runner, third = table[0].team, table[1].team, table[2]
         winners_by_group[letter] = winner
         runners_by_group[letter] = runner
@@ -81,7 +81,7 @@ def simulate_tournament_once(groups, rng, p, stats: Stats):
     seeded = [(resolve(a), resolve(b)) for a, b in ROUND_OF_32]
     ties = assign_thirds_to_slots(seeded, third_teams, rng)
 
-    reached = run_knockout(ties, rng, p)
+    reached = run_knockout(ties, rng, p, results)
     for t in reached["R32"]:
         stats.reach_r32[t.name] += 1
     for t in reached["R16"]:
@@ -98,12 +98,12 @@ def simulate_tournament_once(groups, rng, p, stats: Stats):
 
 
 def run(n_sims: int, params: ModelParams, seed: int | None = None,
-        teams: list[Team] | None = None) -> tuple[Stats, dict]:
+        teams: list[Team] | None = None, results=None) -> tuple[Stats, dict]:
     from .tournament import load_teams
     rng = random.Random(seed)
     teams = teams or load_teams()
     groups = groups_from_teams(teams)
     stats = Stats(n=n_sims)
     for _ in range(n_sims):
-        simulate_tournament_once(groups, rng, params, stats)
+        simulate_tournament_once(groups, rng, params, stats, results)
     return stats, groups

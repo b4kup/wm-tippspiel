@@ -1,0 +1,73 @@
+stage,team_a,team_b,tip_a,tip_b
+group,Czechia,Mexico,1,2
+group,Czechia,South Korea,2,1
+group,Czechia,South Africa,2,1
+group,Mexico,South Korea,2,1
+group,Mexico,South Africa,2,1
+group,South Korea,South Africa,2,1
+group,Switzerland,Canada,1,0
+group,Switzerland,Bosnia & Herzegovina,1,0
+group,Switzerland,Qatar,1,0
+group,Canada,Bosnia & Herzegovina,2,1
+group,Canada,Qatar,2,1
+group,Bosnia & Herzegovina,Qatar,2,1
+group,Brazil,Morocco,2,1
+group,Brazil,Scotland,2,1
+group,Brazil,Haiti,2,0
+group,Morocco,Scotland,1,0
+group,Morocco,Haiti,1,0
+group,Scotland,Haiti,2,1
+group,United States,Türkiye,2,1
+group,United States,Paraguay,1,0
+group,United States,Australia,2,1
+group,Türkiye,Paraguay,1,0
+group,Türkiye,Australia,2,1
+group,Paraguay,Australia,1,1
+group,Germany,Ecuador,2,1
+group,Germany,Ivory Coast,2,1
+group,Germany,Curaçao,2,0
+group,Ecuador,Ivory Coast,1,0
+group,Ecuador,Curaçao,1,0
+group,Ivory Coast,Curaçao,2,1
+group,Netherlands,Japan,2,1
+group,Netherlands,Sweden,2,1
+group,Netherlands,Tunisia,1,0
+group,Japan,Sweden,2,1
+group,Japan,Tunisia,1,0
+group,Sweden,Tunisia,1,0
+group,Belgium,IR Iran,1,0
+group,Belgium,Egypt,2,1
+group,Belgium,New Zealand,2,0
+group,IR Iran,Egypt,1,1
+group,IR Iran,New Zealand,1,0
+group,Egypt,New Zealand,1,0
+group,Spain,Uruguay,2,1
+group,Spain,Saudi Arabia,2,0
+group,Spain,Cabo Verde,2,0
+group,Uruguay,Saudi Arabia,1,0
+group,Uruguay,Cabo Verde,1,0
+group,Saudi Arabia,Cabo Verde,1,0
+group,France,Senegal,2,1
+group,France,Norway,2,1
+group,France,Iraq,2,0
+group,Senegal,Norway,2,1
+group,Senegal,Iraq,1,0
+group,Norway,Iraq,2,1
+group,Argentina,Austria,2,1
+group,Argentina,Algeria,2,0
+group,Argentina,Jordan,2,0
+group,Austria,Algeria,2,1
+group,Austria,Jordan,1,0
+group,Algeria,Jordan,1,0
+group,Portugal,Colombia,2,1
+group,Portugal,DR Congo,2,1
+group,Portugal,Uzbekistan,2,0
+group,Colombia,DR Congo,2,1
+group,Colombia,Uzbekistan,1,0
+group,DR Congo,Uzbekistan,2,1
+group,England,Croatia,1,0
+group,England,Ghana,2,1
+group,England,Panama,2,0
+group,Croatia,Ghana,2,1
+group,Croatia,Panama,1,0
+group,Ghana,Panama,2,1

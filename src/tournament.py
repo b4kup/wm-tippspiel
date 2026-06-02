@@ -77,11 +77,13 @@ def _rank_key(row: GroupRow, rng: random.Random):
 
 
 def play_group(teams: list[Team], rng: random.Random,
-               p: ModelParams) -> list[GroupRow]:
-    """Round-robin a group, return rows sorted best-first."""
+               p: ModelParams, results=None) -> list[GroupRow]:
+    """Round-robin a group, return rows sorted best-first. Matches already in
+    `results` use their real scoreline instead of being simulated."""
     rows = {t.name: GroupRow(t) for t in teams}
     for a, b in combinations(teams, 2):
-        ga, gb = simulate_match(a, b, rng, p)
+        actual = results.group_score(a.name, b.name) if results else None
+        ga, gb = actual if actual is not None else simulate_match(a, b, rng, p)
         ra, rb = rows[a.name], rows[b.name]
         ra.gf += ga; ra.ga += gb
         rb.gf += gb; rb.ga += ga
@@ -162,10 +164,22 @@ def assign_thirds_to_slots(round_of_32, third_entries, rng):
     return ties
 
 
-def run_knockout(round_of_32_ties, rng: random.Random, p: ModelParams):
+def _ko_winner_from_result(r, a: Team, b: Team):
+    """Resolve the advancing team from a recorded knockout result."""
+    name = r.winner_name()
+    if name == a.name:
+        return a
+    if name == b.name:
+        return b
+    return a  # draw with no recorded shootout winner: fall back deterministically
+
+
+def run_knockout(round_of_32_ties, rng: random.Random, p: ModelParams,
+                 results=None):
     """
     Run a single-elimination bracket from concrete Round-of-32 ties (each a
-    (Team, Team) pair). Consecutive ties are paired down the tree.
+    (Team, Team) pair). Consecutive ties are paired down the tree. Any tie whose
+    result is recorded in `results` uses the real outcome instead of simulating.
     Returns dict with the team that reached each round.
     """
     reached = {"R32": [], "R16": [], "QF": [], "SF": [], "Final": [], "Champion": None,
@@ -173,11 +187,16 @@ def run_knockout(round_of_32_ties, rng: random.Random, p: ModelParams):
     for a, b in round_of_32_ties:
         reached["R32"].extend([a, b])
 
-    # Each label is the round the *winners* of the current ties advance to.
-    # 16 R32 ties -> R16 -> QF -> SF -> Final -> Champion (five rounds).
+    # `stage` is the round the current ties belong to; `label` is the round their
+    # winners advance to. 16 R32 ties -> R16 -> QF -> SF -> Final -> Champion.
     current = list(round_of_32_ties)
-    for label in ["R16", "QF", "SF", "Final", "Champion"]:
-        winners = [simulate_knockout(a, b, rng, p) for a, b in current]
+    for stage, label in zip(["R32", "R16", "QF", "SF", "Final"],
+                            ["R16", "QF", "SF", "Final", "Champion"]):
+        winners = []
+        for a, b in current:
+            r = results.ko_result(stage, a.name, b.name) if results else None
+            winners.append(_ko_winner_from_result(r, a, b) if r is not None
+                           else simulate_knockout(a, b, rng, p))
         if label == "Champion":
             champ = winners[0]
             final_a, final_b = current[0]

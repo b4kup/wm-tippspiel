@@ -4,10 +4,6 @@
 
 > For each match the **tip** below maximizes expected points under your scoring rule. It is **not always the most likely score** — when an exact score is unlikely, a safer tendency/goal-difference tip can score more on average. The most likely score is shown alongside for comparison.
 
-## 🏆 Outright winner pick
-
-**Spain** is the single most likely champion. Top picks: Spain (20%), France (17%), Argentina (14%).
-
 ## Group-stage match tips
 
 **Group A**

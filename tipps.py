@@ -37,6 +37,9 @@ def main(argv=None):
                     help="sims for the outright-winner pick (0 to skip)")
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--out", default=os.path.join("output", "tipps.md"))
+    ap.add_argument("--save-tips", metavar="PATH",
+                    help="also write machine-readable group tips (CSV) for "
+                         "scoring with update.py, e.g. data/our_tips.csv")
     args = ap.parse_args(argv)
 
     if args.preset:
@@ -69,6 +72,11 @@ def main(argv=None):
         names = [t.name for t in teams]
         champion_top = sorted(((n, stats.prob(stats.champion, n)) for n in names),
                               key=lambda kv: kv[1], reverse=True)
+
+    if args.save_tips:
+        from src.liveupdate import group_tips, save_our_tips
+        save_our_tips(args.save_tips, group_tips(groups, rule, DEFAULT_PARAMS))
+        print(f"Saved machine-readable group tips to {args.save_tips}")
 
     report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top, extra_note)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)

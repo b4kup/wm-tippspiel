@@ -56,6 +56,27 @@ python run.py --seed 7 --out output/run7.md
 python tests/test_model.py     # smoke tests
 ```
 
+## Live updates during the tournament
+
+As matches are played, record them in [`data/results.csv`](data/results.csv)
+(`stage,team_a,team_b,goals_a,goals_b,winner`) and run:
+
+```bash
+python tipps.py --preset check24 --save-tips data/our_tips.csv  # freeze your tips once
+python update.py                    # after each matchday -> output/live_status.md
+python update.py --risk aggressive  # chase exact scores when you're behind
+```
+
+`update.py` then:
+- **scores our tips** so far under the CHECK24 rules (running total, per match);
+- checks **how well reality matched our predictions** (tendency accuracy, Brier,
+  log-loss, and the biggest surprises);
+- **re-tunes team ratings** from observed form and **re-simulates** the rest of
+  the tournament *conditioned on results so far* — updated title odds;
+- **re-optimizes the tips** for upcoming, not-yet-played group matches.
+
+See [`output/live_status.md`](output/live_status.md).
+
 ## How it works
 
 Each team has two ratings instead of one overall number, so matches turn on a

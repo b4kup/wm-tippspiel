@@ -114,6 +114,44 @@ def test_probabilities_are_consistent():
                                "Brazil", "Portugal", "Germany", "Netherlands"}
 
 
+def test_results_scoring_and_conditioning():
+    from src.results import MatchResult, Results, update_ratings
+    from src.tippspiel import PRESETS
+    from src.liveupdate import score_our_tips, calibration
+    from src.model import DEFAULT_PARAMS
+    teams = load_teams()
+    res = Results([MatchResult("group", "Spain", "Uruguay", 3, 0)])
+    rule = PRESETS["check24"]
+
+    # Tip 2-1 on a 3-0 result: correct winner, wrong difference -> 2 pts.
+    scored, total = score_our_tips([("group", "Spain", "Uruguay", 2, 1)], res, rule)
+    assert total == 2 and len(scored) == 1
+
+    # Calibration runs and is in range.
+    c = calibration(teams, res, DEFAULT_PARAMS)
+    assert c.n == 1 and 0.0 <= c.tendency_acc <= 1.0 and c.brier >= 0.0
+
+    # Re-tuning: a big Spain win lifts Spain's Elo/attack and drops Uruguay's.
+    by = {t.name: t for t in teams}
+    tuned = {t.name: t for t in update_ratings(teams, res)}
+    assert tuned["Spain"].elo > by["Spain"].elo
+    assert tuned["Spain"].attack > by["Spain"].attack
+    assert tuned["Uruguay"].elo < by["Uruguay"].elo
+
+
+def test_conditioning_uses_real_group_score():
+    import random
+    from src.results import MatchResult, Results
+    from src.tournament import groups_from_teams, play_group
+    from src.model import DEFAULT_PARAMS
+    groups = groups_from_teams(load_teams())
+    res = Results([MatchResult("group", "Spain", "Uruguay", 5, 0)])
+    rows = play_group(groups["H"], random.Random(1), DEFAULT_PARAMS, res)
+    spain = next(r for r in rows if r.team.name == "Spain")
+    uruguay = next(r for r in rows if r.team.name == "Uruguay")
+    assert spain.gf >= 5 and uruguay.ga >= 5     # the real 5-0 is included
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):

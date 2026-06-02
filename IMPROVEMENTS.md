@@ -104,9 +104,14 @@ the EV-maximizing play can be a contrarian champion.
   the pool) pick sets.
 
 ## 6. Product & engineering
-- **Live re-simulation during the tournament** — ⭐⭐⭐ / 🔨🔨
-  Feed in actual results as they happen and re-simulate the remainder. (Pairs
-  with an FIFA standings / results ingestion step.)
+- **Live re-simulation during the tournament** — ⭐⭐⭐ / 🔨🔨 — ✅ **DONE**
+  `update.py` ingests `data/results.csv`, conditions the simulation on played
+  matches, **re-tunes ratings** from observed form (Elo update), re-simulates the
+  rest, **scores our tips** under CHECK24, reports how reality matched our
+  predictions (Brier / log-loss / tendency accuracy + biggest surprises), and
+  re-optimizes upcoming tips. `safe`/`aggressive` risk modes included as a
+  lightweight pool-position lever. (Full pool-standings-aware contrarian
+  optimization is still TODO; needs other players' picks.)
 - **Charts & bracket dashboard** — ⭐⭐ / 🔨🔨
   Probability bars, a visual bracket, group tables — a real "Tippspiel" front end.
 - **Sensitivity analysis** — ⭐⭐ / 🔨
