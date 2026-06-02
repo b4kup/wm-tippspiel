@@ -1,12 +1,12 @@
 # 2026 World Cup — Tippspiel tips (point-maximizing)
 
-*Generated 2026-06-02. Scoring: **4/3/2** — exact 4, goal-difference 3, tendency 2 pts.*
+*Generated 2026-06-02. Scoring: **CHECK24 (4 exact / 3 goal-diff / 2 tendency)** — exact 4, goal-difference 3, tendency 2 pts.*
 
 > For each match the **tip** below maximizes expected points under your scoring rule. It is **not always the most likely score** — when an exact score is unlikely, a safer tendency/goal-difference tip can score more on average. The most likely score is shown alongside for comparison.
 
 ## 🏆 Outright winner pick
 
-**Spain** is the single most likely champion. Top picks: Spain (19%), France (17%), Argentina (14%).
+**Spain** is the single most likely champion. Top picks: Spain (20%), France (17%), Argentina (14%).
 
 ## Group-stage match tips
 
@@ -148,3 +148,5 @@
 - Scoreline distributions are analytic (attack/defense → Poisson with the Dixon-Coles low-score correction), using central ratings (the per-tournament strength resampling used for the simulation report does not apply to a single fixed match).
 - Knockout fixtures aren't listed: the participants aren't known until the bracket resolves. Re-run once the matchups are set.
 - Adjust the scoring rule (`--exact/--diff/--tendency/--diff-draws`) to match your pool — the optimal tips shift with the rule.
+
+- **CHECK24 extras:** each correctly answered **bonus question** is worth **10 points** (separate from per-match scoring, so it doesn't change the optimal tips above — but it's high-value, answer them). A correct exact draw scores the full 4; a correct but non-exact draw scores tendency (2) under the assumption here — toggle `--diff-draws` if your round scores it as 3.

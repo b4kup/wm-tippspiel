@@ -19,12 +19,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from src.model import DEFAULT_PARAMS
 from src.simulate import run
-from src.tippspiel import ScoringRule, build_tipps_report
+from src.tippspiel import PRESETS, ScoringRule, build_tipps_report
 from src.tournament import groups_from_teams, load_teams
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Point-maximizing Tippspiel tips")
+    ap.add_argument("--preset", choices=sorted(PRESETS),
+                    help="named scoring preset (e.g. check24); overrides the "
+                         "individual point options below")
     ap.add_argument("--exact", type=int, default=4, help="points for exact score")
     ap.add_argument("--diff", type=int, default=3, help="points for goal difference")
     ap.add_argument("--tendency", type=int, default=2, help="points for tendency")
@@ -36,12 +39,24 @@ def main(argv=None):
     ap.add_argument("--out", default=os.path.join("output", "tipps.md"))
     args = ap.parse_args(argv)
 
-    rule = ScoringRule(
-        exact=args.exact, diff=args.diff, tendency=args.tendency,
-        diff_applies_to_draws=args.diff_draws,
-        name=f"{args.exact}/{args.diff}/{args.tendency}"
-             + (" (draws score diff)" if args.diff_draws else ""),
-    )
+    if args.preset:
+        rule = PRESETS[args.preset]
+    else:
+        rule = ScoringRule(
+            exact=args.exact, diff=args.diff, tendency=args.tendency,
+            diff_applies_to_draws=args.diff_draws,
+            name=f"{args.exact}/{args.diff}/{args.tendency}"
+                 + (" (draws score diff)" if args.diff_draws else ""),
+        )
+    extra_note = ""
+    if args.preset == "check24":
+        extra_note = (
+            "- **CHECK24 extras:** each correctly answered **bonus question** is "
+            "worth **10 points** (separate from per-match scoring, so it doesn't "
+            "change the optimal tips above — but it's high-value, answer them). A "
+            "correct exact draw scores the full 4; a correct but non-exact draw "
+            "scores tendency (2) under the assumption here — toggle `--diff-draws` "
+            "if your round scores it as 3.")
     teams = load_teams()
     groups = groups_from_teams(teams)
 
@@ -53,7 +68,7 @@ def main(argv=None):
         champion_top = sorted(((n, stats.prob(stats.champion, n)) for n in names),
                               key=lambda kv: kv[1], reverse=True)
 
-    report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top)
+    report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top, extra_note)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)

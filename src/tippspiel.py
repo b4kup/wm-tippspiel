@@ -52,6 +52,18 @@ def points(pred, actual, rule: ScoringRule) -> int:
     return rule.tendency
 
 
+# Named scoring presets. CHECK24's per-match scheme is 4/3/2 with a correct
+# (non-exact) draw counting as tendency only; it additionally has bonus
+# questions worth 10 pts each, which are separate from per-match scoring and so
+# don't change the optimal per-match tip.
+PRESETS = {
+    "check24": ScoringRule(
+        exact=4, diff=3, tendency=2, diff_applies_to_draws=False,
+        name="CHECK24 (4 exact / 3 goal-diff / 2 tendency)"),
+    "kicktipp": ScoringRule(name="kicktipp (4/3/2)"),
+}
+
+
 def score_distribution(team_a, team_b, p: ModelParams = DEFAULT_PARAMS,
                        max_goals: int = 8):
     """Analytic joint scoreline pmf P[x][y] over 0..max_goals, normalised."""
@@ -113,7 +125,7 @@ def _pct(x: float) -> str:
 
 
 def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
-                       champion_top=None) -> str:
+                       champion_top=None, extra_note: str = "") -> str:
     """Markdown report of point-maximizing tips for every group-stage match."""
     L: list[str] = []
     L.append("# 2026 World Cup — Tippspiel tips (point-maximizing)\n")
@@ -159,4 +171,6 @@ def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
         "the bracket resolves. Re-run once the matchups are set.\n"
         "- Adjust the scoring rule (`--exact/--diff/--tendency/--diff-draws`) to "
         "match your pool — the optimal tips shift with the rule.\n")
+    if extra_note:
+        L.append(extra_note + "\n")
     return "\n".join(L)

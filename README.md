@@ -31,9 +31,14 @@ the most likely score (predicting the unlikely 1–1 every game scores poorly; a
 representative favourite win scores more on average).
 
 ```bash
-python tipps.py                                  # kicktipp 4/3/2 -> output/tipps.md
-python tipps.py --exact 3 --diff 2 --tendency 1  # match your pool's rules
+python tipps.py --preset check24                 # CHECK24 rules -> output/tipps.md
+python tipps.py                                  # kicktipp 4/3/2
+python tipps.py --exact 3 --diff 2 --tendency 1  # match any pool's rules
 ```
+
+Built-in presets: **`check24`** (4 exact / 3 goal-difference / 2 tendency; bonus
+questions worth 10 pts are separate) and `kicktipp` (4/3/2). The committed
+[`output/tipps.md`](output/tipps.md) uses the CHECK24 ruleset.
 
 Output: [`output/tipps.md`](output/tipps.md) — the EV-optimal tip, its expected
 points, the win/draw/loss split, and the most likely score for each match.
