@@ -49,69 +49,73 @@ LG_AVG = 1.35      # average goals scored by one team per match
 K_Q = 0.70         # how strongly Elo quality separates attack/defence
 K_STYLE = 0.50     # how strongly style tilts attack vs defence
 
-# team -> (group, confederation, elo, style, market_decimal_odds or None)
+# team -> (group, confederation, elo, style, market_decimal_odds, polymarket_prob)
 # Elo is an eloratings.net-style scale (top ~2090). Style: + attacking / - defensive.
+# market_decimal_odds: bookmaker consensus (n-tv.de).
+# polymarket_prob: real-money implied probability (%). None when no liquid market.
+# Refreshed 2026-06-03 against eloratings.net, worldfootballrankings.com,
+# Wikipedia qualifying campaigns, n-tv.de, Polymarket.
 TEAMS = {
     # Group A
-    "Mexico":              ("A", "CONCACAF", 1810, 0.00, 81),
-    "South Africa":        ("A", "CAF",      1700, 0.00, None),
-    "South Korea":         ("A", "AFC",      1790, 0.10, 251),
-    "Czechia":             ("A", "UEFA",     1820, 0.00, None),
+    "Mexico":              ("A", "CONCACAF", 1855, 0.00, 81,   None),
+    "South Africa":        ("A", "CAF",      1700, 0.00, None, None),
+    "South Korea":         ("A", "AFC",      1760, 0.10, 251,  None),
+    "Czechia":             ("A", "UEFA",     1740, 0.00, None, None),
     # Group B
-    "Canada":              ("B", "CONCACAF", 1770, 0.10, 251),
-    "Bosnia & Herzegovina":("B", "UEFA",     1760, 0.10, None),
-    "Qatar":               ("B", "AFC",      1690, 0.00, None),
-    "Switzerland":         ("B", "UEFA",     1860, -0.20, 66),
+    "Canada":              ("B", "CONCACAF", 1795, 0.10, 251,  None),
+    "Bosnia & Herzegovina":("B", "UEFA",     1760, 0.10, None, None),
+    "Qatar":               ("B", "AFC",      1690, 0.00, None, None),
+    "Switzerland":         ("B", "UEFA",     1890, -0.20, 66,  None),
     # Group C
-    "Brazil":              ("C", "CONMEBOL", 2000, 0.30, 8.5),
-    "Morocco":             ("C", "CAF",      1870, -0.20, 51),
-    "Haiti":               ("C", "CONCACAF", 1640, 0.10, None),
-    "Scotland":            ("C", "UEFA",     1780, 0.00, 151),
+    "Brazil":              ("C", "CONMEBOL", 1990, 0.30, 9,    8.4),
+    "Morocco":             ("C", "CAF",      1870, -0.20, 51,  None),
+    "Haiti":               ("C", "CONCACAF", 1640, 0.10, None, None),
+    "Scotland":            ("C", "UEFA",     1780, 0.00, 151,  None),
     # Group D
-    "United States":       ("D", "CONCACAF", 1830, 0.10, 41),
-    "Paraguay":            ("D", "CONMEBOL", 1750, -0.30, None),
-    "Australia":           ("D", "AFC",      1740, -0.10, 201),
-    "Türkiye":             ("D", "UEFA",     1820, 0.20, 67),
+    "United States":       ("D", "CONCACAF", 1755, 0.10, 63,   None),
+    "Paraguay":            ("D", "CONMEBOL", 1800, -0.30, None, None),
+    "Australia":           ("D", "AFC",      1770, -0.10, 201, None),
+    "Türkiye":             ("D", "UEFA",     1880, 0.25, 67,   None),
     # Group E
-    "Germany":             ("E", "UEFA",     1940, 0.25, 15),
-    "Curaçao":             ("E", "CONCACAF", 1610, 0.00, None),
-    "Ivory Coast":         ("E", "CAF",      1780, 0.10, 201),
-    "Ecuador":             ("E", "CONMEBOL", 1840, -0.20, 101),
+    "Germany":             ("E", "UEFA",     1925, 0.25, 15,   5.6),
+    "Curaçao":             ("E", "CONCACAF", 1610, 0.00, None, None),
+    "Ivory Coast":         ("E", "CAF",      1700, 0.10, 201,  None),
+    "Ecuador":             ("E", "CONMEBOL", 1910, -0.20, 101, None),
     # Group F
-    "Netherlands":         ("F", "UEFA",     1970, 0.20, 25),
-    "Japan":               ("F", "AFC",      1850, 0.10, 67),
-    "Sweden":              ("F", "UEFA",     1790, 0.00, 151),
-    "Tunisia":             ("F", "CAF",      1700, -0.30, None),
+    "Netherlands":         ("F", "UEFA",     1960, 0.20, 22,   3.9),
+    "Japan":               ("F", "AFC",      1890, 0.10, 52,   None),
+    "Sweden":              ("F", "UEFA",     1720, 0.00, 151,  None),
+    "Tunisia":             ("F", "CAF",      1640, -0.30, None, None),
     # Group G
-    "Belgium":             ("G", "UEFA",     1930, 0.20, 34),
-    "Egypt":               ("G", "CAF",      1760, -0.10, 151),
-    "IR Iran":             ("G", "AFC",      1800, -0.30, 251),
-    "New Zealand":         ("G", "OFC",      1610, -0.10, None),
+    "Belgium":             ("G", "UEFA",     1890, 0.20, 34,   1.9),
+    "Egypt":               ("G", "CAF",      1700, -0.10, 151, None),
+    "IR Iran":             ("G", "AFC",      1770, -0.20, 251, None),
+    "New Zealand":         ("G", "OFC",      1590, -0.10, None, None),
     # Group H
-    "Spain":               ("H", "UEFA",     2090, 0.20, 5.5),
-    "Cabo Verde":          ("H", "CAF",      1630, -0.10, None),
-    "Saudi Arabia":        ("H", "AFC",      1700, 0.00, None),
-    "Uruguay":             ("H", "CONMEBOL", 1890, -0.20, 26),
+    "Spain":               ("H", "UEFA",     2090, 0.20, 5.5,  16.1),
+    "Cabo Verde":          ("H", "CAF",      1580, -0.10, None, None),
+    "Saudi Arabia":        ("H", "AFC",      1580, 0.00, None, None),
+    "Uruguay":             ("H", "CONMEBOL", 1850, -0.20, 65,  None),
     # Group I
-    "France":              ("I", "UEFA",     2070, 0.10, 5.75),
-    "Senegal":             ("I", "CAF",      1830, 0.00, 81),
-    "Iraq":                ("I", "AFC",      1660, -0.20, None),
-    "Norway":              ("I", "UEFA",     1820, 0.30, 34),
+    "France":              ("I", "UEFA",     2080, 0.10, 5.75, 17.0),
+    "Senegal":             ("I", "CAF",      1865, 0.00, 81,   None),
+    "Iraq":                ("I", "AFC",      1610, -0.20, None, None),
+    "Norway":              ("I", "UEFA",     1750, 0.30, 29,   None),
     # Group J
-    "Argentina":           ("J", "CONMEBOL", 2060, 0.10, 9),
-    "Algeria":             ("J", "CAF",      1770, 0.10, 151),
-    "Austria":             ("J", "UEFA",     1810, 0.10, 101),
-    "Jordan":              ("J", "AFC",      1680, -0.20, None),
+    "Argentina":           ("J", "CONMEBOL", 2095, 0.10, 9,    9.0),
+    "Algeria":             ("J", "CAF",      1770, 0.10, 151,  None),
+    "Austria":             ("J", "UEFA",     1830, 0.10, 101,  None),
+    "Jordan":              ("J", "AFC",      1685, -0.20, None, None),
     # Group K
-    "Portugal":            ("K", "UEFA",     1990, 0.25, 12),
-    "DR Congo":            ("K", "CAF",      1760, 0.10, None),
-    "Uzbekistan":          ("K", "AFC",      1690, -0.10, None),
-    "Colombia":            ("K", "CONMEBOL", 1880, 0.00, 41),
+    "Portugal":            ("K", "UEFA",     1985, 0.25, 12,   9.5),
+    "DR Congo":            ("K", "CAF",      1680, 0.10, None, None),
+    "Uzbekistan":          ("K", "AFC",      1720, -0.10, None, None),
+    "Colombia":            ("K", "CONMEBOL", 1960, 0.00, 36,   0.7),
     # Group L
-    "England":             ("L", "UEFA",     2010, 0.00, 7.5),
-    "Croatia":             ("L", "UEFA",     1900, -0.10, 67),
-    "Ghana":               ("L", "CAF",      1740, 0.10, 151),
-    "Panama":              ("L", "CONCACAF", 1690, -0.10, None),
+    "England":             ("L", "UEFA",     2020, 0.00, 7.5,  11.1),
+    "Croatia":             ("L", "UEFA",     1910, -0.10, 67,  None),
+    "Ghana":               ("L", "CAF",      1740, 0.10, 151,  None),
+    "Panama":              ("L", "CONCACAF", 1735, -0.10, None, None),
 }
 
 
@@ -119,7 +123,7 @@ def derive():
     elos = [v[2] for v in TEAMS.values()]
     elo_avg = sum(elos) / len(elos)
     rows = []
-    for name, (group, confed, elo, style, odds) in TEAMS.items():
+    for name, (group, confed, elo, style, odds, poly) in TEAMS.items():
         q = (elo - elo_avg) / 400.0
         attack = LG_AVG * math.exp(K_Q * q + K_STYLE * style)
         defense = LG_AVG * math.exp(-K_Q * q + K_STYLE * style)
@@ -131,6 +135,7 @@ def derive():
             "attack": round(attack, 3),
             "defense": round(defense, 3),
             "market_decimal_odds": odds if odds is not None else "",
+            "polymarket_prob": poly if poly is not None else "",
         })
     rows.sort(key=lambda r: (r["group"], -r["elo"]))
     return rows, elo_avg
@@ -140,7 +145,7 @@ def write_csv(path: str | None = None):
     rows, elo_avg = derive()
     path = path or os.path.join(os.path.dirname(__file__), "teams.csv")
     fields = ["team", "group", "confederation", "elo", "attack", "defense",
-              "market_decimal_odds"]
+              "market_decimal_odds", "polymarket_prob"]
     with open(path, "w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fields)
         writer.writeheader()

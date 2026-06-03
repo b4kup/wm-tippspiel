@@ -97,21 +97,40 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
         # (the margin). Normalising by their total over the teams that have odds
         # removes the margin and makes a like-for-like comparison with the model.
         overround = sum(1.0 / o for _t, o in market)
+        has_poly = any(t.polymarket_prob for t, _ in market)
         L.append("## 💰 Model vs. betting market\n")
         L.append("Model champion probability vs. the **de-vigged** market "
                  "probability (`(1 / decimal odds)` normalised across the listed "
                  "teams to strip out the bookmaker margin of "
                  f"~{(overround - 1) * 100:.0f}%). A sanity check, and a way to "
                  "spot where the model disagrees with the market.\n")
-        L.append("| Team | Model | Market (de-vig) | Decimal odds | Lean |")
-        L.append("|------|------:|----------------:|-------------:|:-----|")
+        if has_poly:
+            # Polymarket is real-money, already de-vigged — useful sharp signal
+            # for the top of the market. Listed for teams with a liquid contract.
+            spain = by_name.get("Spain")
+            france = by_name.get("France")
+            if spain and france and spain.polymarket_prob and france.polymarket_prob:
+                L.append(f"> Polymarket (real-money) has **France {france.polymarket_prob}%** "
+                         f"ahead of **Spain {spain.polymarket_prob}%** — bookmakers still "
+                         "have Spain a fraction shorter. The two sharpest market views "
+                         "disagree on the favourite.\n")
+            L.append("| Team | Model | Market (de-vig) | Polymarket | Decimal odds | Lean |")
+            L.append("|------|------:|----------------:|-----------:|-------------:|:-----|")
+        else:
+            L.append("| Team | Model | Market (de-vig) | Decimal odds | Lean |")
+            L.append("|------|------:|----------------:|-------------:|:-----|")
         for t, odds in sorted(market, key=lambda kv: kv[1]):
             model_p = stats.prob(stats.champion, t.name)
             implied = (1.0 / odds) / overround
             lean = "model higher" if model_p > implied * 1.15 else (
                    "market higher" if model_p < implied * 0.85 else "≈ agree")
-            L.append(f"| {t.name} | {_pct(model_p)} | {_pct(implied)} "
-                     f"| {odds:g} | {lean} |")
+            if has_poly:
+                poly = f"{t.polymarket_prob:.1f}%" if t.polymarket_prob else "—"
+                L.append(f"| {t.name} | {_pct(model_p)} | {_pct(implied)} "
+                         f"| {poly} | {odds:g} | {lean} |")
+            else:
+                L.append(f"| {t.name} | {_pct(model_p)} | {_pct(implied)} "
+                         f"| {odds:g} | {lean} |")
         L.append("")
 
     # ---- Methodology -----------------------------------------------------

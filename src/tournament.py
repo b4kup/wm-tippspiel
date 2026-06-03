@@ -27,6 +27,7 @@ class Team:
     attack: float          # expected goals scored vs an average team
     defense: float         # expected goals conceded vs an average team (lower = better)
     market_decimal_odds: float | None = None
+    polymarket_prob: float | None = None   # real-money implied probability (%)
 
 
 def load_teams(path: str | None = None) -> list[Team]:
@@ -35,6 +36,7 @@ def load_teams(path: str | None = None) -> list[Team]:
     with open(path, newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
             odds = row["market_decimal_odds"].strip()
+            poly = row.get("polymarket_prob", "").strip()
             teams.append(Team(
                 name=row["team"].strip(),
                 group=row["group"].strip(),
@@ -43,6 +45,7 @@ def load_teams(path: str | None = None) -> list[Team]:
                 attack=float(row["attack"]),
                 defense=float(row["defense"]),
                 market_decimal_odds=float(odds) if odds else None,
+                polymarket_prob=float(poly) if poly else None,
             ))
     return teams
 
