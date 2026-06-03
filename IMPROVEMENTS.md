@@ -33,10 +33,18 @@ documented snapshot, not a feed.
   enter top 9 from data signal; Germany drops out of top 10. *Still TODO:*
   swap goals for **xG** (FBref/StatsBomb) — would handle the "Morocco
   over-performed xG" / "Norway over-performed xG" cases better.
-- **Opponent- & venue-adjusted ratings via Poisson regression** — ⭐⭐⭐ / 🔨🔨🔨
-  Instead of eyeballing, *fit* attack/defense by regressing historical goals on
-  opponent strength + venue. Produces estimated parameters **with confidence
-  intervals** (feeds §4 uncertainty).
+- **Opponent- & venue-adjusted ratings via Poisson regression** — ⭐⭐⭐ / 🔨🔨🔨 — ✅ **DONE**
+  `src/poisson_fit.py` fits per-team α (attack) and δ (defence) plus a global
+  home-advantage γ via the Maher (1982) fixed-point iteration on 733 match
+  results scraped from Wikipedia (`src/scrape_wiki.py` + `scrape.py`). Match
+  set: 2024 Copa America, Euro 2024, AFCON 2023, 2023 Asian Cup, 2025 Gold
+  Cup, all 2026 WC qualifying campaigns. The fit uses damped updates,
+  parameter clipping (|α|, |δ| ≤ 1.4) and an L2 pseudo-count prior for
+  numerical stability. Results are shrunk back to the Elo+style prior with
+  `N / (N + 25)` weighting — the Elo prior carries the cross-confederation
+  signal the data alone can't reach (most matches are within-confed). Effect:
+  top tier (Argentina/Spain/France/England) tightens to a 5% spread; Japan
+  rises (best AFC qualifier); Australia stays bounded by the prior.
 - **Squad-availability adjustments** — ⭐⭐ / 🔨🔨 — ✅ **DONE**
   `data/injuries.csv` + `src/injuries.py` nudge a team's attack/defense/Elo down
   for injured/absent players (position decides whether attack or defense takes

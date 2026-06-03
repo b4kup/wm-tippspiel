@@ -122,26 +122,62 @@ TEAMS = {
 def derive():
     elos = [v[2] for v in TEAMS.values()]
     elo_avg = sum(elos) / len(elos)
-    # Load qualifying GF/GA records once. Teams with no record fall back to
-    # the pure Elo+style prior (the original derivation).
+    # Try the proper Maher-Poisson fit on match-level data first (best).
+    # Fall back to the aggregate qualifying-goals blend, then to Elo-only.
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    poisson_fit_table = None
+    # Shrinkage to Elo prior. Higher = more shrinkage. We picked 25 because
+    # cross-confederation matches in the dataset are sparse (mostly Copa America
+    # 2024 hosting CONCACAF guests); without strong inter-confed bridges, the
+    # fit over-credits AFC/CAF/OFC teams playing weak intra-confed opposition.
+    # The Elo prior carries that cross-confederation signal by hand.
+    poisson_n_prior = 25.0
     try:
-        import sys
-        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from src.qualifying_fit import load_qualifying, blend
-        records = load_qualifying()
+        from src.poisson_fit import load_matches, fit_poisson, shrink_to_prior
+        matches_path = os.path.join(os.path.dirname(__file__), "matches_recent.csv")
+        if os.path.exists(matches_path):
+            matches = load_matches(matches_path)
+            weights = {"2026": 1.0, "2025": 1.0, "2024": 0.9, "2023": 0.7, "2022": 0.5}
+            fitted, _gamma = fit_poisson(matches, weight_by_year=weights,
+                                         max_iter=400, tol=1e-6)
+            poisson_fit_table = fitted
     except Exception:
-        records = {}
-        blend = None
+        poisson_fit_table = None
+
+    qual_records = None
+    qual_blend = None
+    if poisson_fit_table is None:
+        try:
+            from src.qualifying_fit import load_qualifying, blend as q_blend
+            qual_records = load_qualifying()
+            qual_blend = q_blend
+        except Exception:
+            pass
+
     rows = []
     for name, (group, confed, elo, style, odds, poly) in TEAMS.items():
         q = (elo - elo_avg) / 400.0
         attack_prior = LG_AVG * math.exp(K_Q * q + K_STYLE * style)
         defense_prior = LG_AVG * math.exp(-K_Q * q + K_STYLE * style)
-        if blend is not None and records:
-            attack, defense = blend(name, attack_prior, defense_prior,
-                                    records, LG_AVG)
+
+        if poisson_fit_table is not None and name in poisson_fit_table:
+            ft = poisson_fit_table[name]
+            # Convert Elo prior to log-space (the natural fit space).
+            alpha_prior = math.log(max(attack_prior / LG_AVG, 1e-6))
+            delta_prior = -math.log(max(defense_prior / LG_AVG, 1e-6))
+            alpha, delta = shrink_to_prior(
+                ft.alpha, ft.delta, ft.matches,
+                alpha_prior, delta_prior, n_prior=poisson_n_prior)
+            attack = LG_AVG * math.exp(alpha)
+            defense = LG_AVG * math.exp(-delta)
+        elif qual_blend is not None and qual_records:
+            attack, defense = qual_blend(name, attack_prior, defense_prior,
+                                         qual_records, LG_AVG)
         else:
             attack, defense = attack_prior, defense_prior
+
         rows.append({
             "team": name,
             "group": group,

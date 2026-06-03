@@ -6,7 +6,7 @@
 
 ## 🏆 Outright winner pick
 
-**Spain** is the single most likely champion. Top picks: Spain (18%), Argentina (14%), France (11%).
+**Argentina** is the single most likely champion. Top picks: Argentina (14%), Spain (14%), France (12%).
 
 ## Group-stage match tips
 
@@ -14,133 +14,133 @@
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Mexico – South Korea | **2–1** ⚠️ | 1.20 | 46% · 23% · 31% | 1–1 |
-| Mexico – Czechia | **2–1** | 1.61 | 65% · 19% · 15% | 2–1 |
-| Mexico – South Africa | **2–1** | 1.60 | 65% · 20% · 16% | 2–1 |
-| South Korea – Czechia | **2–1** | 1.47 | 58% · 21% · 20% | 2–1 |
-| South Korea – South Africa | **2–1** | 1.46 | 58% · 22% · 21% | 2–1 |
-| Czechia – South Africa | **1–2** ⚠️ | 1.02 | 37% · 26% · 37% | 1–1 |
+| Mexico – South Korea | **2–1** ⚠️ | 1.30 | 50% · 24% · 26% | 1–1 |
+| Mexico – Czechia | **2–1** | 1.53 | 61% · 22% · 18% | 2–1 |
+| Mexico – South Africa | **2–1** ⚠️ | 1.68 | 68% · 19% · 13% | 2–0 |
+| South Korea – Czechia | **2–1** ⚠️ | 1.29 | 49% · 23% · 27% | 1–1 |
+| South Korea – South Africa | **2–1** ⚠️ | 1.47 | 58% · 22% · 20% | 1–1 |
+| Czechia – South Africa | **2–1** ⚠️ | 1.21 | 46% · 25% · 29% | 1–1 |
 
 **Group B**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Switzerland – Canada | **2–1** ⚠️ | 1.27 | 48% · 25% · 27% | 1–1 |
-| Switzerland – Bosnia & Herzegovina | **2–1** ⚠️ | 1.48 | 58% · 23% · 19% | 1–1 |
-| Switzerland – Qatar | **2–1** ⚠️ | 1.47 | 57% · 23% · 20% | 1–1 |
-| Canada – Bosnia & Herzegovina | **2–1** ⚠️ | 1.27 | 49% · 23% · 28% | 1–1 |
-| Canada – Qatar | **2–1** ⚠️ | 1.25 | 48% · 23% · 29% | 1–1 |
-| Bosnia & Herzegovina – Qatar | **1–2** ⚠️ | 1.04 | 37% · 24% · 39% | 1–1 |
+| Switzerland – Canada | **2–1** ⚠️ | 1.10 | 41% · 26% · 33% | 1–1 |
+| Switzerland – Bosnia & Herzegovina | **2–1** ⚠️ | 1.43 | 55% · 24% · 21% | 1–1 |
+| Switzerland – Qatar | **2–1** ⚠️ | 1.47 | 58% · 22% · 20% | 1–1 |
+| Canada – Bosnia & Herzegovina | **2–1** ⚠️ | 1.38 | 54% · 22% · 24% | 1–1 |
+| Canada – Qatar | **2–1** | 1.42 | 57% · 21% · 23% | 2–1 |
+| Bosnia & Herzegovina – Qatar | **2–1** ⚠️ | 1.05 | 40% · 23% · 37% | 1–1 |
 
 **Group C**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Brazil – Morocco | **1–2** ⚠️ | 1.19 | 29% · 27% · 44% | 1–1 |
-| Brazil – Scotland | **2–1** ⚠️ | 1.42 | 56% · 22% · 22% | 1–1 |
-| Brazil – Haiti | **2–1** | 1.70 | 70% · 17% · 13% | 2–1 |
-| Morocco – Scotland | **2–1** ⚠️ | 1.57 | 62% · 21% · 16% | 1–1 |
-| Morocco – Haiti | **2–0** | 1.82 | 76% · 15% · 8.9% | 2–0 |
-| Scotland – Haiti | **2–1** | 1.35 | 53% · 21% · 25% | 2–1 |
+| Brazil – Morocco | **2–1** ⚠️ | 1.18 | 44% · 26% · 30% | 1–1 |
+| Brazil – Scotland | **2–1** | 1.50 | 59% · 21% · 19% | 2–1 |
+| Brazil – Haiti | **2–1** | 1.73 | 72% · 17% · 12% | 2–1 |
+| Morocco – Scotland | **2–1** ⚠️ | 1.31 | 50% · 25% · 25% | 1–1 |
+| Morocco – Haiti | **2–1** | 1.57 | 63% · 21% · 16% | 2–1 |
+| Scotland – Haiti | **2–1** ⚠️ | 1.31 | 51% · 23% · 26% | 1–1 |
 
 **Group D**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Türkiye – Paraguay | **2–1** ⚠️ | 1.04 | 38% · 27% · 35% | 1–1 |
-| Türkiye – Australia | **1–2** | 1.17 | 33% · 21% · 46% | 1–2 |
-| Türkiye – United States | **2–1** ⚠️ | 1.14 | 45% · 21% · 35% | 2–2 |
-| Paraguay – Australia | **0–1** ⚠️ | 1.15 | 29% · 30% · 41% | 1–1 |
-| Paraguay – United States | **1–1** | 1.06 | 37% · 31% · 33% | 1–1 |
-| Australia – United States | **2–1** ⚠️ | 1.26 | 48% · 23% · 28% | 1–1 |
+| Türkiye – Paraguay | **2–1** ⚠️ | 1.21 | 46% · 25% · 29% | 1–1 |
+| Türkiye – Australia | **1–2** ⚠️ | 1.18 | 31% · 24% · 45% | 1–1 |
+| Türkiye – United States | **2–1** ⚠️ | 1.14 | 44% · 22% · 34% | 1–1 |
+| Paraguay – Australia | **0–1** ⚠️ | 1.32 | 23% · 28% · 49% | 1–1 |
+| Paraguay – United States | **1–2** ⚠️ | 1.09 | 32% · 28% · 40% | 1–1 |
+| Australia – United States | **2–1** ⚠️ | 1.27 | 48% · 25% · 27% | 1–1 |
 
 **Group E**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Germany – Ecuador | **0–1** ⚠️ | 1.07 | 32% · 30% · 38% | 1–1 |
-| Germany – Ivory Coast | **2–1** | 1.34 | 53% · 22% · 26% | 2–1 |
-| Germany – Curaçao | **2–1** | 1.56 | 64% · 18% · 18% | 2–1 |
-| Ecuador – Ivory Coast | **1–0** | 1.33 | 48% · 30% · 22% | 1–0 |
-| Ecuador – Curaçao | **1–0** | 1.52 | 57% · 27% · 17% | 1–0 |
-| Ivory Coast – Curaçao | **2–1** ⚠️ | 1.25 | 48% · 23% · 29% | 1–1 |
+| Germany – Ecuador | **2–1** ⚠️ | 1.02 | 37% · 28% · 35% | 1–1 |
+| Germany – Ivory Coast | **3–1** ⚠️ | 1.74 | 73% · 15% · 12% | 2–1 |
+| Germany – Curaçao | **3–1** | 1.82 | 77% · 14% · 9.0% | 3–1 |
+| Ecuador – Ivory Coast | **1–0** ⚠️ | 1.63 | 63% · 23% · 14% | 2–0 |
+| Ecuador – Curaçao | **1–0** ⚠️ | 1.72 | 67% · 22% · 11% | 2–0 |
+| Ivory Coast – Curaçao | **2–1** ⚠️ | 1.15 | 43% · 25% · 32% | 1–1 |
 
 **Group F**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Netherlands – Japan | **2–1** ⚠️ | 1.13 | 43% · 23% · 34% | 1–1 |
-| Netherlands – Sweden | **3–1** ⚠️ | 1.95 | 84% · 11% · 5.8% | 3–0 |
-| Netherlands – Tunisia | **2–1** | 1.56 | 62% · 21% · 17% | 2–1 |
-| Japan – Sweden | **2–0** ⚠️ | 1.88 | 79% · 13% · 7.5% | 3–0 |
-| Japan – Tunisia | **2–1** ⚠️ | 1.46 | 57% · 24% · 20% | 1–1 |
-| Sweden – Tunisia | **1–2** ⚠️ | 1.47 | 19% · 24% · 57% | 1–1 |
+| Netherlands – Japan | **1–2** ⚠️ | 1.10 | 35% · 23% · 41% | 1–1 |
+| Netherlands – Sweden | **3–1** ⚠️ | 1.74 | 73% · 16% · 11% | 2–1 |
+| Netherlands – Tunisia | **2–0** | 1.86 | 77% · 15% · 8.1% | 2–0 |
+| Japan – Sweden | **2–0** | 1.77 | 74% · 16% · 10% | 2–0 |
+| Japan – Tunisia | **2–0** | 1.89 | 78% · 15% · 7.3% | 2–0 |
+| Sweden – Tunisia | **2–1** ⚠️ | 1.20 | 45% · 27% · 29% | 1–1 |
 
 **Group G**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Belgium – IR Iran | **2–1** | 1.42 | 56% · 21% · 23% | 2–1 |
-| Belgium – Egypt | **2–1** ⚠️ | 1.40 | 55% · 22% · 23% | 1–1 |
-| Belgium – New Zealand | **2–1** | 1.52 | 63% · 17% · 20% | 2–1 |
-| IR Iran – Egypt | **0–1** ⚠️ | 1.01 | 35% · 28% · 36% | 1–1 |
-| IR Iran – New Zealand | **2–1** ⚠️ | 1.09 | 41% · 24% · 35% | 1–1 |
-| Egypt – New Zealand | **2–1** ⚠️ | 1.11 | 41% · 24% · 34% | 1–1 |
+| Belgium – IR Iran | **2–1** ⚠️ | 1.16 | 44% · 24% · 32% | 1–1 |
+| Belgium – Egypt | **2–1** | 1.70 | 70% · 17% · 13% | 2–1 |
+| Belgium – New Zealand | **3–1** ⚠️ | 1.76 | 74% · 16% · 11% | 2–1 |
+| IR Iran – Egypt | **2–1** ⚠️ | 1.56 | 62% · 22% · 16% | 1–1 |
+| IR Iran – New Zealand | **2–1** | 1.63 | 65% · 20% · 14% | 2–1 |
+| Egypt – New Zealand | **2–1** ⚠️ | 1.09 | 40% · 26% · 34% | 1–1 |
 
 **Group H**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Spain – Uruguay | **1–0** ⚠️ | 1.60 | 63% · 22% · 15% | 2–0 |
-| Spain – Cabo Verde | **3–0** | 2.11 | 90% · 7.0% · 2.7% | 3–0 |
-| Spain – Saudi Arabia | **3–0** ⚠️ | 2.12 | 91% · 6.2% · 2.4% | 4–0 |
-| Uruguay – Cabo Verde | **1–0** ⚠️ | 1.64 | 64% · 22% · 13% | 2–0 |
-| Uruguay – Saudi Arabia | **1–0** ⚠️ | 1.66 | 66% · 21% · 13% | 2–0 |
-| Cabo Verde – Saudi Arabia | **2–1** ⚠️ | 1.03 | 38% · 26% · 36% | 1–1 |
+| Spain – Uruguay | **2–1** ⚠️ | 1.56 | 61% · 23% · 16% | 1–1 |
+| Spain – Cabo Verde | **3–0** | 2.13 | 92% · 6.3% · 2.2% | 3–0 |
+| Spain – Saudi Arabia | **2–0** | 1.96 | 81% · 13% · 5.7% | 2–0 |
+| Uruguay – Cabo Verde | **2–0** | 1.74 | 70% · 20% · 11% | 2–0 |
+| Uruguay – Saudi Arabia | **1–0** | 1.48 | 55% · 27% · 18% | 1–0 |
+| Cabo Verde – Saudi Arabia | **0–1** ⚠️ | 1.30 | 24% · 27% · 48% | 1–1 |
 
 **Group I**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| France – Senegal | **2–1** ⚠️ | 1.36 | 53% · 24% · 23% | 1–1 |
-| France – Norway | **2–1** ⚠️ | 1.60 | 67% · 16% · 17% | 3–1 |
-| France – Iraq | **2–0** ⚠️ | 1.90 | 80% · 13% · 7.1% | 3–0 |
-| Senegal – Norway | **2–1** ⚠️ | 1.22 | 48% · 22% · 30% | 1–1 |
-| Senegal – Iraq | **2–1** ⚠️ | 1.60 | 64% · 21% · 15% | 2–0 |
-| Norway – Iraq | **2–1** | 1.52 | 62% · 18% · 20% | 2–1 |
+| France – Senegal | **2–1** | 1.58 | 63% · 21% · 16% | 2–1 |
+| France – Norway | **3–1** ⚠️ | 1.73 | 73% · 16% · 12% | 2–1 |
+| France – Iraq | **2–0** | 1.84 | 76% · 16% · 8.5% | 2–0 |
+| Senegal – Norway | **2–1** ⚠️ | 1.19 | 46% · 23% · 32% | 1–1 |
+| Senegal – Iraq | **2–1** ⚠️ | 1.36 | 52% · 24% · 23% | 1–1 |
+| Norway – Iraq | **2–1** ⚠️ | 1.24 | 47% · 23% · 29% | 1–1 |
 
 **Group J**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Argentina – Austria | **2–1** | 1.59 | 64% · 21% · 16% | 2–1 |
-| Argentina – Algeria | **2–1** ⚠️ | 1.73 | 72% · 17% · 11% | 2–0 |
-| Argentina – Jordan | **2–0** | 1.99 | 82% · 13% · 5.2% | 2–0 |
-| Austria – Algeria | **2–1** ⚠️ | 1.21 | 46% · 23% · 31% | 1–1 |
-| Austria – Jordan | **2–1** ⚠️ | 1.57 | 62% · 22% · 16% | 1–1 |
-| Algeria – Jordan | **2–1** ⚠️ | 1.43 | 56% · 23% · 21% | 1–1 |
+| Argentina – Austria | **2–1** | 1.61 | 65% · 19% · 15% | 2–1 |
+| Argentina – Algeria | **2–0** ⚠️ | 1.88 | 79% · 13% · 7.4% | 3–0 |
+| Argentina – Jordan | **2–1** ⚠️ | 1.71 | 70% · 18% · 12% | 2–0 |
+| Austria – Algeria | **2–1** | 1.39 | 55% · 22% · 23% | 2–1 |
+| Austria – Jordan | **2–1** ⚠️ | 1.17 | 44% · 25% · 31% | 1–1 |
+| Algeria – Jordan | **1–2** ⚠️ | 1.22 | 29% · 25% · 46% | 1–1 |
 
 **Group K**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Portugal – Colombia | **2–1** ⚠️ | 1.14 | 44% · 22% · 34% | 1–1 |
-| Portugal – Uzbekistan | **2–1** | 1.68 | 69% · 17% · 13% | 2–1 |
-| Portugal – DR Congo | **3–1** | 1.75 | 74% · 15% · 11% | 3–1 |
-| Colombia – Uzbekistan | **2–1** ⚠️ | 1.54 | 61% · 23% · 17% | 1–1 |
-| Colombia – DR Congo | **2–1** | 1.62 | 65% · 20% · 15% | 2–1 |
-| Uzbekistan – DR Congo | **2–1** ⚠️ | 1.07 | 39% · 27% · 34% | 1–1 |
+| Portugal – Colombia | **2–1** ⚠️ | 1.06 | 40% · 23% · 37% | 1–1 |
+| Portugal – Uzbekistan | **2–1** ⚠️ | 1.46 | 57% · 22% · 20% | 1–1 |
+| Portugal – DR Congo | **3–1** | 1.83 | 78% · 13% · 9.1% | 3–1 |
+| Colombia – Uzbekistan | **2–1** ⚠️ | 1.41 | 54% · 24% · 21% | 1–1 |
+| Colombia – DR Congo | **2–0** | 1.78 | 74% · 16% · 10% | 2–0 |
+| Uzbekistan – DR Congo | **2–1** ⚠️ | 1.40 | 54% · 25% · 22% | 1–1 |
 
 **Group L**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| England – Croatia | **2–1** ⚠️ | 1.43 | 55% · 24% · 21% | 1–1 |
-| England – Ghana | **2–0** ⚠️ | 1.90 | 80% · 13% · 7.0% | 3–0 |
-| England – Panama | **2–0** | 1.89 | 78% · 15% · 7.4% | 2–0 |
-| Croatia – Ghana | **2–1** | 1.56 | 63% · 21% · 17% | 2–1 |
-| Croatia – Panama | **2–1** ⚠️ | 1.54 | 61% · 22% · 17% | 1–1 |
-| Ghana – Panama | **2–1** ⚠️ | 1.02 | 38% · 25% · 37% | 1–1 |
+| England – Croatia | **2–1** ⚠️ | 1.34 | 51% · 24% · 24% | 1–1 |
+| England – Ghana | **2–0** ⚠️ | 1.95 | 83% · 11% · 5.8% | 3–0 |
+| England – Panama | **2–0** | 1.78 | 73% · 17% · 10.0% | 2–0 |
+| Croatia – Ghana | **2–1** | 1.73 | 72% · 16% · 12% | 2–1 |
+| Croatia – Panama | **2–1** | 1.53 | 61% · 21% · 18% | 2–1 |
+| Ghana – Panama | **1–2** ⚠️ | 1.26 | 28% · 23% · 49% | 1–1 |
 
 ## Notes
 
