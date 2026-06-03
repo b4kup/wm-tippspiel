@@ -6,7 +6,7 @@
 
 ## 🏆 Outright winner pick
 
-**Argentina** is the single most likely champion. Top picks: Argentina (23%), France (19%), Spain (18%).
+**Argentina** is the single most likely champion. Top picks: Argentina (21%), France (20%), Spain (19%).
 
 ## Group-stage match tips
 
@@ -14,9 +14,9 @@
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Mexico – South Korea | **2–1** | 1.60 | 65% · 19% · 16% | 2–1 |
-| Mexico – Czechia | **2–1** | 1.64 | 66% · 19% · 14% | 2–1 |
-| Mexico – South Africa | **2–1** ⚠️ | 1.73 | 72% · 17% · 11% | 2–0 |
+| Mexico – South Korea | **2–1** | 1.57 | 63% · 20% · 17% | 2–1 |
+| Mexico – Czechia | **2–1** | 1.61 | 65% · 19% · 15% | 2–1 |
+| Mexico – South Africa | **2–1** | 1.71 | 71% · 17% · 12% | 2–1 |
 | South Korea – Czechia | **2–1** ⚠️ | 1.09 | 41% · 24% · 35% | 1–1 |
 | South Korea – South Africa | **2–1** ⚠️ | 1.22 | 47% · 24% · 30% | 1–1 |
 | Czechia – South Africa | **2–1** ⚠️ | 1.15 | 43% · 25% · 32% | 1–1 |
@@ -25,20 +25,20 @@
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Switzerland – Canada | **2–1** ⚠️ | 1.06 | 39% · 26% · 35% | 1–1 |
+| Switzerland – Canada | **2–1** ⚠️ | 1.10 | 41% · 26% · 34% | 1–1 |
 | Switzerland – Bosnia & Herzegovina | **2–1** ⚠️ | 1.46 | 57% · 23% · 20% | 1–1 |
 | Switzerland – Qatar | **2–1** ⚠️ | 1.61 | 64% · 21% · 15% | 2–0 |
-| Canada – Bosnia & Herzegovina | **2–1** | 1.44 | 57% · 21% · 22% | 2–1 |
-| Canada – Qatar | **2–1** | 1.61 | 65% · 19% · 16% | 2–1 |
+| Canada – Bosnia & Herzegovina | **2–1** | 1.42 | 56% · 21% · 23% | 2–1 |
+| Canada – Qatar | **2–1** | 1.58 | 64% · 19% · 16% | 2–1 |
 | Bosnia & Herzegovina – Qatar | **2–1** ⚠️ | 1.22 | 46% · 24% · 30% | 1–1 |
 
 **Group C**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Brazil – Morocco | **2–1** ⚠️ | 1.28 | 49% · 24% · 27% | 1–1 |
-| Brazil – Scotland | **2–1** | 1.61 | 66% · 19% · 16% | 2–1 |
-| Brazil – Haiti | **3–1** | 1.93 | 83% · 11% · 6.3% | 3–1 |
+| Brazil – Morocco | **2–1** ⚠️ | 1.26 | 48% · 24% · 28% | 1–1 |
+| Brazil – Scotland | **2–1** | 1.59 | 65% · 19% · 16% | 2–1 |
+| Brazil – Haiti | **3–1** | 1.92 | 82% · 11% · 6.6% | 3–1 |
 | Morocco – Scotland | **2–1** ⚠️ | 1.33 | 50% · 25% · 24% | 1–1 |
 | Morocco – Haiti | **2–1** ⚠️ | 1.70 | 69% · 19% · 12% | 2–0 |
 | Scotland – Haiti | **2–1** | 1.45 | 57% · 22% · 21% | 2–1 |
@@ -48,19 +48,19 @@
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
 | Türkiye – Paraguay | **2–1** ⚠️ | 1.28 | 49% · 25% · 27% | 1–1 |
-| Türkiye – Australia | **2–1** ⚠️ | 1.39 | 54% · 22% · 23% | 1–1 |
+| Türkiye – Australia | **2–1** | 1.41 | 55% · 22% · 23% | 2–1 |
 | Türkiye – United States | **2–1** ⚠️ | 1.25 | 48% · 22% · 30% | 1–1 |
-| Paraguay – Australia | **1–0** ⚠️ | 1.09 | 40% · 28% · 32% | 1–1 |
+| Paraguay – Australia | **1–0** ⚠️ | 1.10 | 40% · 28% · 32% | 1–1 |
 | Paraguay – United States | **1–2** ⚠️ | 1.06 | 34% · 27% · 39% | 1–1 |
-| Australia – United States | **1–2** ⚠️ | 1.17 | 31% · 25% · 44% | 1–1 |
+| Australia – United States | **1–2** ⚠️ | 1.19 | 30% · 25% · 45% | 1–1 |
 
 **Group E**
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Germany – Ecuador | **2–1** ⚠️ | 1.03 | 38% · 25% · 37% | 1–1 |
-| Germany – Ivory Coast | **2–1** | 1.70 | 71% · 16% · 13% | 2–1 |
-| Germany – Curaçao | **3–1** ⚠️ | 1.91 | 81% · 12% · 6.8% | 3–0 |
+| Germany – Ecuador | **1–2** ⚠️ | 1.07 | 35% · 24% · 40% | 1–1 |
+| Germany – Ivory Coast | **2–1** | 1.66 | 69% · 16% · 14% | 2–1 |
+| Germany – Curaçao | **3–1** | 1.88 | 80% · 12% · 7.7% | 3–1 |
 | Ecuador – Ivory Coast | **2–1** ⚠️ | 1.65 | 67% · 20% · 14% | 2–0 |
 | Ecuador – Curaçao | **2–0** | 1.86 | 77% · 15% · 8.0% | 2–0 |
 | Ivory Coast – Curaçao | **2–1** ⚠️ | 1.32 | 51% · 23% · 26% | 1–1 |
@@ -70,10 +70,10 @@
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
 | Netherlands – Japan | **2–1** ⚠️ | 1.26 | 49% · 23% · 29% | 1–1 |
-| Netherlands – Sweden | **2–1** | 1.70 | 71% · 17% · 13% | 2–1 |
-| Netherlands – Tunisia | **2–0** | 1.87 | 78% · 14% · 7.8% | 2–0 |
-| Japan – Sweden | **2–1** | 1.50 | 60% · 21% · 19% | 2–1 |
-| Japan – Tunisia | **2–1** ⚠️ | 1.67 | 68% · 20% · 13% | 2–0 |
+| Netherlands – Sweden | **2–1** | 1.68 | 69% · 17% · 13% | 2–1 |
+| Netherlands – Tunisia | **2–0** | 1.84 | 76% · 15% · 8.4% | 2–0 |
+| Japan – Sweden | **2–1** ⚠️ | 1.47 | 58% · 22% · 20% | 1–1 |
+| Japan – Tunisia | **2–1** ⚠️ | 1.65 | 66% · 21% · 13% | 2–0 |
 | Sweden – Tunisia | **2–1** ⚠️ | 1.25 | 47% · 27% · 26% | 1–1 |
 
 **Group G**
@@ -113,9 +113,9 @@
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| Argentina – Austria | **3–1** | 1.84 | 78% · 14% · 8.7% | 3–1 |
-| Argentina – Algeria | **3–1** ⚠️ | 1.94 | 83% · 11% · 6.0% | 3–0 |
-| Argentina – Jordan | **3–0** | 2.06 | 88% · 8.7% · 3.4% | 3–0 |
+| Argentina – Austria | **3–1** | 1.82 | 77% · 14% · 9.4% | 3–1 |
+| Argentina – Algeria | **3–1** ⚠️ | 1.92 | 82% · 11% · 6.5% | 3–0 |
+| Argentina – Jordan | **3–0** | 2.05 | 87% · 9.0% · 3.7% | 3–0 |
 | Austria – Algeria | **2–1** ⚠️ | 1.19 | 45% · 23% · 31% | 1–1 |
 | Austria – Jordan | **2–1** ⚠️ | 1.44 | 56% · 23% · 21% | 1–1 |
 | Algeria – Jordan | **2–1** ⚠️ | 1.29 | 49% · 25% · 26% | 1–1 |
@@ -135,12 +135,12 @@
 
 | Match | Tip | E[pts] | Win–Draw–Loss | Most likely |
 |-------|:---:|-------:|:-------------:|:-----------:|
-| England – Croatia | **2–1** ⚠️ | 1.35 | 52% · 24% · 24% | 1–1 |
-| England – Ghana | **2–0** | 1.83 | 77% · 14% · 8.7% | 2–0 |
-| England – Panama | **2–0** | 1.83 | 76% · 16% · 8.9% | 2–0 |
-| Croatia – Ghana | **2–1** | 1.56 | 62% · 21% · 17% | 2–1 |
+| England – Croatia | **2–1** ⚠️ | 1.32 | 51% · 24% · 25% | 1–1 |
+| England – Ghana | **3–1** ⚠️ | 1.91 | 81% · 12% · 6.8% | 3–0 |
+| England – Panama | **2–0** | 1.80 | 74% · 16% · 9.4% | 2–0 |
+| Croatia – Ghana | **2–1** | 1.67 | 68% · 18% · 13% | 2–1 |
 | Croatia – Panama | **2–1** ⚠️ | 1.54 | 61% · 22% · 17% | 1–1 |
-| Ghana – Panama | **2–1** ⚠️ | 1.03 | 38% · 25% · 37% | 1–1 |
+| Ghana – Panama | **1–2** ⚠️ | 1.14 | 32% · 25% · 43% | 1–1 |
 
 ## Notes
 
