@@ -35,6 +35,8 @@ def main(argv=None):
                     help="count a correct non-exact draw as a goal-difference hit")
     ap.add_argument("--sims", type=int, default=20000,
                     help="sims for the outright-winner pick (0 to skip)")
+    ap.add_argument("--no-injuries", action="store_true",
+                    help="ignore data/injuries.csv (full-strength ratings)")
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--out", default=os.path.join("output", "tipps.md"))
     ap.add_argument("--save-tips", metavar="PATH",
@@ -62,7 +64,7 @@ def main(argv=None):
             "- **Bonus questions** are worth **10 points** each — separate from "
             "per-match scoring, so they don't change the optimal tips above, but "
             "they're high-value: answer them.")
-    teams = load_teams()
+    teams = load_teams(injuries=not args.no_injuries)
     groups = groups_from_teams(teams)
 
     champion_top = None

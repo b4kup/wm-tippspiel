@@ -51,11 +51,25 @@ unless you choose to anchor to it).
 Enter the **decimal** odds (e.g. `5.5`), not fractional/American. Leave blank if
 unknown.
 
-## 4. Squad / availability adjustments (manual)
+## 4. Squad / availability adjustments → `data/injuries.csv`
 
-No public feed captures injuries and call-ups cleanly. Just before the
-tournament, nudge a team's `elo` (or `attack`/`defense`) down for a major
-absence (e.g. a key striker out → lower `attack`). Recent squad lists:
+No public feed captures injuries and call-ups cleanly, so this is a curated
+file. Rather than hand-editing `teams.csv`, add one row per absence to
+[`data/injuries.csv`](data/injuries.csv) and `src/injuries.py` folds it into the
+ratings at load time (applied by default; `--no-injuries` disables it). This
+keeps the baseline strength snapshot clean and the availability hit auditable.
+
+Each row needs:
+
+| Column | Values | Effect |
+|--------|--------|--------|
+| `position` | `FWD` / `MID` / `DEF` / `GK` | where the hit lands: forwards cost **attack**, defenders/keepers cost **defense**, midfielders split |
+| `importance` | `talisman` / `star` / `key` / `squad` | size of the hit (Elo-equivalent if fully out: 60 / 40 / 22 / 10) |
+| `status` | `out` / `doubtful` / `questionable` | scales the hit (×1.0 / ×0.5 / ×0.25); set `fit` once a player recovers |
+
+Tune the constants at the top of `src/injuries.py` if you disagree with the
+weights. Injury trackers and squad lists:
+- ESPN injuries tracker: https://www.espn.com/soccer/story/_/id/48572979
 - ESPN squad tracker: https://www.espn.com/soccer/story/_/id/48757621
 - Olympics.com squads: https://www.olympics.com/en/news/2026-fifa-world-cup-football-teams-squads-players-complete-list
 

@@ -29,9 +29,12 @@ documented snapshot, not a feed.
   Instead of eyeballing, *fit* attack/defense by regressing historical goals on
   opponent strength + venue. Produces estimated parameters **with confidence
   intervals** (feeds §4 uncertainty).
-- **Squad-availability adjustments** — ⭐⭐ / 🔨🔨
-  Aggregate the called-up squad's market values / minutes (Transfermarkt) and
-  nudge ratings for injuries and absences just before kickoff.
+- **Squad-availability adjustments** — ⭐⭐ / 🔨🔨 — ✅ **DONE**
+  `data/injuries.csv` + `src/injuries.py` nudge a team's attack/defense/Elo down
+  for injured/absent players (position decides whether attack or defense takes
+  the hit; status scales it). Applied by default at load time and shown in the
+  predictions report; `--no-injuries` runs full strength. *Still TODO:* drive it
+  from a squad-value/minutes feed (Transfermarkt) instead of a curated list.
 - **Confederation strength priors** — ⭐⭐ / 🔨🔨
   AFC/CONCACAF/OFC sides are systematically mis-rated vs UEFA/CONMEBOL.
   Calibrate a per-confederation correction from inter-confederation history.

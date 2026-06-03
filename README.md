@@ -109,10 +109,25 @@ The tournament structure is the real 48-team format: 12 groups of 4, then the
 top 2 of each group plus the 8 best third-placed teams into a Round of 32 and a
 single-elimination bracket to the final.
 
+### Injuries & availability
+
+Strength ratings describe a side at *full strength*; tournaments are played by
+whoever is fit. [`data/injuries.csv`](data/injuries.csv) lists current absences
+(player, position, how big a loss they are, and whether they're `out` /
+`doubtful` / `questionable`), and `src/injuries.py` folds them into the ratings
+before every run: a forward out dents the team's **attack**, a defender or
+keeper out worsens its **defense**, scaled by how likely the player is to miss.
+It's applied by default — the predictions report shows the adjustments in an
+**Injuries & availability** table — and `--no-injuries` turns it off for a
+full-strength run. Update the CSV as news breaks; it never touches the baseline
+ratings in `teams.csv`.
+
 ```
-data/teams.csv          team ratings (the inputs you tweak)
+data/teams.csv          team ratings at full strength (the inputs you tweak)
+data/injuries.csv       current absences, folded into the ratings at load time
 data/derive_ratings.py  generates attack/defense from Elo + style; rewrites teams.csv
 data/bracket.py         knockout bracket structure (editable config)
+src/injuries.py         availability layer: injuries -> attack/defense/Elo nudges
 src/model.py            match model: ratings -> expected goals -> scoreline
 src/tournament.py       groups, third-place selection, knockout
 src/simulate.py         Monte Carlo driver
@@ -137,5 +152,6 @@ which columns to fill. You can also re-tune the model constants in
   third-place cluster codes and tree (`data/bracket.py`). The specific
   third-placed team filling each slot depends on the qualifying groups and is
   resolved by a constraint-respecting matching.
-- No model captures injuries, red cards, or a hot goalkeeper. These are
+- Known injuries are folded in from `data/injuries.csv`, but no model captures
+  in-tournament red cards, momentum, or a hot goalkeeper. These are
   probabilities, not prophecies.

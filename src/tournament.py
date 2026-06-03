@@ -30,7 +30,14 @@ class Team:
     polymarket_prob: float | None = None   # real-money implied probability (%)
 
 
-def load_teams(path: str | None = None) -> list[Team]:
+def load_teams(path: str | None = None, *, injuries: bool = True,
+               injuries_path: str | None = None) -> list[Team]:
+    """Load team ratings from CSV.
+
+    By default the squad-availability layer in data/injuries.csv is applied on
+    top of the baseline strength snapshot (see src/injuries.py); pass
+    `injuries=False` for a full-strength run.
+    """
     path = path or os.path.join(DATA_DIR, "teams.csv")
     teams: list[Team] = []
     with open(path, newline="", encoding="utf-8") as fh:
@@ -47,6 +54,9 @@ def load_teams(path: str | None = None) -> list[Team]:
                 market_decimal_odds=float(odds) if odds else None,
                 polymarket_prob=float(poly) if poly else None,
             ))
+    if injuries:
+        from .injuries import apply_injuries
+        teams = apply_injuries(teams, path=injuries_path)
     return teams
 
 

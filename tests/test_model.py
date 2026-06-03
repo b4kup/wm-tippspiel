@@ -139,6 +139,49 @@ def test_results_scoring_and_conditioning():
     assert tuned["Uruguay"].elo < by["Uruguay"].elo
 
 
+def test_injuries_layer_adjusts_ratings():
+    from src.injuries import Injury, apply_injuries, load_injuries, team_adjustments
+
+    # The shipped tracker loads and every team named is a real World Cup side.
+    injuries = load_injuries()
+    assert injuries, "expected data/injuries.csv to contain absences"
+    valid = {t.name for t in load_teams(injuries=False)}
+    assert all(i.team in valid for i in injuries), "unknown team in injuries.csv"
+
+    # A forward out dents attack and barely touches defence; a keeper out
+    # worsens defence and barely touches attack. Direction matters.
+    fwd = team_adjustments([Injury("X", "Striker", "FWD", "star", "out")])["X"]
+    assert fwd.attack_mult < 1.0 and fwd.defense_mult > 1.0
+    assert (1 - fwd.attack_mult) > (fwd.defense_mult - 1)        # attack hit larger
+    gk = team_adjustments([Injury("X", "Keeper", "GK", "star", "out")])["X"]
+    assert gk.attack_mult == 1.0 and gk.defense_mult > 1.0
+
+    # A "doubtful" player counts for less than the same player "out".
+    out = team_adjustments([Injury("X", "P", "MID", "key", "out")])["X"]
+    doubt = team_adjustments([Injury("X", "P", "MID", "key", "doubtful")])["X"]
+    assert out.attack_mult < doubt.attack_mult < 1.0
+
+    # Applying the layer weakens an affected side; toggling it off restores it.
+    full = {t.name: t for t in load_teams(injuries=False)}
+    hurt = {t.name: t for t in apply_injuries(list(full.values()),
+                                              [Injury("Spain", "Yamal", "FWD",
+                                                      "star", "out")])}
+    assert hurt["Spain"].attack < full["Spain"].attack
+    assert hurt["Spain"].elo < full["Spain"].elo
+    # Unaffected teams are untouched.
+    assert hurt["Haiti"].attack == full["Haiti"].attack
+
+
+def test_load_teams_injuries_toggle():
+    # The default load applies injuries, so at least one shipped side is weaker
+    # than its full-strength rating; --no-injuries restores it exactly.
+    full = {t.name: t for t in load_teams(injuries=False)}
+    adj = {t.name: t for t in load_teams()}
+    assert any(adj[n].attack < full[n].attack - 1e-9 or
+               adj[n].defense > full[n].defense + 1e-9 for n in full)
+    assert adj["Brazil"].attack < full["Brazil"].attack    # Rodrygo & co. out
+
+
 def test_conditioning_uses_real_group_score():
     import random
     from src.results import MatchResult, Results

@@ -28,8 +28,34 @@ def _sorted_by(counter: dict, stats: Stats, names: list[str]) -> list[tuple[str,
                   key=lambda kv: kv[1], reverse=True)
 
 
+def _append_injury_section(L: list[str], injuries) -> None:
+    """List the squad-availability adjustments folded into the ratings."""
+    if not injuries:
+        return
+    from .injuries import team_adjustments
+
+    adj = team_adjustments(injuries)
+    L.append("## 🩹 Injuries & availability\n")
+    L.append("Current absences nudge the affected teams' attack/defense ratings "
+             "(see `data/injuries.csv`; run with `--no-injuries` for full "
+             "strength). A forward out dents **attack**; a defender or keeper out "
+             "worsens **defense**.\n")
+    L.append("| Team | Att | Def | Out / doubtful |")
+    L.append("|------|----:|----:|:---------------|")
+    for team in sorted(adj, key=lambda t: adj[t].elo_delta):
+        a = adj[team]
+        players = ", ".join(
+            i.player + ("" if i.status.lower() == "out" else f" ({i.status})")
+            for i in sorted(a.injuries, key=lambda i: -i.elo_loss))
+        L.append(f"| {team} | {(a.attack_mult - 1) * 100:+.0f}% "
+                 f"| {(a.defense_mult - 1) * 100:+.0f}% | {players} |")
+    L.append("\n*Att/Def columns show the percentage change to each rating "
+             "(defense `+` = more goals conceded). Doubtful/questionable players "
+             "count at a reduced weight.*\n")
+
+
 def build_report(stats: Stats, groups: dict[str, list[Team]],
-                 n_sims: int, seed, params) -> str:
+                 n_sims: int, seed, params, injuries=None) -> str:
     teams = [t for g in groups.values() for t in g]
     by_name = {t.name: t for t in teams}
     names = [t.name for t in teams]
@@ -68,6 +94,9 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
              f"({_pct(fc / n_sims)} of simulations)")
     podium = ", ".join(f"{n} {_pct(p)}" for n, p in champ_sorted[:4])
     L.append(f"- **Top contenders:** {podium}\n")
+
+    # ---- Injuries / availability ----------------------------------------
+    _append_injury_section(L, injuries)
 
     # ---- Group-by-group --------------------------------------------------
     L.append("## 📊 Group stage\n")
@@ -157,7 +186,9 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
         "≈ √(p(1−p)/N); the favourite's 95% interval is shown above. More "
         "`--sims` tightens it.\n"
         "- **Ratings:** derived from a June-2026 Elo strength snapshot plus a "
-        "per-team offensive/defensive style tilt (see `data/derive_ratings.py`).\n"
+        "per-team offensive/defensive style tilt (see `data/derive_ratings.py`), "
+        "then adjusted for current injuries/absences (`data/injuries.csv`, "
+        "see the Injuries section above; `--no-injuries` disables it).\n"
         "- **Tie-breakers:** group tables rank by points, goal difference, then "
         "goals for; remaining ties (and head-to-head / fair-play / drawing of "
         "lots) are approximated by a random nudge.\n")
@@ -170,6 +201,7 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
         "third-place cluster codes and tree), encoded in `data/bracket.py`. Which "
         "third-placed team fills each slot depends on the qualifying groups; it is "
         "resolved by a constraint-respecting matching.\n"
-        "- No model captures injuries, momentum, red cards or a hot goalkeeper. "
-        "Treat these as probabilities, not prophecies.\n")
+        "- Known injuries are folded in via `data/injuries.csv`, but the model "
+        "still can't capture in-tournament momentum, red cards or a hot "
+        "goalkeeper. Treat these as probabilities, not prophecies.\n")
     return "\n".join(L)

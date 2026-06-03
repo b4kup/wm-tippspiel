@@ -20,9 +20,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from dataclasses import replace
 
+from src.injuries import load_injuries
 from src.model import DEFAULT_PARAMS
 from src.report import build_report
 from src.simulate import run
+from src.tournament import load_teams
 
 
 def main(argv=None):
@@ -38,6 +40,9 @@ def main(argv=None):
     ap.add_argument("--dc-rho", type=float, default=None,
                     help="Dixon-Coles low-score correlation; 0 disables it "
                          "(default %g)" % DEFAULT_PARAMS.dc_rho)
+    ap.add_argument("--no-injuries", action="store_true",
+                    help="ignore data/injuries.csv and run every team at full "
+                         "strength (default: apply the availability layer)")
     ap.add_argument("--out", default=os.path.join("output", "predictions.md"),
                     help="output Markdown path (default output/predictions.md)")
     args = ap.parse_args(argv)
@@ -48,13 +53,19 @@ def main(argv=None):
     if args.dc_rho is not None:
         params = replace(params, dc_rho=args.dc_rho)
 
+    injuries = [] if args.no_injuries else load_injuries()
+    teams = load_teams(injuries=not args.no_injuries)
+
     print(f"Simulating the 2026 World Cup {args.sims:,} times "
-          f"(seed {args.seed}, rating σ {params.rating_sigma_elo:g} Elo)...")
+          f"(seed {args.seed}, rating σ {params.rating_sigma_elo:g} Elo"
+          + (", injuries off" if args.no_injuries else
+             f", {len(injuries)} injuries applied") + ")...")
     t0 = time.time()
-    stats, groups = run(args.sims, params, seed=args.seed)
+    stats, groups = run(args.sims, params, seed=args.seed, teams=teams)
     elapsed = time.time() - t0
 
-    report = build_report(stats, groups, args.sims, args.seed, params)
+    report = build_report(stats, groups, args.sims, args.seed, params,
+                          injuries=injuries)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)

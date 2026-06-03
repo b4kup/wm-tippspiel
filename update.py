@@ -55,6 +55,8 @@ def main(argv=None):
     ap.add_argument("--risk", default="safe", choices=("safe", "aggressive"),
                     help="tip strategy for upcoming matches (default safe)")
     ap.add_argument("--sims", type=int, default=30000)
+    ap.add_argument("--no-injuries", action="store_true",
+                    help="ignore data/injuries.csv (full-strength ratings)")
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--results", default=os.path.join(DATA_DIR, "results.csv"))
     ap.add_argument("--tips", default=os.path.join(DATA_DIR, "our_tips.csv"))
@@ -62,7 +64,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     rule = PRESETS[args.preset]
-    teams = load_teams()
+    teams = load_teams(injuries=not args.no_injuries)
     results = load_results(args.results)
     groups_base = groups_from_teams(teams)
 
