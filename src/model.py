@@ -54,6 +54,13 @@ class ModelParams:
     # (more low-scoring games and draws), matching real football. Set 0 to
     # disable (pure independent Poisson). Typical range ~[-0.15, 0].
     dc_rho: float = -0.0885
+    # Travel/rest/altitude fatigue weights. The tired side scores less and
+    # concedes more (applied as a differential between the two teams). Defaults
+    # are conservative reads of the sports-science literature; set any to 0 to
+    # disable that channel. See src/travel.py.
+    travel_per_1000km: float = 0.002      # ~0.2% goals per 1000 km flown
+    rest_day_value: float = 0.010         # ~1% goals per missing rest day
+    altitude_per_1000m: float = 0.040     # ~4% goals per 1000 m above 1500 m
 
 
 DEFAULT_PARAMS = ModelParams()
@@ -80,8 +87,14 @@ def win_expectancy(elo_a: float, elo_b: float) -> float:
     return 1.0 / (1.0 + 10 ** (-(elo_a - elo_b) / 400.0))
 
 
-def expected_goals(team_a, team_b, p: ModelParams = DEFAULT_PARAMS):
-    """Return (lambda_a, lambda_b): expected goals for each team."""
+def expected_goals(team_a, team_b, p: ModelParams = DEFAULT_PARAMS,
+                   fatigue_a: float = 0.0, fatigue_b: float = 0.0):
+    """Return (lambda_a, lambda_b): expected goals for each team.
+
+    `fatigue_a` / `fatigue_b` are small non-negative scalars (typically 0-0.05)
+    summarising the team's travel / short-rest / altitude burden going into
+    this match. Applied as a *differential*: the fresher side scores more and
+    concedes less, so two equally-tired teams play a normal game."""
     la = team_a.attack * team_b.defense / p.lg_avg
     lb = team_b.attack * team_a.defense / p.lg_avg
     if team_a.name in HOSTS:
@@ -90,6 +103,10 @@ def expected_goals(team_a, team_b, p: ModelParams = DEFAULT_PARAMS):
     if team_b.name in HOSTS:
         lb *= p.host_attack_mult
         la *= p.host_defense_mult
+    if fatigue_a != 0.0 or fatigue_b != 0.0:
+        diff = fatigue_a - fatigue_b
+        la *= math.exp(-diff)     # team_a tired -> scores less
+        lb *= math.exp(diff)      # team_a tired -> concedes more
     return max(p.min_lambda, la), max(p.min_lambda, lb)
 
 
@@ -132,9 +149,10 @@ def _sample_goals(la: float, lb: float, rng: random.Random, rho: float):
 
 
 def simulate_match(team_a, team_b, rng: random.Random,
-                   p: ModelParams = DEFAULT_PARAMS):
+                   p: ModelParams = DEFAULT_PARAMS,
+                   fatigue_a: float = 0.0, fatigue_b: float = 0.0):
     """Simulate a group match. Returns (goals_a, goals_b)."""
-    la, lb = expected_goals(team_a, team_b, p)
+    la, lb = expected_goals(team_a, team_b, p, fatigue_a, fatigue_b)
     return _sample_goals(la, lb, rng, p.dc_rho)
 
 

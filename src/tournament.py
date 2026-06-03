@@ -90,13 +90,28 @@ def _rank_key(row: GroupRow, rng: random.Random):
 
 
 def play_group(teams: list[Team], rng: random.Random,
-               p: ModelParams, results=None) -> list[GroupRow]:
+               p: ModelParams, results=None, fatigues=None) -> list[GroupRow]:
     """Round-robin a group, return rows sorted best-first. Matches already in
-    `results` use their real scoreline instead of being simulated."""
+    `results` use their real scoreline instead of being simulated.
+
+    `fatigues` is the pre-computed map from `src/travel.compute_match_fatigues`;
+    when present, each match's expected goals are nudged by travel / rest /
+    altitude carryover for the two sides."""
     rows = {t.name: GroupRow(t) for t in teams}
     for a, b in combinations(teams, 2):
         actual = results.group_score(a.name, b.name) if results else None
-        ga, gb = actual if actual is not None else simulate_match(a, b, rng, p)
+        fa = fb = 0.0
+        if fatigues is not None:
+            from .travel import lookup_fatigue, fatigue_score
+            pair = lookup_fatigue(fatigues, a.name, b.name)
+            if pair is not None:
+                ta, tb = pair
+                fa = fatigue_score(ta, p.travel_per_1000km, p.rest_day_value,
+                                   p.altitude_per_1000m)
+                fb = fatigue_score(tb, p.travel_per_1000km, p.rest_day_value,
+                                   p.altitude_per_1000m)
+        ga, gb = actual if actual is not None else simulate_match(
+            a, b, rng, p, fatigue_a=fa, fatigue_b=fb)
         ra, rb = rows[a.name], rows[b.name]
         ra.gf += ga; ra.ga += gb
         rb.gf += gb; rb.ga += ga

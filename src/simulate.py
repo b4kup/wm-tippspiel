@@ -42,7 +42,8 @@ class Stats:
         return counter[name] / self.n if self.n else 0.0
 
 
-def simulate_tournament_once(groups, rng, p, stats: Stats, results=None):
+def simulate_tournament_once(groups, rng, p, stats: Stats, results=None,
+                             fatigues=None):
     winners_by_group, runners_by_group = {}, {}
     third_entries = []  # (group_letter, Team)
 
@@ -54,7 +55,7 @@ def simulate_tournament_once(groups, rng, p, stats: Stats, results=None):
                   for letter, teams in groups.items()}
 
     for letter, teams in groups.items():
-        table = play_group(teams, rng, p, results)
+        table = play_group(teams, rng, p, results, fatigues=fatigues)
         winner, runner, third = table[0].team, table[1].team, table[2]
         winners_by_group[letter] = winner
         runners_by_group[letter] = runner
@@ -98,12 +99,20 @@ def simulate_tournament_once(groups, rng, p, stats: Stats, results=None):
 
 
 def run(n_sims: int, params: ModelParams, seed: int | None = None,
-        teams: list[Team] | None = None, results=None) -> tuple[Stats, dict]:
+        teams: list[Team] | None = None, results=None,
+        travel: bool = True) -> tuple[Stats, dict]:
     from .tournament import load_teams
     rng = random.Random(seed)
     teams = teams or load_teams()
     groups = groups_from_teams(teams)
+    fatigues = None
+    if travel:
+        try:
+            from .travel import compute_match_fatigues
+            fatigues = compute_match_fatigues()
+        except FileNotFoundError:
+            fatigues = None
     stats = Stats(n=n_sims)
     for _ in range(n_sims):
-        simulate_tournament_once(groups, rng, params, stats, results)
+        simulate_tournament_once(groups, rng, params, stats, results, fatigues)
     return stats, groups

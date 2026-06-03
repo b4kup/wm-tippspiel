@@ -28,6 +28,54 @@ def _sorted_by(counter: dict, stats: Stats, names: list[str]) -> list[tuple[str,
                   key=lambda kv: kv[1], reverse=True)
 
 
+def _append_travel_section(L: list[str], team_names: list[str]) -> None:
+    """Per-team group-stage travel + altitude exposure."""
+    try:
+        from .travel import (load_schedule, load_venues, total_travel_per_team,
+                             ALTITUDE_ACCLIMATED_TEAMS, ALTITUDE_THRESHOLD_M)
+    except Exception:
+        return
+    try:
+        sched = load_schedule()
+        venues = load_venues()
+    except FileNotFoundError:
+        return
+    totals = total_travel_per_team(sched, venues)
+    # Altitude exposure: sum of (altitude_excess in m) across a team's matches,
+    # zero if the team is acclimated.
+    alt_exposure: dict[str, float] = {}
+    for m in sched:
+        v = venues.get(m.city)
+        if v is None:
+            continue
+        excess = max(0.0, v.altitude_m - ALTITUDE_THRESHOLD_M)
+        for t in (m.home, m.away):
+            if t in ALTITUDE_ACCLIMATED_TEAMS:
+                continue
+            alt_exposure[t] = alt_exposure.get(t, 0.0) + excess
+    rows = sorted(
+        ((t, totals.get(t, 0.0), alt_exposure.get(t, 0.0)) for t in team_names),
+        key=lambda r: -(r[1] + r[2] * 5),     # rank by combined burden
+    )
+    L.append("## ✈️ Group-stage travel & altitude burden\n")
+    L.append("Total km flown between consecutive venues and total altitude "
+             "exposure (sum of metres above 1500 m across the three group "
+             "matches; 0 for teams from highland nations). Both feed into "
+             "a small attack/defense penalty in the match where they apply.\n")
+    L.append("| Team | km | Altitude m·matches | Notes |")
+    L.append("|------|---:|-------------------:|:------|")
+    for name, km, alt in rows[:12]:
+        notes = []
+        if name in ALTITUDE_ACCLIMATED_TEAMS:
+            notes.append("altitude-acclimated")
+        if km > 4500:
+            notes.append("coast-to-coast group")
+        if alt > 2000:
+            notes.append("heavy altitude")
+        L.append(f"| {name} | {km:.0f} | {alt:.0f} | {', '.join(notes) or '—'} |")
+    L.append("")
+
+
 def _append_injury_section(L: list[str], injuries) -> None:
     """List the squad-availability adjustments folded into the ratings."""
     if not injuries:
@@ -97,6 +145,9 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
 
     # ---- Injuries / availability ----------------------------------------
     _append_injury_section(L, injuries)
+
+    # ---- Travel / rest / altitude burden --------------------------------
+    _append_travel_section(L, names)
 
     # ---- Group-by-group --------------------------------------------------
     L.append("## 📊 Group stage\n")

@@ -98,6 +98,41 @@ def test_optimal_tip_is_ev_maximal():
     assert tip[0] > tip[1]
 
 
+def test_travel_module_basic():
+    from src.travel import (compute_match_fatigues, haversine_km,
+                            ALTITUDE_ACCLIMATED_TEAMS, fatigue_score, lookup_fatigue)
+    # Haversine sanity: NYC ↔ LA ≈ 3950 km (great-circle).
+    assert 3800 < haversine_km(40.81, -74.07, 33.95, -118.34) < 4100
+    fs = compute_match_fatigues()
+    assert len(fs) == 72                              # group-stage matches
+    # Mexico City opener: Mexico (acclimated) has 0 altitude; South Africa
+    # (lowland) gets a 740 m altitude penalty.
+    pair = lookup_fatigue(fs, "Mexico", "South Africa")
+    assert pair is not None
+    mex, sa = pair
+    assert mex.altitude_excess_m == 0
+    assert sa.altitude_excess_m > 700
+    assert "Mexico" in ALTITUDE_ACCLIMATED_TEAMS
+    # Lookup order-independence.
+    pair2 = lookup_fatigue(fs, "South Africa", "Mexico")
+    assert pair2[0] is sa and pair2[1] is mex
+
+
+def test_fatigue_differential_in_expected_goals():
+    # If team_a is more tired than team_b, team_a's goals go down and team_b's
+    # up. Symmetric fatigue is a no-op.
+    teams = {t.name: t for t in load_teams()}
+    base = expected_goals(teams["Spain"], teams["Haiti"], DEFAULT_PARAMS)
+    tired_a = expected_goals(teams["Spain"], teams["Haiti"], DEFAULT_PARAMS,
+                             fatigue_a=0.05, fatigue_b=0.0)
+    assert tired_a[0] < base[0]
+    assert tired_a[1] > base[1]
+    sym = expected_goals(teams["Spain"], teams["Haiti"], DEFAULT_PARAMS,
+                        fatigue_a=0.03, fatigue_b=0.03)
+    assert abs(sym[0] - base[0]) < 1e-9
+    assert abs(sym[1] - base[1]) < 1e-9
+
+
 def test_probabilities_are_consistent():
     stats, groups = run(400, DEFAULT_PARAMS, seed=1)
     names = [t.name for g in groups.values() for t in g]
