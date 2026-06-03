@@ -103,7 +103,8 @@ def _append_injury_section(L: list[str], injuries) -> None:
 
 
 def build_report(stats: Stats, groups: dict[str, list[Team]],
-                 n_sims: int, seed, params, injuries=None) -> str:
+                 n_sims: int, seed, params, injuries=None,
+                 n_results: int = 0) -> str:
     teams = [t for g in groups.values() for t in g]
     by_name = {t.name: t for t in teams}
     names = [t.name for t in teams]
@@ -112,6 +113,11 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
     L.append("# 2026 FIFA World Cup — Statistical Predictions\n")
     L.append(f"*Generated {date.today().isoformat()} from "
              f"{n_sims:,} Monte Carlo simulations (seed `{seed}`).*\n")
+    if n_results:
+        L.append(f"> 🟢 **Live view** — conditioned on **{n_results} played "
+                 f"match{'es' if n_results != 1 else ''}** "
+                 "(`data/results.csv`). Ratings re-tuned via Elo update; "
+                 "played fixtures use their real scoreline.\n")
     L.append("> Hosts: United States · Canada · Mexico. 48 teams, 12 groups of 4. "
              "Top 2 of each group plus the 8 best third-placed teams reach the "
              "Round of 32.\n")

@@ -23,6 +23,7 @@ from dataclasses import replace
 from src.injuries import load_injuries
 from src.model import DEFAULT_PARAMS
 from src.report import build_report
+from src.results import load_results, update_ratings
 from src.simulate import run
 from src.tournament import load_teams
 
@@ -43,6 +44,11 @@ def main(argv=None):
     ap.add_argument("--no-injuries", action="store_true",
                     help="ignore data/injuries.csv and run every team at full "
                          "strength (default: apply the availability layer)")
+    ap.add_argument("--results", default=os.path.join("data", "results.csv"),
+                    help="path to results CSV (re-tune ratings + condition the "
+                         "simulation on played matches; default data/results.csv)")
+    ap.add_argument("--no-results", action="store_true",
+                    help="ignore data/results.csv entirely (pre-tournament view)")
     ap.add_argument("--out", default=os.path.join("output", "predictions.md"),
                     help="output Markdown path (default output/predictions.md)")
     ap.add_argument("--html", default=os.path.join("output", "dashboard.html"),
@@ -61,23 +67,31 @@ def main(argv=None):
     injuries = [] if args.no_injuries else load_injuries()
     teams = load_teams(injuries=not args.no_injuries)
 
+    results = None if args.no_results else load_results(args.results)
+    n_results = len(results) if results is not None else 0
+    if n_results:
+        teams = update_ratings(teams, results)
+
     print(f"Simulating the 2026 World Cup {args.sims:,} times "
           f"(seed {args.seed}, rating σ {params.rating_sigma_elo:g} Elo"
           + (", injuries off" if args.no_injuries else
-             f", {len(injuries)} injuries applied") + ")...")
+             f", {len(injuries)} injuries applied")
+          + (f", {n_results} results applied" if n_results else "") + ")...")
     t0 = time.time()
-    stats, groups = run(args.sims, params, seed=args.seed, teams=teams)
+    stats, groups = run(args.sims, params, seed=args.seed, teams=teams,
+                        results=results)
     elapsed = time.time() - t0
 
     report = build_report(stats, groups, args.sims, args.seed, params,
-                          injuries=injuries)
+                          injuries=injuries, n_results=n_results)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)
 
     if not args.no_html:
         from src.dashboard import build_dashboard_html
-        html = build_dashboard_html(stats, groups, params, args.sims, args.seed)
+        html = build_dashboard_html(stats, groups, params, args.sims, args.seed,
+                                    n_results=n_results)
         os.makedirs(os.path.dirname(os.path.abspath(args.html)), exist_ok=True)
         with open(args.html, "w", encoding="utf-8") as fh:
             fh.write(html)

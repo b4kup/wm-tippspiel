@@ -148,7 +148,7 @@ def _team_payload(t: Team, stats: Stats) -> dict:
 
 def _build_payload(stats: Stats, groups: dict[str, list[Team]],
                    params: ModelParams, n_sims: int, seed,
-                   rule: ScoringRule) -> dict:
+                   rule: ScoringRule, n_results: int = 0) -> dict:
     from .model import HOSTS
     teams_flat = [t for g in groups.values() for t in g]
     top_pair = max(stats.finals.items(), key=lambda kv: kv[1])
@@ -166,6 +166,7 @@ def _build_payload(stats: Stats, groups: dict[str, list[Team]],
             "min_lambda":        params.min_lambda,
             "hosts":     sorted(HOSTS),
             "rule":      rule.name,
+            "n_results": n_results,
         },
         "confed_colors": CONFED_COLORS,
         "teams":         [_team_payload(t, stats) for t in teams_flat],
@@ -291,6 +292,16 @@ h2 {
 .kpi .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 .kpi .value { font-size: 20px; font-weight: 600; margin-top: 4px; }
 .kpi .sub   { color: var(--muted); font-size: 12px; }
+.kpi.live   { border-color: var(--good); background: rgba(63, 185, 80, 0.08); }
+.kpi.live .value { color: var(--good); }
+.live-banner {
+  background: rgba(63, 185, 80, 0.10);
+  border-bottom: 1px solid var(--good);
+  color: var(--text);
+  font-size: 12.5px;
+  padding: 9px 24px;
+}
+.live-banner b { color: var(--good); }
 
 /* --- champion race --- */
 .champ-grid {
@@ -1252,9 +1263,11 @@ def _safe_json(obj) -> str:
 
 def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
                          params: ModelParams, n_sims: int, seed,
-                         rule: ScoringRule | None = None) -> str:
+                         rule: ScoringRule | None = None,
+                         n_results: int = 0) -> str:
     rule = rule or PRESETS["check24"]
-    payload = _build_payload(stats, groups, params, n_sims, seed, rule)
+    payload = _build_payload(stats, groups, params, n_sims, seed, rule,
+                             n_results=n_results)
     head = payload["headline"]
     meta = payload["meta"]
     top = sorted(payload["teams"], key=lambda t: -t["champion"])[:3]
@@ -1263,6 +1276,18 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
     body_meta = (f"{n_sims:,} sims · seed {seed} · "
                  f"σ {meta['rating_sigma']:g} Elo · ρ {meta['dc_rho']:g} · "
                  f"{meta['date']}")
+    live_banner = ""
+    live_kpi = ""
+    if n_results:
+        live_banner = (
+            f'<div class="live-banner">🟢 <b>Live view</b> — '
+            f'conditioned on <b>{n_results} played match{"es" if n_results != 1 else ""}</b> '
+            f'(data/results.csv). Ratings re-tuned via Elo update; played fixtures '
+            f'use their real scoreline in every sim.</div>')
+        live_kpi = (
+            f'<div class="kpi live"><div class="label">Live state</div>'
+            f'<div class="value">{n_results} played</div>'
+            f'<div class="sub">ratings re-tuned</div></div>')
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1276,6 +1301,7 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
   <h1><span class="accent">⚽ 2026 World Cup</span> · Interactive Predictor</h1>
   <div class="meta">{body_meta}</div>
 </header>
+{live_banner}
 <nav class="tabs">
   <button data-view="view-champion" class="active">🏆 Champion race</button>
   <button data-view="view-groups">📊 Groups</button>
@@ -1290,6 +1316,7 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
   <div class="kpi"><div class="label">Top final</div><div class="value">{head["final_a"]} vs {head["final_b"]}</div><div class="sub">{head["final_p"]*100:.1f}% of sims</div></div>
   <div class="kpi"><div class="label">Simulations</div><div class="value">{n_sims:,}</div><div class="sub">seed {seed}</div></div>
   <div class="kpi"><div class="label">Rating σ</div><div class="value">{meta["rating_sigma"]:g} Elo</div><div class="sub">Dixon–Coles ρ = {meta["dc_rho"]:g}</div></div>
+  {live_kpi}
 </div>
 
 <section id="view-champion" class="view active">
