@@ -6,7 +6,7 @@
 
 ## 🏆 Outright winner pick
 
-**Argentina** is the single most likely champion. Top picks: Argentina (21%), France (20%), Spain (19%).
+**Argentina** is the single most likely champion. Top picks: Argentina (19%), France (17%), Spain (16%).
 
 ## Group-stage match tips
 

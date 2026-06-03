@@ -28,6 +28,7 @@ class Team:
     defense: float         # expected goals conceded vs an average team (lower = better)
     market_decimal_odds: float | None = None
     polymarket_prob: float | None = None   # real-money implied probability (%)
+    shootout_skill: float = 0.5            # posterior win-rate (see src/shootout.py)
 
 
 def load_teams(path: str | None = None, *, injuries: bool = True,
@@ -57,6 +58,11 @@ def load_teams(path: str | None = None, *, injuries: bool = True,
     if injuries:
         from .injuries import apply_injuries
         teams = apply_injuries(teams, path=injuries_path)
+    # Attach per-team shootout skill (Bayesian posterior; 50% prior if no record).
+    from dataclasses import replace
+    from .shootout import load_records, skill_for
+    records = load_records()
+    teams = [replace(t, shootout_skill=skill_for(t.name, records)) for t in teams]
     return teams
 
 

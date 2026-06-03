@@ -98,6 +98,26 @@ def test_optimal_tip_is_ev_maximal():
     assert tip[0] > tip[1]
 
 
+def test_shootout_shrinkage():
+    from src.shootout import (ShootoutRecord, PRIOR_WIN_RATE, PRIOR_STRENGTH,
+                              resolve_shootout, skill_for, load_records)
+    # No record -> exactly 50/50.
+    assert skill_for("Unknown FC", {}) == PRIOR_WIN_RATE
+    # 7-1 record should land near 62.5% with α=β=8.
+    germany = ShootoutRecord("Germany", wins=7, losses=1)
+    assert 0.60 < germany.posterior_skill < 0.65
+    # 1-3 record below 50% but capped well above 0.25.
+    spain = ShootoutRecord("Spain", wins=1, losses=3)
+    assert 0.35 < spain.posterior_skill < 0.50
+    # Equal-skill teams -> exact coin flip.
+    assert not resolve_shootout(0.5, 0.5, rnd=0.5001)
+    assert resolve_shootout(0.5, 0.5, rnd=0.4999)
+    # Strong vs weak -> strong wins more often.
+    wins = sum(1 for r in (i / 1000 for i in range(1000))
+               if resolve_shootout(0.625, 0.412, r))
+    assert 580 < wins < 620   # ~60.3% expected
+
+
 def test_travel_module_basic():
     from src.travel import (compute_match_fatigues, haversine_km,
                             ALTITUDE_ACCLIMATED_TEAMS, fatigue_score, lookup_fatigue)

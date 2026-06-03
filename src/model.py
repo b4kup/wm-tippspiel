@@ -158,11 +158,18 @@ def simulate_match(team_a, team_b, rng: random.Random,
 
 def simulate_knockout(team_a, team_b, rng: random.Random,
                       p: ModelParams = DEFAULT_PARAMS):
-    """Simulate a knockout match. Returns the winning team (no draws)."""
+    """Simulate a knockout match. Returns the winning team (no draws).
+
+    A drawn 90' is resolved with the **shootout model** (see src/shootout.py):
+    a Bayesian-shrunk team-specific shootout skill, not an Elo coin flip.
+    Open-play Elo doesn't predict penalty outcomes — historical records do,
+    once shrunk toward 50% to handle small samples."""
     ga, gb = simulate_match(team_a, team_b, rng, p)
     if ga > gb:
         return team_a
     if gb > ga:
         return team_b
-    # Extra time / penalties: weight by Elo win expectancy.
-    return team_a if rng.random() < win_expectancy(team_a.elo, team_b.elo) else team_b
+    sa = getattr(team_a, "shootout_skill", 0.5)
+    sb = getattr(team_b, "shootout_skill", 0.5)
+    p_a = sa / (sa + sb) if (sa + sb) > 0 else 0.5
+    return team_a if rng.random() < p_a else team_b

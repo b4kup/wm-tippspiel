@@ -50,12 +50,23 @@ documented snapshot, not a feed.
 - **Bivariate / correlated goals** — ⭐⭐ / 🔨🔨
   Model the correlation between the two teams' goals rather than assuming
   independence.
-- **Penalty-shootout model** — ⭐⭐ / 🔨
-  ~25% of knockout games are drawn after 90'. Replace the Elo coin-flip with a
-  shootout model using teams' historical shootout records.
-- **Travel / rest / altitude / heat** — ⭐ / 🔨🔨
-  Mexico City altitude, summer heat, and rest-day asymmetry between groups are
-  small but real edges in a host-spanning tournament.
+- **Penalty-shootout model** — ⭐⭐ / 🔨 — ✅ **DONE**
+  `src/shootout.py` + `data/shootouts.csv` give each team a Bayesian-shrunk
+  posterior shootout win-rate (Beta-Binomial, α=β=8 prior at 50%). The Elo
+  coin-flip in `simulate_knockout` is replaced by `skill_a / (skill_a + skill_b)`.
+  Shrinkage caps even Germany (7-1 history) at 62.5% and Netherlands (1-5)
+  at 41% — small samples can't move the prior far. Croatia rises into the
+  top 10 (4-1 history); France/Spain drop (both rated weak at pens).
+- **Travel / rest / altitude / heat** — ⭐⭐ / 🔨🔨 — ✅ **DONE** (travel + rest + altitude)
+  `src/travel.py` + `data/schedule.csv` + `data/venues.csv` compute per-team
+  km between consecutive group venues, days since last match, and altitude
+  exposure (Mexico City 2240 m, Guadalajara 1567 m; teams from highland
+  nations — Mexico, Ecuador, Colombia — are unaffected). Three new
+  `ModelParams` (`travel_per_1000km`, `rest_day_value`, `altitude_per_1000m`)
+  feed an asymmetric fatigue differential into `expected_goals`: the tired
+  side scores less and concedes more. *Still TODO:* heat (Miami/Houston in
+  summer) and a KO-stage extension that re-computes carryover per sim once
+  the bracket fills in.
 - **Time-varying form** — ⭐ / 🔨🔨
   Weight recent results more heavily; let strength drift over a campaign.
 
