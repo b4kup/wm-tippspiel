@@ -21,10 +21,18 @@ Legend — Impact: ⭐ low · ⭐⭐ medium · ⭐⭐⭐ high. Effort: 🔨 smal
 The model can't be better than `data/teams.csv`. Today those numbers are a
 documented snapshot, not a feed.
 
-- **Real xG-based attack/defense** — ⭐⭐⭐ / 🔨🔨
-  Replace the Elo+style derivation with actual expected-goals-for/against over
-  recent internationals (FBref/StatsBomb), recency-weighted. This is the upgrade
-  already planned. See `DATA_SOURCES.md`.
+- **Real xG-based attack/defense** — ⭐⭐⭐ / 🔨🔨 — ✅ **DONE** (goals-based, xG-style follow-up TODO)
+  `src/qualifying_fit.py` blends each team's 2026 qualifying goals
+  (`data/qualifying.csv`) with the Elo+style prior, using confederation-typical
+  opponent strength to undo field-strength bias (UEFA quals include far weaker
+  opponents than the WC field; CONMEBOL is uniformly hard). Shrinkage weight
+  `N / (N + 20)` keeps small qualifying samples close to the Elo prior; 6-match
+  teams get ~23% data weight, 18-match teams ~47%. Hosts (no quals) and a
+  couple of playoff winners we couldn't source keep their Elo-derived values.
+  Effect: Spain pulls away (17.8%; 3.5 GF/match in UEFA quals); Morocco/Japan
+  enter top 9 from data signal; Germany drops out of top 10. *Still TODO:*
+  swap goals for **xG** (FBref/StatsBomb) — would handle the "Morocco
+  over-performed xG" / "Norway over-performed xG" cases better.
 - **Opponent- & venue-adjusted ratings via Poisson regression** — ⭐⭐⭐ / 🔨🔨🔨
   Instead of eyeballing, *fit* attack/defense by regressing historical goals on
   opponent strength + venue. Produces estimated parameters **with confidence

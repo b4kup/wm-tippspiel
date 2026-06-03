@@ -122,11 +122,26 @@ TEAMS = {
 def derive():
     elos = [v[2] for v in TEAMS.values()]
     elo_avg = sum(elos) / len(elos)
+    # Load qualifying GF/GA records once. Teams with no record fall back to
+    # the pure Elo+style prior (the original derivation).
+    try:
+        import sys
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from src.qualifying_fit import load_qualifying, blend
+        records = load_qualifying()
+    except Exception:
+        records = {}
+        blend = None
     rows = []
     for name, (group, confed, elo, style, odds, poly) in TEAMS.items():
         q = (elo - elo_avg) / 400.0
-        attack = LG_AVG * math.exp(K_Q * q + K_STYLE * style)
-        defense = LG_AVG * math.exp(-K_Q * q + K_STYLE * style)
+        attack_prior = LG_AVG * math.exp(K_Q * q + K_STYLE * style)
+        defense_prior = LG_AVG * math.exp(-K_Q * q + K_STYLE * style)
+        if blend is not None and records:
+            attack, defense = blend(name, attack_prior, defense_prior,
+                                    records, LG_AVG)
+        else:
+            attack, defense = attack_prior, defense_prior
         rows.append({
             "team": name,
             "group": group,
