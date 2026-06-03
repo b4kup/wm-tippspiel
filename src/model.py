@@ -30,17 +30,17 @@ from dataclasses import dataclass, replace
 HOSTS = {"United States", "Canada", "Mexico"}
 
 # Must match data/derive_ratings.py (average goals scored by one team per match).
-LG_AVG = 1.35
+LG_AVG = 1.5972
 # Must match data/derive_ratings.py: how Elo quality maps to attack/defence.
-K_Q = 0.70
+K_Q = 0.8155
 
 
 @dataclass(frozen=True)
 class ModelParams:
     lg_avg: float = LG_AVG
     # Multiplicative home edge for host nations: they score more, concede less.
-    host_attack_mult: float = 1.10
-    host_defense_mult: float = 0.92
+    host_attack_mult: float = 1.2000
+    host_defense_mult: float = 0.8500
     # Floor on a team's expected goals so even huge underdogs can score.
     min_lambda: float = 0.15
     # Std-dev (in Elo points) of each team's *true* tournament strength around
@@ -53,7 +53,7 @@ class ModelParams:
     # 1-0 and 1-1; a small negative rho pushes probability into those cells
     # (more low-scoring games and draws), matching real football. Set 0 to
     # disable (pure independent Poisson). Typical range ~[-0.15, 0].
-    dc_rho: float = -0.10
+    dc_rho: float = -0.0885
 
 
 DEFAULT_PARAMS = ModelParams()

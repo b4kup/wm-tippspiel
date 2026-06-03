@@ -79,10 +79,17 @@ documented snapshot, not a feed.
   `ModelParams.rating_sigma_elo` (default 45) and `perturb_team()`; tune with
   `--rating-sigma`. Spain now ~20% and the upset tail is fatter. The *value* of
   σ should be fixed by the backtest below.
-- **Backtest & calibrate on 2018 & 2022** — ⭐⭐⭐ / 🔨🔨
-  Score the model with log-loss / Brier against past tournaments and *fit* the
-  constants (goal scale, home edge, style weights). Turns guesses into
-  calibrated parameters and tells us whether we're actually any good.
+- **Backtest & calibrate on 2018 & 2022** — ⭐⭐⭐ / 🔨🔨 — ✅ **DONE**
+  `tune.py` + `src/backtest.py` + `src/tune.py` score the model
+  analytically (no Monte Carlo) on 2018 + 2022 outcomes with log-loss /
+  Brier, then auto-tune `lg_avg`, `K_Q`, `dc_rho`, host edges via a stdlib
+  Nelder-Mead simplex. `--apply` rewrites the default constants in
+  `src/model.py` and `data/derive_ratings.py`. Report at
+  `output/backtest.md`. Caveat: historical Elos are synthetic (FIFA-rank
+  ordering, rescaled to canonical spread) — a real eloratings.net feed
+  would tighten the fit. Host-edge bounds tend to be hit on the current
+  2-host sample (Russia 2018 overperformed, Qatar 2022 underperformed),
+  so those values are best treated as suggestive.
 - **Reliability / calibration plots** — ⭐⭐ / 🔨
   Do events we call "30%" happen ~30% of the time?
 - **Monte Carlo error bars** — ⭐ / 🔨

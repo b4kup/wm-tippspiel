@@ -45,8 +45,8 @@ import math
 import os
 
 # Calibration constants (documented in src/model.py too).
-LG_AVG = 1.35      # average goals scored by one team per match
-K_Q = 0.70         # how strongly Elo quality separates attack/defence
+LG_AVG = 1.5972    # tuned by tune.py against 2018/2022 backtest
+K_Q = 0.8155       # tuned by tune.py against 2018/2022 backtest
 K_STYLE = 0.50     # how strongly style tilts attack vs defence
 
 # team -> (group, confederation, elo, style, market_decimal_odds, polymarket_prob)
