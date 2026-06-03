@@ -45,6 +45,11 @@ def main(argv=None):
                          "strength (default: apply the availability layer)")
     ap.add_argument("--out", default=os.path.join("output", "predictions.md"),
                     help="output Markdown path (default output/predictions.md)")
+    ap.add_argument("--html", default=os.path.join("output", "dashboard.html"),
+                    help="output interactive dashboard HTML path "
+                         "(default output/dashboard.html)")
+    ap.add_argument("--no-html", action="store_true",
+                    help="skip the interactive HTML dashboard")
     args = ap.parse_args(argv)
 
     params = DEFAULT_PARAMS
@@ -70,11 +75,21 @@ def main(argv=None):
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)
 
+    if not args.no_html:
+        from src.dashboard import build_dashboard_html
+        html = build_dashboard_html(stats, groups, params, args.sims, args.seed)
+        os.makedirs(os.path.dirname(os.path.abspath(args.html)), exist_ok=True)
+        with open(args.html, "w", encoding="utf-8") as fh:
+            fh.write(html)
+
     # Console summary.
     top = sorted(((n, stats.prob(stats.champion, n)) for g in groups.values()
                   for n in (t.name for t in g)),
                  key=lambda kv: kv[1], reverse=True)[:10]
-    print(f"\nDone in {elapsed:.1f}s. Report written to {args.out}\n")
+    print(f"\nDone in {elapsed:.1f}s. Report written to {args.out}")
+    if not args.no_html:
+        print(f"Interactive dashboard at {args.html}")
+    print()
     print("Top 10 title contenders:")
     for i, (name, p) in enumerate(top, 1):
         print(f"  {i:2d}. {name:<16} {p*100:5.1f}%")

@@ -37,6 +37,12 @@ class Stats:
     group_pairs: dict = field(default_factory=lambda: defaultdict(lambda: defaultdict(int)))
     # (finalist_a, finalist_b) sorted -> count
     finals: dict = field(default_factory=lambda: defaultdict(int))
+    # Per-R32-tie occupancy. 16 ties × 2 sides = 32 slots, indexed by
+    # `tie_idx*2 + side`. Each slot maps team name -> sim count. Feeds the
+    # interactive bracket explorer in the HTML dashboard.
+    r32_slots: list = field(default_factory=lambda: [defaultdict(int) for _ in range(32)])
+    # (a, b) sorted of the two teams in a given R32 tie -> count (per tie idx).
+    r32_pairs: list = field(default_factory=lambda: [defaultdict(int) for _ in range(16)])
 
     def prob(self, counter: dict, name: str) -> float:
         return counter[name] / self.n if self.n else 0.0
@@ -81,6 +87,13 @@ def simulate_tournament_once(groups, rng, p, stats: Stats, results=None,
 
     seeded = [(resolve(a), resolve(b)) for a, b in ROUND_OF_32]
     ties = assign_thirds_to_slots(seeded, third_teams, rng)
+
+    # Record bracket occupancy before resolving the knockout.
+    for i, (a, b) in enumerate(ties):
+        stats.r32_slots[i * 2][a.name] += 1
+        stats.r32_slots[i * 2 + 1][b.name] += 1
+        pair = tuple(sorted((a.name, b.name)))
+        stats.r32_pairs[i][pair] += 1
 
     reached = run_knockout(ties, rng, p, results)
     for t in reached["R32"]:

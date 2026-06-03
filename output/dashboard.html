@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 World Cup Predictor · Interactive Dashboard</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --bg-2: #161b22;
+  --panel: #1c2230;
+  --panel-2: #232a3a;
+  --border: #2d3548;
+  --text: #e6edf3;
+  --muted: #8b95a3;
+  --accent: #f0a500;
+  --accent-2: #58a6ff;
+  --good: #3fb950;
+  --bad:  #f85149;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+header h1 .accent { color: var(--accent); }
+header .meta { color: var(--muted); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+nav.tabs {
+  display: flex;
+  padding: 0 24px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+nav.tabs button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--text); }
+nav.tabs button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+main { padding: 22px 24px 80px; max-width: 1500px; margin: 0 auto; }
+section.view { display: none; }
+section.view.active { display: block; }
+h2 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.kpi .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.kpi .value { font-size: 20px; font-weight: 600; margin-top: 4px; }
+.kpi .sub   { color: var(--muted); font-size: 12px; }
+
+/* --- champion race --- */
+.champ-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 980px) { .champ-grid { grid-template-columns: 1fr; } }
+.champ-bar {
+  display: grid;
+  grid-template-columns: 30px 130px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  padding-left: 6px;
+}
+.champ-bar:hover { background: var(--panel-2); }
+.champ-bar .rank { color: var(--muted); font-size: 12px; text-align: right; }
+.champ-bar .name { font-weight: 500; }
+.champ-bar .bar  { background: var(--bg-2); height: 14px; border-radius: 3px; overflow: hidden; position: relative; }
+.champ-bar .bar > .fill { height: 100%; transition: width 0.4s ease; }
+.champ-bar .pct  { text-align: right; font-family: ui-monospace, monospace; font-size: 12px; }
+.confed-chip {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  vertical-align: middle; margin-right: 4px;
+}
+.fl {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+               "Twemoji Mozilla", "EmojiOne Color", "Android Emoji", sans-serif;
+  font-size: 1.05em;
+  line-height: 1;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.champ-detail {
+  background: var(--panel-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  display: none;
+}
+.champ-detail.shown { display: block; }
+.champ-detail h3 { margin: 0 0 8px; font-size: 14px; }
+.funnel-wrap {
+  background: var(--bg-2);
+  border-radius: 6px;
+  padding: 12px 8px 6px;
+  margin-top: 10px;
+}
+.funnel-wrap svg { display: block; width: 100%; height: auto; }
+.funnel-wrap .funnel-baseline { stroke: rgba(255,255,255,0.08); }
+.funnel-wrap .stage-tick { stroke: rgba(255,255,255,0.25); }
+.funnel-wrap .stage-lbl { fill: var(--muted); font-size: 10px; letter-spacing: 1.2px; }
+.funnel-wrap .stage-val { fill: var(--text); font-size: 13px; font-weight: 600; }
+.funnel-wrap .drop-lbl  { fill: var(--muted); font-size: 9.5px; }
+.funnel-wrap .drop-lbl.big { fill: var(--bad); }
+.funnel-wrap .drop-lbl.ok  { fill: var(--good); }
+.funnel-wrap .funnel-poly { transition: opacity 0.25s ease; }
+.funnel-wrap .funnel-poly:hover { opacity: 1; }
+
+/* --- market table --- */
+.market-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.market-table th, .market-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); text-align: right; }
+.market-table th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.market-table td:first-child, .market-table th:first-child { text-align: left; }
+.market-table .lean-up   { color: var(--good); }
+.market-table .lean-down { color: var(--bad); }
+.market-table .lean-eq   { color: var(--muted); }
+
+/* --- groups view --- */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 14px;
+}
+.group-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+.group-card h3 { margin: 0 0 10px; font-size: 13px; color: var(--accent); letter-spacing: 1px; }
+.group-team {
+  display: grid;
+  grid-template-columns: 14px 1fr 60px 60px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13px;
+  position: relative;
+}
+.group-team:last-of-type { border-bottom: 0; }
+.group-team:hover { background: var(--panel-2); border-radius: 4px; }
+.group-team .mini-bar {
+  position: relative; height: 8px; background: var(--bg-2); border-radius: 2px; overflow: hidden;
+}
+.group-team .mini-bar > .fill {
+  position: absolute; left: 0; top: 0; bottom: 0; opacity: 0.85;
+}
+.group-team .num { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); text-align: right; }
+.group-card .pair-line {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.group-card .pair-line b { color: var(--text); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+/* --- bracket view --- */
+.bracket-controls {
+  margin-bottom: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.bracket-controls select, .bracket-controls input {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+}
+.bracket-controls .clear {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+.bracket-controls .clear:hover { color: var(--text); }
+.bracket-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 1100px) { .bracket-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .bracket-grid { grid-template-columns: 1fr; } }
+.tie {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+.tie .tie-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.tie .side {
+  margin: 4px 0;
+}
+.tie .side-row {
+  display: grid;
+  grid-template-columns: 14px 1fr 40px;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.tie .side-row:hover, .tie .side-row.highlight {
+  background: var(--panel-2);
+}
+.tie .side-row.highlight {
+  outline: 1px solid var(--accent);
+}
+.tie .side-row .nm { font-size: 12px; }
+.tie .side-row .pp { text-align: right; font-family: ui-monospace, monospace; color: var(--muted); font-size: 11px; }
+.tie .divider { text-align: center; color: var(--muted); font-size: 10px; margin: 2px 0; }
+.tie .pair-most {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* --- tipps view --- */
+.tipps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 14px;
+}
+.tipps-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.tipps-card h3 { margin: 0 0 10px; font-size: 13px; color: var(--accent); letter-spacing: 1px; }
+.tipps-match {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 12px;
+}
+.tipps-match:last-of-type { border-bottom: 0; }
+.tipps-match .matchup { font-size: 12px; }
+.tipps-match .tip-pill {
+  display: inline-block;
+  background: var(--bg-2);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.tipps-match.warn .tip-pill { background: rgba(240,165,0,0.18); color: var(--accent); }
+.tipps-match .ev { color: var(--muted); font-family: ui-monospace, monospace; font-size: 11px; text-align: right; }
+.tipps-match .wdl { font-size: 10px; color: var(--muted); font-family: ui-monospace, monospace; margin-top: 2px; }
+.tipps-card .footer {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  font-family: ui-monospace, monospace;
+}
+
+/* --- how-it-works (wiki) view --- */
+.wiki-pickers {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;
+}
+.wiki-pickers label { color: var(--muted); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.wiki-pickers select {
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 12px;
+}
+.wiki-formula {
+  background: var(--bg-2);
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+.wiki-formula .var { color: var(--accent); font-weight: 600; }
+.wiki-formula .opn { color: var(--accent-2); font-weight: 600; }
+.wiki-formula .num { color: var(--text); }
+.wiki-formula .ann { color: var(--muted); font-size: 11px; margin-left: 10px; font-style: italic; }
+.wiki-formula .arrow { color: var(--accent); font-weight: 700; }
+
+.wiki-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+}
+@media (max-width: 900px) { .wiki-grid-2 { grid-template-columns: 1fr; } }
+.wiki-sublabel { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.wiki-bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 50px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 12px;
+}
+.wiki-bar-row .lbl { color: var(--text); }
+.wiki-bar-row .num { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); text-align: right; }
+.wiki-bar-row .bar { background: var(--bg-2); height: 12px; border-radius: 2px; overflow: hidden; }
+.wiki-bar-row .bar > .fill { height: 100%; }
+.wiki-pois-row {
+  display: grid;
+  grid-template-columns: 40px 16px 1fr 50px;
+  gap: 6px;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 0;
+}
+.wiki-pois-row .k { font-family: ui-monospace, monospace; color: var(--muted); text-align: right; }
+.wiki-pois-row .dot { width: 8px; height: 8px; border-radius: 50%; }
+.wiki-pois-row .bar { background: var(--bg-2); height: 10px; border-radius: 2px; overflow: hidden; }
+.wiki-pois-row .bar > .fill { height: 100%; }
+.wiki-pois-row .pp { font-family: ui-monospace, monospace; color: var(--muted); text-align: right; font-size: 10px; }
+#wiki-heatmap svg { display: block; width: 100%; height: auto; }
+.wiki-roll {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;
+}
+.roll-btn, .roll-btn-alt {
+  background: var(--accent);
+  color: #0d1117;
+  border: 0;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.roll-btn:hover, .roll-btn-alt:hover { filter: brightness(1.1); }
+.roll-btn-alt { background: var(--accent-2); color: white; }
+.roll-last {
+  font-family: ui-monospace, monospace;
+  font-size: 22px;
+  font-weight: 600;
+  padding: 4px 14px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  letter-spacing: 2px;
+  min-width: 90px;
+  text-align: center;
+}
+.wiki-roll-tally {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.tally-card {
+  background: var(--bg-2);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.tally-lbl { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.tally-val { font-size: 22px; font-weight: 600; margin-top: 2px; font-family: ui-monospace, monospace; }
+.tally-sub { color: var(--muted); font-size: 11px; font-family: ui-monospace, monospace; }
+#wiki-flow svg, #wiki-bracket-pic svg { display: block; width: 100%; height: auto; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="accent">⚽ 2026 World Cup</span> · Interactive Predictor</h1>
+  <div class="meta">20,000 sims · seed 2026 · σ 45 Elo · ρ -0.0885 · 2026-06-03</div>
+</header>
+<nav class="tabs">
+  <button data-view="view-champion" class="active">🏆 Champion race</button>
+  <button data-view="view-groups">📊 Groups</button>
+  <button data-view="view-bracket">🪜 Bracket</button>
+  <button data-view="view-tipps">🎯 Tipps</button>
+  <button data-view="view-howto">📖 How it works</button>
+</nav>
+<main>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="label">Favourite</div><div class="value">Argentina</div><div class="sub">14.3% (±0.5% 95% CI)</div></div>
+  <div class="kpi"><div class="label">Top final</div><div class="value">Argentina vs Spain</div><div class="sub">4.1% of sims</div></div>
+  <div class="kpi"><div class="label">Simulations</div><div class="value">20,000</div><div class="sub">seed 2026</div></div>
+  <div class="kpi"><div class="label">Rating σ</div><div class="value">45 Elo</div><div class="sub">Dixon–Coles ρ = -0.0885</div></div>
+</div>
+
+<section id="view-champion" class="view active">
+  <div class="champ-grid">
+    <div class="panel">
+      <h2>Title probability</h2>
+      <div id="champ-bars"></div>
+    </div>
+    <div>
+      <div id="champ-detail" class="champ-detail"></div>
+      <div id="market-card" class="panel">
+        <h2>Model vs. de-vigged market <span style="text-transform:none; letter-spacing:0; color:var(--muted); font-weight:400">(overround <span id="market-overround"></span>)</span></h2>
+        <table class="market-table">
+          <thead id="market-thead"></thead>
+          <tbody id="market-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="view-groups" class="view">
+  <div class="panel" style="margin-bottom:14px">
+    <h2>12 groups · win-group share · top-2 advance share</h2>
+    <div style="color:var(--muted); font-size:12px">Hover a row for ratings + champion odds. The bar shows the team's <b>advance</b> probability relative to the group leader. Most likely qualifier pair shown below each group.</div>
+  </div>
+  <div id="groups-grid" class="groups-grid"></div>
+</section>
+
+<section id="view-bracket" class="view">
+  <div class="panel">
+    <h2>16 Round-of-32 ties · click a team to highlight every slot it can fill</h2>
+    <div class="bracket-controls">
+      <select id="bracket-team"></select>
+      <button id="bracket-clear" class="clear">Clear</button>
+      <span style="color:var(--muted); font-size:12px">Each tie shows the 5 most likely occupants per side and the single most-likely pairing.</span>
+    </div>
+  </div>
+  <div id="bracket-grid" class="bracket-grid"></div>
+  <div id="bracket-status"></div>
+</section>
+
+<section id="view-tipps" class="view">
+  <div class="panel" style="margin-bottom:14px">
+    <h2>CHECK24 — point-maximizing tips per group match</h2>
+    <div style="color:var(--muted); font-size:12px">
+      4 pts exact · 3 pts tendency+goal-diff (incl. non-exact draws) · 2 pts winner only.
+      <span style="color:var(--accent)"> Orange pills</span> mark matches where the EV-optimal tip differs from the most likely scoreline.
+      <b style="color:var(--text)">Expected total</b> per group sums the per-match EV.
+    </div>
+  </div>
+  <div id="tipps-grid" class="tipps-grid"></div>
+</section>
+
+<section id="view-howto" class="view">
+
+  <div class="panel">
+    <h2>The big picture · 6 steps from rating to champion</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:10px">
+      One pass of the simulator walks each team through this pipeline. The Monte Carlo just runs it 20,000 times and counts.
+    </div>
+    <div id="wiki-flow"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 1 · Two numbers per team</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:6px">
+      Every team carries an <b style="color:var(--accent)">attack</b> (expected goals vs an average team) and a
+      <b style="color:var(--accent-2)">defense</b> (expected goals conceded — <i>lower is better</i>). Derived from Elo + style + a Poisson regression on recent results.
+    </div>
+    <div id="wiki-bars"></div>
+    <div style="color:var(--muted); font-size:11px; margin-top:6px">League average λ = <b style="color:var(--text)" id="wiki-lgavg"></b> goals — that's the "average team" benchmark.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 2 · One match, one formula</h2>
+    <div class="wiki-pickers">
+      <label>Home <select id="wiki-team-a"></select></label>
+      <label>Away <select id="wiki-team-b"></select></label>
+      <button id="wiki-swap" class="clear">↔ Swap</button>
+    </div>
+    <div id="wiki-formula" class="wiki-formula"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 3 · From λ to scorelines</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:8px">
+      Each side's goals are independently drawn from a Poisson with its λ. Real football under-counts 0-0 / 1-0 / 1-1 — the
+      <b style="color:var(--text)">Dixon-Coles correction</b> (ρ = <span id="wiki-rho"></span>) bumps probability into those four cells.
+    </div>
+    <div class="wiki-grid-2">
+      <div>
+        <div class="wiki-sublabel">Poisson marginals — P(k goals)</div>
+        <div id="wiki-marginals"></div>
+      </div>
+      <div>
+        <div class="wiki-sublabel">Joint scoreline grid (Dixon-Coles applied)</div>
+        <div id="wiki-heatmap"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 4 · Roll a match</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:8px">
+      Press the button to sample <i>one</i> scoreline from that joint distribution. The simulator does this 103× per tournament (72 group matches + 31 knockouts).
+    </div>
+    <div class="wiki-roll">
+      <button id="wiki-roll-btn" class="roll-btn">🎲 Sample one match</button>
+      <button id="wiki-roll-100" class="roll-btn-alt">🎲× Sample 100</button>
+      <button id="wiki-roll-reset" class="clear">Reset</button>
+      <div id="wiki-roll-last" class="roll-last">— · —</div>
+    </div>
+    <div class="wiki-roll-tally">
+      <div class="tally-card"><div class="tally-lbl">Rolls</div><div class="tally-val" id="wiki-roll-n">0</div></div>
+      <div class="tally-card"><div class="tally-lbl">Home wins</div><div class="tally-val" id="wiki-roll-w">0</div><div class="tally-sub" id="wiki-roll-w-p">—</div></div>
+      <div class="tally-card"><div class="tally-lbl">Draws</div><div class="tally-val" id="wiki-roll-d">0</div><div class="tally-sub" id="wiki-roll-d-p">—</div></div>
+      <div class="tally-card"><div class="tally-lbl">Away wins</div><div class="tally-val" id="wiki-roll-l">0</div><div class="tally-sub" id="wiki-roll-l-p">—</div></div>
+    </div>
+    <div style="color:var(--muted); font-size:11px; margin-top:6px">
+      After enough rolls these should converge to the analytic probabilities shown in Step 3 — that's exactly what the 20,000-sim tournament does, but for every match in the bracket simultaneously.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 5 · Group → bracket → champion</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:10px">
+      Each group plays a 6-match round-robin (every pair, sampled as above). Points: 3 for a win, 1 for a draw. Top 2 of every group plus the 8 best third-placed teams (32 in total) drop into the official FIFA bracket. From there it's straight knockout; a draw at 90' is resolved by a Bayesian-shrunk penalty-shootout skill.
+    </div>
+    <div id="wiki-bracket-pic"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Step 6 · Repeat 20,000× = probabilities</h2>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:6px">
+      All of the above is <i>one</i> sample of how the tournament could play out. Run it 20,000 times, count how often each team wins the title, and the count divided by 20,000 is the title probability you see on the Champion tab.
+    </div>
+    <div style="color:var(--muted); font-size:12px; margin-top:8px">
+      Two extra layers fatten the realistic upset tail beyond a textbook Monte Carlo:
+      <ul style="margin: 6px 0 0 0; padding-left: 20px">
+        <li><b style="color:var(--text)">Rating uncertainty</b> · σ = <span id="wiki-sigma"></span> Elo. Before each tournament sim, every team's true strength is resampled from a Gaussian around its rating — a point-estimate model is over-confident in the favourites.</li>
+        <li><b style="color:var(--text)">Travel · rest · altitude</b>. The tired side scores a touch less and concedes a touch more, applied as a differential between the two sides.</li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+
+</main>
+<footer>
+  WM Tippspiel · stdlib Monte Carlo · 20,000 sims · 2026-06-03 · one self-contained HTML file (open offline)
+</footer>
+<script>
+const DATA = {"meta": {"sims": 20000, "seed": 2026, "date": "2026-06-03", "lg_avg": 1.5972, "dc_rho": -0.0885, "rating_sigma": 45.0, "host_attack_mult": 1.2, "host_defense_mult": 0.85, "min_lambda": 0.15, "hosts": ["Canada", "Mexico", "United States"], "rule": "CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)"}, "confed_colors": {"UEFA": "#4a9eff", "CONMEBOL": "#f7d038", "CONCACAF": "#ff6b6b", "CAF": "#51cf66", "AFC": "#c779f0", "OFC": "#20c997"}, "teams": [{"name": "Mexico", "group": "A", "confed": "CONCACAF", "elo": 1833.0, "attack": 1.74, "defense": 1.347, "market_odds": 81.0, "poly": null, "shootout": 0.476, "advance": 0.9287, "r16": 0.6006, "qf": 0.3039, "sf": 0.1601, "final": 0.077, "champion": 0.0346, "win_group": 0.5554}, {"name": "South Korea", "group": "A", "confed": "AFC", "elo": 1760.0, "attack": 1.886, "defense": 1.461, "market_odds": 251.0, "poly": null, "shootout": 0.524, "advance": 0.7835, "r16": 0.4113, "qf": 0.1736, "sf": 0.0677, "final": 0.0251, "champion": 0.0096, "win_group": 0.2633}, {"name": "Czechia", "group": "A", "confed": "UEFA", "elo": 1740.0, "attack": 1.562, "defense": 1.67, "market_odds": null, "poly": null, "shootout": 0.55, "advance": 0.5844, "r16": 0.241, "qf": 0.0796, "sf": 0.0236, "final": 0.0071, "champion": 0.0015, "win_group": 0.1195}, {"name": "South Africa", "group": "A", "confed": "CAF", "elo": 1700.0, "attack": 1.341, "defense": 1.823, "market_odds": null, "poly": null, "shootout": 0.526, "advance": 0.4068, "r16": 0.1324, "qf": 0.0371, "sf": 0.0084, "final": 0.0022, "champion": 0.0005, "win_group": 0.0618}, {"name": "Switzerland", "group": "B", "confed": "UEFA", "elo": 1890.0, "attack": 1.858, "defense": 1.125, "market_odds": 66.0, "poly": null, "shootout": 0.476, "advance": 0.858, "r16": 0.5208, "qf": 0.2551, "sf": 0.1165, "final": 0.0507, "champion": 0.0215, "win_group": 0.4057}, {"name": "Canada", "group": "B", "confed": "CONCACAF", "elo": 1765.0, "attack": 1.73, "defense": 1.655, "market_odds": 251.0, "poly": null, "shootout": 0.5, "advance": 0.8224, "r16": 0.4787, "qf": 0.2213, "sf": 0.0888, "final": 0.0369, "champion": 0.015, "win_group": 0.3526}, {"name": "Bosnia & Herzegovina", "group": "B", "confed": "UEFA", "elo": 1738.0, "attack": 1.593, "defense": 1.662, "market_odds": null, "poly": null, "shootout": 0.529, "advance": 0.539, "r16": 0.2296, "qf": 0.0788, "sf": 0.0212, "final": 0.0065, "champion": 0.002, "win_group": 0.1249}, {"name": "Qatar", "group": "B", "confed": "AFC", "elo": 1690.0, "attack": 1.701, "defense": 1.837, "market_odds": null, "poly": null, "shootout": 0.529, "advance": 0.5144, "r16": 0.213, "qf": 0.0722, "sf": 0.0209, "final": 0.0059, "champion": 0.0015, "win_group": 0.1168}, {"name": "Brazil", "group": "C", "confed": "CONMEBOL", "elo": 1896.0, "attack": 2.074, "defense": 1.275, "market_odds": 9.0, "poly": 8.4, "shootout": 0.522, "advance": 0.9118, "r16": 0.467, "qf": 0.2547, "sf": 0.1195, "final": 0.0498, "champion": 0.0208, "win_group": 0.4933}, {"name": "Morocco", "group": "C", "confed": "CAF", "elo": 1870.0, "attack": 1.68, "defense": 1.283, "market_odds": 51.0, "poly": null, "shootout": 0.522, "advance": 0.8329, "r16": 0.3644, "qf": 0.1707, "sf": 0.0703, "final": 0.0269, "champion": 0.0095, "win_group": 0.3166}, {"name": "Scotland", "group": "C", "confed": "UEFA", "elo": 1758.0, "attack": 1.531, "defense": 1.71, "market_odds": 151.0, "poly": null, "shootout": 0.474, "advance": 0.6244, "r16": 0.1912, "qf": 0.0645, "sf": 0.019, "final": 0.005, "champion": 0.0013, "win_group": 0.1391}, {"name": "Haiti", "group": "C", "confed": "CONCACAF", "elo": 1640.0, "attack": 1.31, "defense": 2.09, "market_odds": null, "poly": null, "shootout": 0.5, "advance": 0.3424, "r16": 0.0732, "qf": 0.016, "sf": 0.0034, "final": 0.0004, "champion": 0.0001, "win_group": 0.051}, {"name": "Türkiye", "group": "D", "confed": "UEFA", "elo": 1880.0, "attack": 2.186, "defense": 1.607, "market_odds": 67.0, "poly": null, "shootout": 0.5, "advance": 0.7253, "r16": 0.3766, "qf": 0.1627, "sf": 0.063, "final": 0.024, "champion": 0.0089, "win_group": 0.2755}, {"name": "Paraguay", "group": "D", "confed": "CONMEBOL", "elo": 1800.0, "attack": 1.345, "defense": 1.27, "market_odds": null, "poly": null, "shootout": 0.522, "advance": 0.5648, "r16": 0.2434, "qf": 0.0922, "sf": 0.0316, "final": 0.0118, "champion": 0.0036, "win_group": 0.1442}, {"name": "Australia", "group": "D", "confed": "AFC", "elo": 1760.0, "attack": 1.91, "defense": 1.158, "market_odds": 201.0, "poly": null, "shootout": 0.5, "advance": 0.819, "r16": 0.4776, "qf": 0.2361, "sf": 0.1023, "final": 0.0485, "champion": 0.0211, "win_group": 0.3849}, {"name": "United States", "group": "D", "confed": "CONCACAF", "elo": 1711.0, "attack": 1.525, "defense": 1.801, "market_odds": 63.0, "poly": null, "shootout": 0.526, "advance": 0.6375, "r16": 0.2991, "qf": 0.1192, "sf": 0.0424, "final": 0.014, "champion": 0.0049, "win_group": 0.1953}, {"name": "Germany", "group": "E", "confed": "UEFA", "elo": 1863.0, "attack": 2.394, "defense": 1.371, "market_odds": 15.0, "poly": 5.6, "shootout": 0.625, "advance": 0.9462, "r16": 0.6008, "qf": 0.3047, "sf": 0.1597, "final": 0.0765, "champion": 0.0352, "win_group": 0.5245}, {"name": "Ecuador", "group": "E", "confed": "CONMEBOL", "elo": 1910.0, "attack": 1.555, "defense": 0.919, "market_odds": 101.0, "poly": null, "shootout": 0.444, "advance": 0.9087, "r16": 0.5224, "qf": 0.2538, "sf": 0.1252, "final": 0.0571, "champion": 0.0249, "win_group": 0.3834}, {"name": "Ivory Coast", "group": "E", "confed": "CAF", "elo": 1700.0, "attack": 1.388, "defense": 1.996, "market_odds": 201.0, "poly": null, "shootout": 0.545, "advance": 0.4547, "r16": 0.1332, "qf": 0.0343, "sf": 0.0076, "final": 0.0018, "champion": 0.0005, "win_group": 0.0574}, {"name": "Curaçao", "group": "E", "confed": "CONCACAF", "elo": 1610.0, "attack": 1.181, "defense": 2.011, "market_odds": null, "poly": null, "shootout": 0.5, "advance": 0.3372, "r16": 0.0808, "qf": 0.019, "sf": 0.0034, "final": 0.0004, "champion": 0.0, "win_group": 0.0348}, {"name": "Netherlands", "group": "F", "confed": "UEFA", "elo": 1894.0, "attack": 2.376, "defense": 1.315, "market_odds": 22.0, "poly": 3.9, "shootout": 0.409, "advance": 0.9398, "r16": 0.5576, "qf": 0.3246, "sf": 0.1576, "final": 0.074, "champion": 0.0345, "win_group": 0.4376}, {"name": "Japan", "group": "F", "confed": "AFC", "elo": 1828.0, "attack": 2.285, "defense": 1.159, "market_odds": 52.0, "poly": null, "shootout": 0.476, "advance": 0.9528, "r16": 0.6001, "qf": 0.3638, "sf": 0.1899, "final": 0.0908, "champion": 0.0423, "win_group": 0.5017}, {"name": "Sweden", "group": "F", "confed": "UEFA", "elo": 1720.0, "attack": 1.358, "defense": 1.933, "market_odds": 151.0, "poly": null, "shootout": 0.5, "advance": 0.4227, "r16": 0.1167, "qf": 0.0299, "sf": 0.0071, "final": 0.0013, "champion": 0.0003, "win_group": 0.0398}, {"name": "Tunisia", "group": "F", "confed": "CAF", "elo": 1640.0, "attack": 1.012, "defense": 1.858, "market_odds": null, "poly": null, "shootout": 0.5, "advance": 0.272, "r16": 0.0643, "qf": 0.0125, "sf": 0.0029, "final": 0.0006, "champion": 0.0001, "win_group": 0.0209}, {"name": "Belgium", "group": "G", "confed": "UEFA", "elo": 1890.0, "attack": 2.286, "defense": 1.345, "market_odds": 34.0, "poly": 1.9, "shootout": 0.5, "advance": 0.9372, "r16": 0.5868, "qf": 0.306, "sf": 0.1318, "final": 0.0607, "champion": 0.0267, "win_group": 0.5367}, {"name": "IR Iran", "group": "G", "confed": "AFC", "elo": 1770.0, "attack": 1.832, "defense": 1.275, "market_odds": 251.0, "poly": null, "shootout": 0.45, "advance": 0.8798, "r16": 0.4699, "qf": 0.2072, "sf": 0.0843, "final": 0.0367, "champion": 0.014, "win_group": 0.3543}, {"name": "Egypt", "group": "G", "confed": "CAF", "elo": 1700.0, "attack": 1.303, "defense": 1.88, "market_odds": 151.0, "poly": null, "shootout": 0.5, "advance": 0.4561, "r16": 0.1325, "qf": 0.0285, "sf": 0.0063, "final": 0.0014, "champion": 0.0003, "win_group": 0.0602}, {"name": "New Zealand", "group": "G", "confed": "OFC", "elo": 1590.0, "attack": 1.256, "defense": 1.989, "market_odds": null, "poly": null, "shootout": 0.471, "advance": 0.3851, "r16": 0.1028, "qf": 0.0238, "sf": 0.0049, "final": 0.0011, "champion": 0.0001, "win_group": 0.0488}, {"name": "Spain", "group": "H", "confed": "UEFA", "elo": 2048.0, "attack": 2.856, "defense": 0.933, "market_odds": 5.5, "poly": 16.1, "shootout": 0.476, "advance": 0.9927, "r16": 0.6919, "qf": 0.4748, "sf": 0.3459, "final": 0.2261, "champion": 0.1413, "win_group": 0.787}, {"name": "Uruguay", "group": "H", "confed": "CONMEBOL", "elo": 1850.0, "attack": 1.609, "defense": 1.126, "market_odds": 65.0, "poly": null, "shootout": 0.565, "advance": 0.8622, "r16": 0.3481, "qf": 0.1752, "sf": 0.0841, "final": 0.0379, "champion": 0.0151, "win_group": 0.1734}, {"name": "Cabo Verde", "group": "H", "confed": "CAF", "elo": 1580.0, "attack": 1.07, "defense": 2.2, "market_odds": null, "poly": null, "shootout": 0.471, "advance": 0.2074, "r16": 0.0288, "qf": 0.006, "sf": 0.0014, "final": 0.0003, "champion": 0.0001, "win_group": 0.0083}, {"name": "Saudi Arabia", "group": "H", "confed": "AFC", "elo": 1580.0, "attack": 1.146, "defense": 1.571, "market_odds": null, "poly": null, "shootout": 0.526, "advance": 0.4948, "r16": 0.1153, "qf": 0.0352, "sf": 0.0095, "final": 0.0027, "champion": 0.0006, "win_group": 0.0312}, {"name": "France", "group": "I", "confed": "UEFA", "elo": 2050.0, "attack": 2.619, "defense": 0.951, "market_odds": 5.75, "poly": 17.0, "shootout": 0.478, "advance": 0.966, "r16": 0.7296, "qf": 0.5024, "sf": 0.3315, "final": 0.1936, "champion": 0.1157, "win_group": 0.6956}, {"name": "Senegal", "group": "I", "confed": "CAF", "elo": 1865.0, "attack": 1.848, "defense": 1.392, "market_odds": 81.0, "poly": null, "shootout": 0.474, "advance": 0.7226, "r16": 0.3666, "qf": 0.1712, "sf": 0.0689, "final": 0.0271, "champion": 0.0106, "win_group": 0.1601}, {"name": "Norway", "group": "I", "confed": "UEFA", "elo": 1750.0, "attack": 1.941, "defense": 1.771, "market_odds": 29.0, "poly": null, "shootout": 0.471, "advance": 0.5826, "r16": 0.2511, "qf": 0.1007, "sf": 0.0353, "final": 0.011, "champion": 0.0035, "win_group": 0.0968}, {"name": "Iraq", "group": "I", "confed": "AFC", "elo": 1610.0, "attack": 1.371, "defense": 1.617, "market_odds": null, "poly": null, "shootout": 0.5, "advance": 0.3956, "r16": 0.1427, "qf": 0.0456, "sf": 0.013, "final": 0.0029, "champion": 0.0008, "win_group": 0.0476}, {"name": "Argentina", "group": "J", "confed": "CONMEBOL", "elo": 2063.0, "attack": 2.754, "defense": 0.919, "market_odds": 9.0, "poly": 9.0, "shootout": 0.583, "advance": 0.9707, "r16": 0.6684, "qf": 0.4945, "sf": 0.3455, "final": 0.2275, "champion": 0.1429, "win_group": 0.7158}, {"name": "Austria", "group": "J", "confed": "UEFA", "elo": 1808.0, "attack": 1.955, "defense": 1.405, "market_odds": 101.0, "poly": null, "shootout": 0.529, "advance": 0.7227, "r16": 0.2867, "qf": 0.1383, "sf": 0.0612, "final": 0.0261, "champion": 0.0093, "win_group": 0.1502}, {"name": "Algeria", "group": "J", "confed": "CAF", "elo": 1770.0, "attack": 1.586, "defense": 1.781, "market_odds": 151.0, "poly": null, "shootout": 0.5, "advance": 0.3734, "r16": 0.1012, "qf": 0.0341, "sf": 0.01, "final": 0.0029, "champion": 0.0008, "win_group": 0.0432}, {"name": "Jordan", "group": "J", "confed": "AFC", "elo": 1685.0, "attack": 1.634, "defense": 1.423, "market_odds": null, "poly": null, "shootout": 0.444, "advance": 0.5897, "r16": 0.198, "qf": 0.0803, "sf": 0.0292, "final": 0.0103, "champion": 0.0034, "win_group": 0.0907}, {"name": "Portugal", "group": "K", "confed": "UEFA", "elo": 1985.0, "attack": 2.605, "defense": 1.294, "market_odds": 12.0, "poly": 9.5, "shootout": 0.545, "advance": 0.9183, "r16": 0.573, "qf": 0.3382, "sf": 0.1862, "final": 0.0983, "champion": 0.0483, "win_group": 0.4584}, {"name": "Colombia", "group": "K", "confed": "CONMEBOL", "elo": 1960.0, "attack": 2.301, "defense": 1.184, "market_odds": 36.0, "poly": 0.7, "shootout": 0.522, "advance": 0.8982, "r16": 0.5392, "qf": 0.3051, "sf": 0.1663, "final": 0.0842, "champion": 0.0397, "win_group": 0.3977}, {"name": "Uzbekistan", "group": "K", "confed": "AFC", "elo": 1720.0, "attack": 1.494, "defense": 1.293, "market_odds": null, "poly": null, "shootout": 0.471, "advance": 0.6342, "r16": 0.2433, "qf": 0.0932, "sf": 0.0365, "final": 0.0134, "champion": 0.0047, "win_group": 0.1171}, {"name": "DR Congo", "group": "K", "confed": "CAF", "elo": 1680.0, "attack": 1.344, "defense": 1.945, "market_odds": null, "poly": null, "shootout": 0.526, "advance": 0.2417, "r16": 0.0547, "qf": 0.0135, "sf": 0.0039, "final": 0.0007, "champion": 0.0003, "win_group": 0.0268}, {"name": "England", "group": "L", "confed": "UEFA", "elo": 1990.0, "attack": 2.437, "defense": 0.931, "market_odds": 7.5, "poly": 11.1, "shootout": 0.5, "advance": 0.9707, "r16": 0.6733, "qf": 0.438, "sf": 0.2848, "final": 0.1706, "champion": 0.0972, "win_group": 0.6251}, {"name": "Croatia", "group": "L", "confed": "UEFA", "elo": 1910.0, "attack": 2.112, "defense": 1.224, "market_odds": 67.0, "poly": null, "shootout": 0.571, "advance": 0.8893, "r16": 0.4869, "qf": 0.241, "sf": 0.1283, "final": 0.0639, "champion": 0.0291, "win_group": 0.2932}, {"name": "Ghana", "group": "L", "confed": "CAF", "elo": 1656.0, "attack": 1.428, "defense": 2.121, "market_odds": 151.0, "poly": null, "shootout": 0.5, "advance": 0.2745, "r16": 0.0589, "qf": 0.0152, "sf": 0.0033, "final": 0.0008, "champion": 0.0002, "win_group": 0.0227}, {"name": "Panama", "group": "L", "confed": "CONCACAF", "elo": 1735.0, "attack": 1.522, "defense": 1.699, "market_odds": null, "poly": null, "shootout": 0.526, "advance": 0.505, "r16": 0.1545, "qf": 0.0516, "sf": 0.0158, "final": 0.0053, "champion": 0.0011, "win_group": 0.059}], "groups": {"A": ["Mexico", "South Korea", "Czechia", "South Africa"], "B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "C": ["Brazil", "Morocco", "Scotland", "Haiti"], "D": ["Türkiye", "Paraguay", "Australia", "United States"], "E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "G": ["Belgium", "IR Iran", "Egypt", "New Zealand"], "H": ["Spain", "Uruguay", "Cabo Verde", "Saudi Arabia"], "I": ["France", "Senegal", "Norway", "Iraq"], "J": ["Argentina", "Austria", "Algeria", "Jordan"], "K": ["Portugal", "Colombia", "Uzbekistan", "DR Congo"], "L": ["England", "Croatia", "Ghana", "Panama"]}, "group_pairs": {"A": [{"a": "Mexico", "b": "South Korea", "p": 0.2803}, {"a": "South Korea", "b": "Mexico", "p": 0.1697}, {"a": "Mexico", "b": "Czechia", "p": 0.1668}, {"a": "Mexico", "b": "South Africa", "p": 0.1083}, {"a": "Czechia", "b": "Mexico", "p": 0.0659}], "B": [{"a": "Switzerland", "b": "Canada", "p": 0.2089}, {"a": "Canada", "b": "Switzerland", "p": 0.1962}, {"a": "Switzerland", "b": "Bosnia & Herzegovina", "p": 0.099}, {"a": "Switzerland", "b": "Qatar", "p": 0.0977}, {"a": "Canada", "b": "Bosnia & Herzegovina", "p": 0.0815}], "C": [{"a": "Brazil", "b": "Morocco", "p": 0.2681}, {"a": "Morocco", "b": "Brazil", "p": 0.199}, {"a": "Brazil", "b": "Scotland", "p": 0.1527}, {"a": "Morocco", "b": "Scotland", "p": 0.0781}, {"a": "Scotland", "b": "Brazil", "p": 0.0731}], "D": [{"a": "Australia", "b": "Türkiye", "p": 0.1565}, {"a": "Australia", "b": "United States", "p": 0.1278}, {"a": "Türkiye", "b": "Australia", "p": 0.1265}, {"a": "Australia", "b": "Paraguay", "p": 0.1007}, {"a": "United States", "b": "Australia", "p": 0.089}], "E": [{"a": "Germany", "b": "Ecuador", "p": 0.3633}, {"a": "Ecuador", "b": "Germany", "p": 0.2817}, {"a": "Germany", "b": "Ivory Coast", "p": 0.0954}, {"a": "Germany", "b": "Curaçao", "p": 0.0659}, {"a": "Ecuador", "b": "Ivory Coast", "p": 0.0595}], "F": [{"a": "Japan", "b": "Netherlands", "p": 0.3757}, {"a": "Netherlands", "b": "Japan", "p": 0.3397}, {"a": "Japan", "b": "Sweden", "p": 0.0795}, {"a": "Netherlands", "b": "Sweden", "p": 0.0616}, {"a": "Japan", "b": "Tunisia", "p": 0.0465}], "G": [{"a": "Belgium", "b": "IR Iran", "p": 0.3461}, {"a": "IR Iran", "b": "Belgium", "p": 0.247}, {"a": "Belgium", "b": "Egypt", "p": 0.1054}, {"a": "Belgium", "b": "New Zealand", "p": 0.0853}, {"a": "IR Iran", "b": "Egypt", "p": 0.0605}], "H": [{"a": "Spain", "b": "Uruguay", "p": 0.5253}, {"a": "Spain", "b": "Saudi Arabia", "p": 0.1893}, {"a": "Uruguay", "b": "Spain", "p": 0.1482}, {"a": "Spain", "b": "Cabo Verde", "p": 0.0724}, {"a": "Saudi Arabia", "b": "Spain", "p": 0.0234}], "I": [{"a": "France", "b": "Senegal", "p": 0.3256}, {"a": "France", "b": "Norway", "p": 0.2285}, {"a": "France", "b": "Iraq", "p": 0.1415}, {"a": "Senegal", "b": "France", "p": 0.1129}, {"a": "Norway", "b": "France", "p": 0.0617}], "J": [{"a": "Argentina", "b": "Austria", "p": 0.3379}, {"a": "Argentina", "b": "Jordan", "p": 0.2399}, {"a": "Argentina", "b": "Algeria", "p": 0.1379}, {"a": "Austria", "b": "Argentina", "p": 0.1071}, {"a": "Jordan", "b": "Argentina", "p": 0.0605}], "K": [{"a": "Portugal", "b": "Colombia", "p": 0.2881}, {"a": "Colombia", "b": "Portugal", "p": 0.2566}, {"a": "Portugal", "b": "Uzbekistan", "p": 0.13}, {"a": "Colombia", "b": "Uzbekistan", "p": 0.1069}, {"a": "Uzbekistan", "b": "Portugal", "p": 0.0578}], "L": [{"a": "England", "b": "Croatia", "p": 0.417}, {"a": "Croatia", "b": "England", "p": 0.231}, {"a": "England", "b": "Panama", "p": 0.1366}, {"a": "England", "b": "Ghana", "p": 0.0716}, {"a": "Croatia", "b": "Panama", "p": 0.0418}]}, "bracket": [{"idx": 0, "slot_a": "1E", "slot_b": "3:ABCDF", "side_a": [{"name": "Germany", "p": 0.5245}, {"name": "Ecuador", "p": 0.3834}, {"name": "Ivory Coast", "p": 0.0574}, {"name": "Curaçao", "p": 0.0348}], "side_b": [{"name": "Scotland", "p": 0.0704}, {"name": "Sweden", "p": 0.0677}, {"name": "Czechia", "p": 0.0639}, {"name": "Paraguay", "p": 0.0601}, {"name": "Bosnia & Herzegovina", "p": 0.0601}], "pairs": [{"a": "Germany", "b": "Scotland", "p": 0.0367}, {"a": "Germany", "b": "Sweden", "p": 0.0345}, {"a": "Czechia", "b": "Germany", "p": 0.0337}]}, {"idx": 1, "slot_a": "1I", "slot_b": "3:CDFGH", "side_a": [{"name": "France", "p": 0.6956}, {"name": "Senegal", "p": 0.1601}, {"name": "Norway", "p": 0.0968}, {"name": "Iraq", "p": 0.0476}], "side_b": [{"name": "Paraguay", "p": 0.1029}, {"name": "United States", "p": 0.0974}, {"name": "Türkiye", "p": 0.0921}, {"name": "Saudi Arabia", "p": 0.0888}, {"name": "Australia", "p": 0.0778}], "pairs": [{"a": "France", "b": "Paraguay", "p": 0.073}, {"a": "France", "b": "United States", "p": 0.0688}, {"a": "France", "b": "Türkiye", "p": 0.0653}]}, {"idx": 2, "slot_a": "2A", "slot_b": "2B", "side_a": [{"name": "South Korea", "p": 0.3381}, {"name": "Mexico", "p": 0.2676}, {"name": "Czechia", "p": 0.2364}, {"name": "South Africa", "p": 0.158}], "side_b": [{"name": "Canada", "p": 0.3034}, {"name": "Switzerland", "p": 0.2996}, {"name": "Bosnia & Herzegovina", "p": 0.201}, {"name": "Qatar", "p": 0.196}], "pairs": [{"a": "Canada", "b": "South Korea", "p": 0.1013}, {"a": "South Korea", "b": "Switzerland", "p": 0.1012}, {"a": "Canada", "b": "Mexico", "p": 0.0827}]}, {"idx": 3, "slot_a": "1F", "slot_b": "2C", "side_a": [{"name": "Japan", "p": 0.5017}, {"name": "Netherlands", "p": 0.4376}, {"name": "Sweden", "p": 0.0398}, {"name": "Tunisia", "p": 0.0209}], "side_b": [{"name": "Morocco", "p": 0.3372}, {"name": "Brazil", "p": 0.2964}, {"name": "Scotland", "p": 0.2404}, {"name": "Haiti", "p": 0.126}], "pairs": [{"a": "Japan", "b": "Morocco", "p": 0.1666}, {"a": "Brazil", "b": "Japan", "p": 0.1521}, {"a": "Morocco", "b": "Netherlands", "p": 0.1501}]}, {"idx": 4, "slot_a": "2K", "slot_b": "2L", "side_a": [{"name": "Colombia", "p": 0.3493}, {"name": "Portugal", "p": 0.3265}, {"name": "Uzbekistan", "p": 0.2423}, {"name": "DR Congo", "p": 0.0819}], "side_b": [{"name": "Croatia", "p": 0.4479}, {"name": "England", "p": 0.2754}, {"name": "Panama", "p": 0.1815}, {"name": "Ghana", "p": 0.0953}], "pairs": [{"a": "Colombia", "b": "Croatia", "p": 0.1559}, {"a": "Croatia", "b": "Portugal", "p": 0.1465}, {"a": "Croatia", "b": "Uzbekistan", "p": 0.1086}]}, {"idx": 5, "slot_a": "1H", "slot_b": "2J", "side_a": [{"name": "Spain", "p": 0.787}, {"name": "Uruguay", "p": 0.1734}, {"name": "Saudi Arabia", "p": 0.0312}, {"name": "Cabo Verde", "p": 0.0083}], "side_b": [{"name": "Austria", "p": 0.3684}, {"name": "Jordan", "p": 0.2738}, {"name": "Argentina", "p": 0.1956}, {"name": "Algeria", "p": 0.1621}], "pairs": [{"a": "Austria", "b": "Spain", "p": 0.2909}, {"a": "Jordan", "b": "Spain", "p": 0.2147}, {"a": "Argentina", "b": "Spain", "p": 0.1551}]}, {"idx": 6, "slot_a": "1D", "slot_b": "3:BEFIJ", "side_a": [{"name": "Australia", "p": 0.3849}, {"name": "Türkiye", "p": 0.2755}, {"name": "United States", "p": 0.1953}, {"name": "Paraguay", "p": 0.1442}], "side_b": [{"name": "Bosnia & Herzegovina", "p": 0.153}, {"name": "Qatar", "p": 0.1442}, {"name": "Canada", "p": 0.1171}, {"name": "Switzerland", "p": 0.1089}, {"name": "Jordan", "p": 0.0503}], "pairs": [{"a": "Australia", "b": "Bosnia & Herzegovina", "p": 0.0578}, {"a": "Australia", "b": "Qatar", "p": 0.0542}, {"a": "Australia", "b": "Canada", "p": 0.0444}]}, {"idx": 7, "slot_a": "1G", "slot_b": "3:AEHIJ", "side_a": [{"name": "Belgium", "p": 0.5367}, {"name": "IR Iran", "p": 0.3543}, {"name": "Egypt", "p": 0.0602}, {"name": "New Zealand", "p": 0.0488}], "side_b": [{"name": "Czechia", "p": 0.1646}, {"name": "South Africa", "p": 0.1326}, {"name": "South Korea", "p": 0.1307}, {"name": "Mexico", "p": 0.0755}, {"name": "Saudi Arabia", "p": 0.0515}], "pairs": [{"a": "Belgium", "b": "Czechia", "p": 0.0896}, {"a": "Belgium", "b": "South Korea", "p": 0.0727}, {"a": "Belgium", "b": "South Africa", "p": 0.0717}]}, {"idx": 8, "slot_a": "1C", "slot_b": "2F", "side_a": [{"name": "Brazil", "p": 0.4933}, {"name": "Morocco", "p": 0.3166}, {"name": "Scotland", "p": 0.1391}, {"name": "Haiti", "p": 0.051}], "side_b": [{"name": "Netherlands", "p": 0.402}, {"name": "Japan", "p": 0.3703}, {"name": "Sweden", "p": 0.143}, {"name": "Tunisia", "p": 0.0847}], "pairs": [{"a": "Brazil", "b": "Netherlands", "p": 0.1933}, {"a": "Brazil", "b": "Japan", "p": 0.1846}, {"a": "Morocco", "b": "Netherlands", "p": 0.131}]}, {"idx": 9, "slot_a": "2E", "slot_b": "2I", "side_a": [{"name": "Ecuador", "p": 0.4033}, {"name": "Germany", "p": 0.3265}, {"name": "Ivory Coast", "p": 0.1583}, {"name": "Curaçao", "p": 0.1119}], "side_b": [{"name": "Senegal", "p": 0.3612}, {"name": "Norway", "p": 0.2661}, {"name": "France", "p": 0.2034}, {"name": "Iraq", "p": 0.1693}], "pairs": [{"a": "Ecuador", "b": "Senegal", "p": 0.1466}, {"a": "Germany", "b": "Senegal", "p": 0.1161}, {"a": "Ecuador", "b": "Norway", "p": 0.1047}]}, {"idx": 10, "slot_a": "1A", "slot_b": "3:CEFHI", "side_a": [{"name": "Mexico", "p": 0.5554}, {"name": "South Korea", "p": 0.2633}, {"name": "Czechia", "p": 0.1195}, {"name": "South Africa", "p": 0.0618}], "side_b": [{"name": "Scotland", "p": 0.1325}, {"name": "Morocco", "p": 0.0961}, {"name": "Haiti", "p": 0.0895}, {"name": "Saudi Arabia", "p": 0.0745}, {"name": "Brazil", "p": 0.0664}], "pairs": [{"a": "Mexico", "b": "Scotland", "p": 0.0744}, {"a": "Mexico", "b": "Morocco", "p": 0.0527}, {"a": "Haiti", "b": "Mexico", "p": 0.05}]}, {"idx": 11, "slot_a": "1L", "slot_b": "3:EHIJK", "side_a": [{"name": "England", "p": 0.6251}, {"name": "Croatia", "p": 0.2932}, {"name": "Panama", "p": 0.059}, {"name": "Ghana", "p": 0.0227}], "side_b": [{"name": "Uzbekistan", "p": 0.2748}, {"name": "Colombia", "p": 0.1512}, {"name": "Portugal", "p": 0.1334}, {"name": "DR Congo", "p": 0.133}, {"name": "Saudi Arabia", "p": 0.0403}], "pairs": [{"a": "England", "b": "Uzbekistan", "p": 0.1739}, {"a": "Colombia", "b": "England", "p": 0.0945}, {"a": "DR Congo", "b": "England", "p": 0.0842}]}, {"idx": 12, "slot_a": "1J", "slot_b": "2H", "side_a": [{"name": "Argentina", "p": 0.7158}, {"name": "Austria", "p": 0.1502}, {"name": "Jordan", "p": 0.0907}, {"name": "Algeria", "p": 0.0432}], "side_b": [{"name": "Uruguay", "p": 0.5343}, {"name": "Saudi Arabia", "p": 0.2086}, {"name": "Spain", "p": 0.1774}, {"name": "Cabo Verde", "p": 0.0797}], "pairs": [{"a": "Argentina", "b": "Uruguay", "p": 0.381}, {"a": "Argentina", "b": "Saudi Arabia", "p": 0.1494}, {"a": "Argentina", "b": "Spain", "p": 0.1278}]}, {"idx": 13, "slot_a": "2D", "slot_b": "2G", "side_a": [{"name": "Australia", "p": 0.2773}, {"name": "Türkiye", "p": 0.2634}, {"name": "United States", "p": 0.246}, {"name": "Paraguay", "p": 0.2132}], "side_b": [{"name": "IR Iran", "p": 0.3896}, {"name": "Belgium", "p": 0.3}, {"name": "Egypt", "p": 0.1721}, {"name": "New Zealand", "p": 0.1383}], "pairs": [{"a": "Australia", "b": "IR Iran", "p": 0.1062}, {"a": "IR Iran", "b": "Türkiye", "p": 0.1042}, {"a": "IR Iran", "b": "United States", "p": 0.0954}]}, {"idx": 14, "slot_a": "1B", "slot_b": "3:EFGIJ", "side_a": [{"name": "Switzerland", "p": 0.4057}, {"name": "Canada", "p": 0.3526}, {"name": "Bosnia & Herzegovina", "p": 0.1249}, {"name": "Qatar", "p": 0.1168}], "side_b": [{"name": "Egypt", "p": 0.1467}, {"name": "New Zealand", "p": 0.1313}, {"name": "IR Iran", "p": 0.0879}, {"name": "Belgium", "p": 0.0663}, {"name": "Jordan", "p": 0.0633}], "pairs": [{"a": "Egypt", "b": "Switzerland", "p": 0.0599}, {"a": "Canada", "b": "Egypt", "p": 0.0535}, {"a": "New Zealand", "b": "Switzerland", "p": 0.0532}]}, {"idx": 15, "slot_a": "1K", "slot_b": "3:DEIJL", "side_a": [{"name": "Portugal", "p": 0.4584}, {"name": "Colombia", "p": 0.3977}, {"name": "Uzbekistan", "p": 0.1171}, {"name": "DR Congo", "p": 0.0268}], "side_b": [{"name": "Panama", "p": 0.2646}, {"name": "Ghana", "p": 0.1564}, {"name": "Croatia", "p": 0.1484}, {"name": "England", "p": 0.0701}, {"name": "Paraguay", "p": 0.0443}], "pairs": [{"a": "Panama", "b": "Portugal", "p": 0.1218}, {"a": "Colombia", "b": "Panama", "p": 0.1065}, {"a": "Ghana", "b": "Portugal", "p": 0.0717}]}], "market": {"overround": 21.3, "rows": [{"name": "Mexico", "model": 0.0346, "market": 0.0102, "poly": null, "odds": 81.0}, {"name": "South Korea", "model": 0.0096, "market": 0.0033, "poly": null, "odds": 251.0}, {"name": "Switzerland", "model": 0.0215, "market": 0.0125, "poly": null, "odds": 66.0}, {"name": "Canada", "model": 0.015, "market": 0.0033, "poly": null, "odds": 251.0}, {"name": "Brazil", "model": 0.0208, "market": 0.0916, "poly": 8.4, "odds": 9.0}, {"name": "Morocco", "model": 0.0095, "market": 0.0162, "poly": null, "odds": 51.0}, {"name": "Scotland", "model": 0.0013, "market": 0.0055, "poly": null, "odds": 151.0}, {"name": "Türkiye", "model": 0.0089, "market": 0.0123, "poly": null, "odds": 67.0}, {"name": "Australia", "model": 0.0211, "market": 0.0041, "poly": null, "odds": 201.0}, {"name": "United States", "model": 0.0049, "market": 0.0131, "poly": null, "odds": 63.0}, {"name": "Germany", "model": 0.0352, "market": 0.055, "poly": 5.6, "odds": 15.0}, {"name": "Ecuador", "model": 0.0249, "market": 0.0082, "poly": null, "odds": 101.0}, {"name": "Ivory Coast", "model": 0.0005, "market": 0.0041, "poly": null, "odds": 201.0}, {"name": "Netherlands", "model": 0.0345, "market": 0.0375, "poly": 3.9, "odds": 22.0}, {"name": "Japan", "model": 0.0423, "market": 0.0159, "poly": null, "odds": 52.0}, {"name": "Sweden", "model": 0.0003, "market": 0.0055, "poly": null, "odds": 151.0}, {"name": "Belgium", "model": 0.0267, "market": 0.0242, "poly": 1.9, "odds": 34.0}, {"name": "IR Iran", "model": 0.014, "market": 0.0033, "poly": null, "odds": 251.0}, {"name": "Egypt", "model": 0.0003, "market": 0.0055, "poly": null, "odds": 151.0}, {"name": "Spain", "model": 0.1413, "market": 0.1499, "poly": 16.1, "odds": 5.5}, {"name": "Uruguay", "model": 0.0151, "market": 0.0127, "poly": null, "odds": 65.0}, {"name": "France", "model": 0.1157, "market": 0.1434, "poly": 17.0, "odds": 5.75}, {"name": "Senegal", "model": 0.0106, "market": 0.0102, "poly": null, "odds": 81.0}, {"name": "Norway", "model": 0.0035, "market": 0.0284, "poly": null, "odds": 29.0}, {"name": "Argentina", "model": 0.1429, "market": 0.0916, "poly": 9.0, "odds": 9.0}, {"name": "Austria", "model": 0.0093, "market": 0.0082, "poly": null, "odds": 101.0}, {"name": "Algeria", "model": 0.0008, "market": 0.0055, "poly": null, "odds": 151.0}, {"name": "Portugal", "model": 0.0483, "market": 0.0687, "poly": 9.5, "odds": 12.0}, {"name": "Colombia", "model": 0.0397, "market": 0.0229, "poly": 0.7, "odds": 36.0}, {"name": "England", "model": 0.0972, "market": 0.1099, "poly": 11.1, "odds": 7.5}, {"name": "Croatia", "model": 0.0291, "market": 0.0123, "poly": null, "odds": 67.0}, {"name": "Ghana", "model": 0.0002, "market": 0.0055, "poly": null, "odds": 151.0}]}, "tipps": {"A": [{"home": "Mexico", "away": "South Korea", "tip": [2, 1], "ev": 1.3, "ml": [1, 1], "ml_p": 0.1077, "pw": 0.4966, "pd": 0.2403, "pl": 0.2631, "diverges": true}, {"home": "Mexico", "away": "Czechia", "tip": [2, 1], "ev": 1.53, "ml": [2, 1], "ml_p": 0.0982, "pw": 0.6073, "pd": 0.2151, "pl": 0.1777, "diverges": false}, {"home": "Mexico", "away": "South Africa", "tip": [2, 1], "ev": 1.68, "ml": [2, 0], "ml_p": 0.1003, "pw": 0.6815, "pd": 0.1905, "pl": 0.128, "diverges": true}, {"home": "South Korea", "away": "Czechia", "tip": [2, 1], "ev": 1.29, "ml": [1, 1], "ml_p": 0.1023, "pw": 0.4941, "pd": 0.235, "pl": 0.2709, "diverges": true}, {"home": "South Korea", "away": "South Africa", "tip": [2, 1], "ev": 1.47, "ml": [1, 1], "ml_p": 0.098, "pw": 0.577, "pd": 0.2201, "pl": 0.2029, "diverges": true}, {"home": "Czechia", "away": "South Africa", "tip": [2, 1], "ev": 1.21, "ml": [1, 1], "ml_p": 0.1126, "pw": 0.4566, "pd": 0.2489, "pl": 0.2945, "diverges": true}], "B": [{"home": "Switzerland", "away": "Canada", "tip": [2, 1], "ev": 1.1, "ml": [1, 1], "ml_p": 0.1175, "pw": 0.4092, "pd": 0.2568, "pl": 0.334, "diverges": true}, {"home": "Switzerland", "away": "Bosnia & Herzegovina", "tip": [2, 1], "ev": 1.43, "ml": [1, 1], "ml_p": 0.1112, "pw": 0.5534, "pd": 0.2382, "pl": 0.2084, "diverges": true}, {"home": "Switzerland", "away": "Qatar", "tip": [2, 1], "ev": 1.47, "ml": [1, 1], "ml_p": 0.0993, "pw": 0.5801, "pd": 0.2209, "pl": 0.199, "diverges": true}, {"home": "Canada", "away": "Bosnia & Herzegovina", "tip": [2, 1], "ev": 1.38, "ml": [1, 1], "ml_p": 0.0935, "pw": 0.5403, "pd": 0.2213, "pl": 0.2384, "diverges": true}, {"home": "Canada", "away": "Qatar", "tip": [2, 1], "ev": 1.42, "ml": [2, 1], "ml_p": 0.0878, "pw": 0.5665, "pd": 0.2057, "pl": 0.2279, "diverges": false}, {"home": "Bosnia & Herzegovina", "away": "Qatar", "tip": [2, 1], "ev": 1.05, "ml": [1, 1], "ml_p": 0.0963, "pw": 0.3951, "pd": 0.2349, "pl": 0.37, "diverges": true}], "C": [{"home": "Brazil", "away": "Morocco", "tip": [2, 1], "ev": 1.18, "ml": [1, 1], "ml_p": 0.1202, "pw": 0.4418, "pd": 0.2588, "pl": 0.2994, "diverges": true}, {"home": "Brazil", "away": "Scotland", "tip": [2, 1], "ev": 1.5, "ml": [2, 1], "ml_p": 0.0964, "pw": 0.5921, "pd": 0.2142, "pl": 0.1937, "diverges": false}, {"home": "Brazil", "away": "Haiti", "tip": [2, 1], "ev": 1.73, "ml": [2, 1], "ml_p": 0.0899, "pw": 0.7188, "pd": 0.166, "pl": 0.1151, "diverges": false}, {"home": "Morocco", "away": "Scotland", "tip": [2, 1], "ev": 1.31, "ml": [1, 1], "ml_p": 0.1165, "pw": 0.4979, "pd": 0.2503, "pl": 0.2518, "diverges": true}, {"home": "Morocco", "away": "Haiti", "tip": [2, 1], "ev": 1.57, "ml": [2, 1], "ml_p": 0.0986, "pw": 0.6257, "pd": 0.2116, "pl": 0.1626, "diverges": false}, {"home": "Scotland", "away": "Haiti", "tip": [2, 1], "ev": 1.31, "ml": [1, 1], "ml_p": 0.1015, "pw": 0.5065, "pd": 0.2329, "pl": 0.2605, "diverges": true}], "D": [{"home": "Türkiye", "away": "Paraguay", "tip": [2, 1], "ev": 1.21, "ml": [1, 1], "ml_p": 0.1163, "pw": 0.4564, "pd": 0.2532, "pl": 0.2904, "diverges": true}, {"home": "Türkiye", "away": "Australia", "tip": [1, 2], "ev": 1.18, "ml": [1, 1], "ml_p": 0.0995, "pw": 0.3133, "pd": 0.2358, "pl": 0.4509, "diverges": true}, {"home": "Türkiye", "away": "United States", "tip": [2, 1], "ev": 1.14, "ml": [1, 1], "ml_p": 0.082, "pw": 0.4387, "pd": 0.2208, "pl": 0.3405, "diverges": true}, {"home": "Paraguay", "away": "Australia", "tip": [0, 1], "ev": 1.32, "ml": [1, 1], "ml_p": 0.1331, "pw": 0.2319, "pd": 0.28, "pl": 0.4881, "diverges": true}, {"home": "Paraguay", "away": "United States", "tip": [1, 2], "ev": 1.09, "ml": [1, 1], "ml_p": 0.1313, "pw": 0.324, "pd": 0.2761, "pl": 0.3999, "diverges": true}, {"home": "Australia", "away": "United States", "tip": [2, 1], "ev": 1.27, "ml": [1, 1], "ml_p": 0.1125, "pw": 0.4839, "pd": 0.2467, "pl": 0.2694, "diverges": true}], "E": [{"home": "Germany", "away": "Ecuador", "tip": [2, 1], "ev": 1.02, "ml": [1, 1], "ml_p": 0.1329, "pw": 0.3703, "pd": 0.2791, "pl": 0.3506, "diverges": true}, {"home": "Germany", "away": "Ivory Coast", "tip": [3, 1], "ev": 1.74, "ml": [2, 1], "ml_p": 0.0816, "pw": 0.7314, "pd": 0.1524, "pl": 0.1162, "diverges": true}, {"home": "Germany", "away": "Curaçao", "tip": [3, 1], "ev": 1.82, "ml": [3, 1], "ml_p": 0.0827, "pw": 0.7686, "pd": 0.1412, "pl": 0.0903, "diverges": false}, {"home": "Ecuador", "away": "Ivory Coast", "tip": [1, 0], "ev": 1.63, "ml": [2, 0], "ml_p": 0.1217, "pw": 0.6341, "pd": 0.2284, "pl": 0.1375, "diverges": true}, {"home": "Ecuador", "away": "Curaçao", "tip": [1, 0], "ev": 1.72, "ml": [2, 0], "ml_p": 0.1372, "pw": 0.6678, "pd": 0.2204, "pl": 0.1119, "diverges": true}, {"home": "Ivory Coast", "away": "Curaçao", "tip": [2, 1], "ev": 1.15, "ml": [1, 1], "ml_p": 0.1118, "pw": 0.433, "pd": 0.2493, "pl": 0.3177, "diverges": true}], "F": [{"home": "Netherlands", "away": "Japan", "tip": [1, 2], "ev": 1.1, "ml": [1, 1], "ml_p": 0.096, "pw": 0.3514, "pd": 0.2342, "pl": 0.4144, "diverges": true}, {"home": "Netherlands", "away": "Sweden", "tip": [3, 1], "ev": 1.74, "ml": [2, 1], "ml_p": 0.0854, "pw": 0.7289, "pd": 0.1571, "pl": 0.114, "diverges": true}, {"home": "Netherlands", "away": "Tunisia", "tip": [2, 0], "ev": 1.86, "ml": [2, 0], "ml_p": 0.1049, "pw": 0.7702, "pd": 0.1491, "pl": 0.0808, "diverges": false}, {"home": "Japan", "away": "Sweden", "tip": [2, 0], "ev": 1.77, "ml": [2, 0], "ml_p": 0.0901, "pw": 0.739, "pd": 0.1586, "pl": 0.1024, "diverges": false}, {"home": "Japan", "away": "Tunisia", "tip": [2, 0], "ev": 1.89, "ml": [2, 0], "ml_p": 0.119, "pw": 0.7757, "pd": 0.1511, "pl": 0.0732, "diverges": false}, {"home": "Sweden", "away": "Tunisia", "tip": [2, 1], "ev": 1.2, "ml": [1, 1], "ml_p": 0.1275, "pw": 0.4456, "pd": 0.2688, "pl": 0.2856, "diverges": true}], "G": [{"home": "Belgium", "away": "IR Iran", "tip": [2, 1], "ev": 1.16, "ml": [1, 1], "ml_p": 0.1057, "pw": 0.4374, "pd": 0.2426, "pl": 0.32, "diverges": true}, {"home": "Belgium", "away": "Egypt", "tip": [2, 1], "ev": 1.7, "ml": [2, 1], "ml_p": 0.0901, "pw": 0.7044, "pd": 0.1705, "pl": 0.1251, "diverges": false}, {"home": "Belgium", "away": "New Zealand", "tip": [3, 1], "ev": 1.76, "ml": [2, 1], "ml_p": 0.0866, "pw": 0.7365, "pd": 0.1562, "pl": 0.1073, "diverges": true}, {"home": "IR Iran", "away": "Egypt", "tip": [2, 1], "ev": 1.56, "ml": [1, 1], "ml_p": 0.0999, "pw": 0.6201, "pd": 0.2152, "pl": 0.1647, "diverges": true}, {"home": "IR Iran", "away": "New Zealand", "tip": [2, 1], "ev": 1.63, "ml": [2, 1], "ml_p": 0.0978, "pw": 0.6533, "pd": 0.2019, "pl": 0.1448, "diverges": false}, {"home": "Egypt", "away": "New Zealand", "tip": [2, 1], "ev": 1.09, "ml": [1, 1], "ml_p": 0.1175, "pw": 0.4027, "pd": 0.2569, "pl": 0.3403, "diverges": true}], "H": [{"home": "Spain", "away": "Uruguay", "tip": [2, 1], "ev": 1.56, "ml": [1, 1], "ml_p": 0.1075, "pw": 0.6141, "pd": 0.2262, "pl": 0.1597, "diverges": true}, {"home": "Spain", "away": "Cabo Verde", "tip": [3, 0], "ev": 2.13, "ml": [3, 0], "ml_p": 0.1083, "pw": 0.9151, "pd": 0.0629, "pl": 0.022, "diverges": false}, {"home": "Spain", "away": "Saudi Arabia", "tip": [2, 0], "ev": 1.96, "ml": [2, 0], "ml_p": 0.122, "pw": 0.8094, "pd": 0.1331, "pl": 0.0575, "diverges": false}, {"home": "Uruguay", "away": "Cabo Verde", "tip": [2, 0], "ev": 1.74, "ml": [2, 0], "ml_p": 0.126, "pw": 0.6995, "pd": 0.1955, "pl": 0.1051, "diverges": false}, {"home": "Uruguay", "away": "Saudi Arabia", "tip": [1, 0], "ev": 1.48, "ml": [1, 0], "ml_p": 0.1346, "pw": 0.5469, "pd": 0.2726, "pl": 0.1804, "diverges": false}, {"home": "Cabo Verde", "away": "Saudi Arabia", "tip": [0, 1], "ev": 1.3, "ml": [1, 1], "ml_p": 0.1302, "pw": 0.2425, "pd": 0.2727, "pl": 0.4848, "diverges": true}], "I": [{"home": "France", "away": "Senegal", "tip": [2, 1], "ev": 1.58, "ml": [2, 1], "ml_p": 0.0974, "pw": 0.6313, "pd": 0.2055, "pl": 0.1632, "diverges": false}, {"home": "France", "away": "Norway", "tip": [3, 1], "ev": 1.73, "ml": [2, 1], "ml_p": 0.0843, "pw": 0.7255, "pd": 0.157, "pl": 0.1175, "diverges": true}, {"home": "France", "away": "Iraq", "tip": [2, 0], "ev": 1.84, "ml": [2, 0], "ml_p": 0.1098, "pw": 0.7574, "pd": 0.1575, "pl": 0.0851, "diverges": false}, {"home": "Senegal", "away": "Norway", "tip": [2, 1], "ev": 1.19, "ml": [1, 1], "ml_p": 0.0896, "pw": 0.4576, "pd": 0.2263, "pl": 0.3161, "diverges": true}, {"home": "Senegal", "away": "Iraq", "tip": [2, 1], "ev": 1.36, "ml": [1, 1], "ml_p": 0.1135, "pw": 0.5225, "pd": 0.2442, "pl": 0.2333, "diverges": true}, {"home": "Norway", "away": "Iraq", "tip": [2, 1], "ev": 1.24, "ml": [1, 1], "ml_p": 0.0997, "pw": 0.4736, "pd": 0.2343, "pl": 0.2921, "diverges": true}], "J": [{"home": "Argentina", "away": "Austria", "tip": [2, 1], "ev": 1.61, "ml": [2, 1], "ml_p": 0.0951, "pw": 0.6523, "pd": 0.1941, "pl": 0.1536, "diverges": false}, {"home": "Argentina", "away": "Algeria", "tip": [2, 0], "ev": 1.88, "ml": [3, 0], "ml_p": 0.0902, "pw": 0.7948, "pd": 0.1308, "pl": 0.0744, "diverges": true}, {"home": "Argentina", "away": "Jordan", "tip": [2, 1], "ev": 1.71, "ml": [2, 0], "ml_p": 0.1012, "pw": 0.6986, "pd": 0.1829, "pl": 0.1185, "diverges": true}, {"home": "Austria", "away": "Algeria", "tip": [2, 1], "ev": 1.39, "ml": [2, 1], "ml_p": 0.0929, "pw": 0.5461, "pd": 0.2198, "pl": 0.2342, "diverges": false}, {"home": "Austria", "away": "Jordan", "tip": [2, 1], "ev": 1.17, "ml": [1, 1], "ml_p": 0.1134, "pw": 0.4396, "pd": 0.2508, "pl": 0.3096, "diverges": true}, {"home": "Algeria", "away": "Jordan", "tip": [1, 2], "ev": 1.22, "ml": [1, 1], "ml_p": 0.1103, "pw": 0.2907, "pd": 0.2459, "pl": 0.4634, "diverges": true}], "K": [{"home": "Portugal", "away": "Colombia", "tip": [2, 1], "ev": 1.06, "ml": [1, 1], "ml_p": 0.0881, "pw": 0.3995, "pd": 0.2273, "pl": 0.3731, "diverges": true}, {"home": "Portugal", "away": "Uzbekistan", "tip": [2, 1], "ev": 1.46, "ml": [1, 1], "ml_p": 0.1006, "pw": 0.5714, "pd": 0.2236, "pl": 0.205, "diverges": true}, {"home": "Portugal", "away": "DR Congo", "tip": [3, 1], "ev": 1.83, "ml": [3, 1], "ml_p": 0.0822, "pw": 0.775, "pd": 0.1344, "pl": 0.0906, "diverges": false}, {"home": "Colombia", "away": "Uzbekistan", "tip": [2, 1], "ev": 1.41, "ml": [1, 1], "ml_p": 0.1152, "pw": 0.5408, "pd": 0.2447, "pl": 0.2145, "diverges": true}, {"home": "Colombia", "away": "DR Congo", "tip": [2, 0], "ev": 1.78, "ml": [2, 0], "ml_p": 0.0882, "pw": 0.7423, "pd": 0.1563, "pl": 0.1014, "diverges": false}, {"home": "Uzbekistan", "away": "DR Congo", "tip": [2, 1], "ev": 1.4, "ml": [1, 1], "ml_p": 0.1177, "pw": 0.5353, "pd": 0.2488, "pl": 0.216, "diverges": true}], "L": [{"home": "England", "away": "Croatia", "tip": [2, 1], "ev": 1.34, "ml": [1, 1], "ml_p": 0.1129, "pw": 0.5136, "pd": 0.2444, "pl": 0.242, "diverges": true}, {"home": "England", "away": "Ghana", "tip": [2, 0], "ev": 1.95, "ml": [3, 0], "ml_p": 0.0972, "pw": 0.8282, "pd": 0.1141, "pl": 0.0577, "diverges": true}, {"home": "England", "away": "Panama", "tip": [2, 0], "ev": 1.78, "ml": [2, 0], "ml_p": 0.1037, "pw": 0.7332, "pd": 0.1673, "pl": 0.0995, "diverges": false}, {"home": "Croatia", "away": "Ghana", "tip": [2, 1], "ev": 1.73, "ml": [2, 1], "ml_p": 0.0874, "pw": 0.7228, "pd": 0.1614, "pl": 0.1158, "diverges": false}, {"home": "Croatia", "away": "Panama", "tip": [2, 1], "ev": 1.53, "ml": [2, 1], "ml_p": 0.097, "pw": 0.6095, "pd": 0.2107, "pl": 0.1798, "diverges": false}, {"home": "Ghana", "away": "Panama", "tip": [1, 2], "ev": 1.26, "ml": [1, 1], "ml_p": 0.097, "pw": 0.2833, "pd": 0.2306, "pl": 0.4861, "diverges": true}]}, "headline": {"final_a": "Argentina", "final_b": "Spain", "final_p": 0.0411}};
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const pct = (x) => x >= 0.995 ? "100%" : x >= 0.1 ? `${(x*100).toFixed(0)}%` : x >= 0.01 ? `${(x*100).toFixed(1)}%` : x > 0 ? `${(x*100).toFixed(2)}%` : "—";
+const cclr = (confed) => DATA.confed_colors[confed] || "#888";
+const byName = Object.fromEntries(DATA.teams.map(t => [t.name, t]));
+
+// Country flag emoji per team. Unicode regional-indicator pairs for sovereign
+// states (ISO 3166-1 alpha-2) and subdivision tag sequences for England &
+// Scotland. Renders natively from the system emoji font — no images, no CDN.
+const FLAGS = {
+  "Mexico": "\u{1F1F2}\u{1F1FD}", "South Africa": "\u{1F1FF}\u{1F1E6}",
+  "South Korea": "\u{1F1F0}\u{1F1F7}", "Czechia": "\u{1F1E8}\u{1F1FF}",
+  "Canada": "\u{1F1E8}\u{1F1E6}", "Bosnia & Herzegovina": "\u{1F1E7}\u{1F1E6}",
+  "Qatar": "\u{1F1F6}\u{1F1E6}", "Switzerland": "\u{1F1E8}\u{1F1ED}",
+  "Brazil": "\u{1F1E7}\u{1F1F7}", "Morocco": "\u{1F1F2}\u{1F1E6}",
+  "Haiti": "\u{1F1ED}\u{1F1F9}",
+  "Scotland": "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
+  "United States": "\u{1F1FA}\u{1F1F8}", "Paraguay": "\u{1F1F5}\u{1F1FE}",
+  "Australia": "\u{1F1E6}\u{1F1FA}", "Türkiye": "\u{1F1F9}\u{1F1F7}",
+  "Germany": "\u{1F1E9}\u{1F1EA}", "Curaçao": "\u{1F1E8}\u{1F1FC}",
+  "Ivory Coast": "\u{1F1E8}\u{1F1EE}", "Ecuador": "\u{1F1EA}\u{1F1E8}",
+  "Netherlands": "\u{1F1F3}\u{1F1F1}", "Japan": "\u{1F1EF}\u{1F1F5}",
+  "Sweden": "\u{1F1F8}\u{1F1EA}", "Tunisia": "\u{1F1F9}\u{1F1F3}",
+  "Belgium": "\u{1F1E7}\u{1F1EA}", "Egypt": "\u{1F1EA}\u{1F1EC}",
+  "IR Iran": "\u{1F1EE}\u{1F1F7}", "New Zealand": "\u{1F1F3}\u{1F1FF}",
+  "Spain": "\u{1F1EA}\u{1F1F8}", "Cabo Verde": "\u{1F1E8}\u{1F1FB}",
+  "Saudi Arabia": "\u{1F1F8}\u{1F1E6}", "Uruguay": "\u{1F1FA}\u{1F1FE}",
+  "France": "\u{1F1EB}\u{1F1F7}", "Senegal": "\u{1F1F8}\u{1F1F3}",
+  "Iraq": "\u{1F1EE}\u{1F1F6}", "Norway": "\u{1F1F3}\u{1F1F4}",
+  "Argentina": "\u{1F1E6}\u{1F1F7}", "Algeria": "\u{1F1E9}\u{1F1FF}",
+  "Austria": "\u{1F1E6}\u{1F1F9}", "Jordan": "\u{1F1EF}\u{1F1F4}",
+  "Portugal": "\u{1F1F5}\u{1F1F9}", "DR Congo": "\u{1F1E8}\u{1F1E9}",
+  "Uzbekistan": "\u{1F1FA}\u{1F1FF}", "Colombia": "\u{1F1E8}\u{1F1F4}",
+  "England": "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}",
+  "Croatia": "\u{1F1ED}\u{1F1F7}", "Ghana": "\u{1F1EC}\u{1F1ED}",
+  "Panama": "\u{1F1F5}\u{1F1E6}",
+};
+const flag = (name) => FLAGS[name] || "";
+
+// --- funnel diagram --------------------------------------------------------
+// Visualizes a team's tournament path as a funnel. Each stage is a vertical
+// slice whose height is proportional to the *cumulative* probability of
+// reaching that round. Between consecutive stages we draw a trapezoid whose
+// converging edges make the round-by-round drop-off intuitive at a glance,
+// plus a numeric conditional-survival label.
+function funnelSvg(team, color) {
+  const stages = [
+    {lbl: "Adv",   p: team.advance},
+    {lbl: "R16",   p: team.r16},
+    {lbl: "QF",    p: team.qf},
+    {lbl: "SF",    p: team.sf},
+    {lbl: "Final", p: team.final},
+    {lbl: "Champ", p: team.champion},
+  ];
+  const W = 720, H = 170;
+  const padX = 36, padTop = 28, padBot = 44;
+  const innerH = H - padTop - padBot;
+  const midY = padTop + innerH / 2;
+  // Floor any tiny prob to a hairline so vanishing slices are still visible.
+  const floor = 0.005;
+  const pts = stages.map((s, i) => {
+    const eff = Math.max(s.p, floor);
+    return {
+      x: padX + i * ((W - 2 * padX) / (stages.length - 1)),
+      h: eff * innerH,
+      p: s.p,
+      lbl: s.lbl,
+    };
+  });
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+  // Baseline reference for "100%"
+  svg += `<line class="funnel-baseline" x1="${padX}" x2="${W-padX}" y1="${midY - innerH/2}" y2="${midY - innerH/2}" stroke-width="1" stroke-dasharray="3,4"/>`;
+  svg += `<line class="funnel-baseline" x1="${padX}" x2="${W-padX}" y1="${midY + innerH/2}" y2="${midY + innerH/2}" stroke-width="1" stroke-dasharray="3,4"/>`;
+  // Trapezoids
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i+1];
+    const ay1 = midY - a.h/2, ay2 = midY + a.h/2;
+    const by1 = midY - b.h/2, by2 = midY + b.h/2;
+    svg += `<polygon class="funnel-poly" points="${a.x},${ay1} ${b.x},${by1} ${b.x},${by2} ${a.x},${ay2}" fill="${color}" opacity="${0.85 - i*0.07}"/>`;
+  }
+  // Stage ticks + value labels
+  pts.forEach((pt, i) => {
+    const y1 = midY - pt.h/2, y2 = midY + pt.h/2;
+    svg += `<line class="stage-tick" x1="${pt.x}" x2="${pt.x}" y1="${y1}" y2="${y2}" stroke-width="1.5"/>`;
+    svg += `<text class="stage-lbl" x="${pt.x}" y="${padTop - 12}" text-anchor="middle">${pt.lbl.toUpperCase()}</text>`;
+    svg += `<text class="stage-val" x="${pt.x}" y="${H - padBot + 18}" text-anchor="middle" font-family="ui-monospace,monospace">${pct(pt.p)}</text>`;
+  });
+  // Drop-off labels between stages — conditional survival rate.
+  for (let i = 1; i < pts.length; i++) {
+    const prev = pts[i-1], cur = pts[i];
+    const surv = stages[i-1].p > 0 ? (stages[i].p / stages[i-1].p) : 0;
+    const cls = surv >= 0.65 ? "drop-lbl ok" : surv < 0.35 ? "drop-lbl big" : "drop-lbl";
+    const xm = (prev.x + cur.x) / 2;
+    svg += `<text class="${cls}" x="${xm}" y="${H - padBot + 34}" text-anchor="middle" font-family="ui-monospace,monospace">${(surv*100).toFixed(0)}% survive</text>`;
+  }
+  return `<div class="funnel-wrap">${svg}</svg></div>`;
+}
+
+// --- tabs ---
+$$("nav.tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    $$("nav.tabs button").forEach(b => b.classList.toggle("active", b === btn));
+    const id = btn.dataset.view;
+    $$("section.view").forEach(s => s.classList.toggle("active", s.id === id));
+  });
+});
+
+// --- champion race ---
+function renderChampion() {
+  const sorted = [...DATA.teams].sort((a, b) => b.champion - a.champion);
+  const top = sorted.slice(0, 24);
+  const max = top[0].champion;
+  const container = $("#champ-bars");
+  container.innerHTML = "";
+  top.forEach((t, i) => {
+    const row = document.createElement("div");
+    row.className = "champ-bar";
+    row.dataset.team = t.name;
+    const w = max > 0 ? (t.champion / max * 100) : 0;
+    row.innerHTML = `
+      <div class="rank">${i+1}</div>
+      <div class="name"><span class="confed-chip" style="background:${cclr(t.confed)}"></span><span class="fl">${flag(t.name)}</span>${t.name}</div>
+      <div class="bar"><div class="fill" style="width:${w.toFixed(1)}%; background:${cclr(t.confed)}"></div></div>
+      <div class="pct">${pct(t.champion)}</div>`;
+    row.addEventListener("click", () => showChampDetail(t));
+    container.appendChild(row);
+  });
+  showChampDetail(top[0]);
+  renderMarket();
+}
+function showChampDetail(t) {
+  const d = $("#champ-detail");
+  d.classList.add("shown");
+  d.innerHTML = `
+    <h3><span class="confed-chip" style="background:${cclr(t.confed)}"></span><span class="fl" style="font-size:1.3em">${flag(t.name)}</span>${t.name} <span style="color:var(--muted); font-weight:400; font-size:12px">— Group ${t.group} · Elo ${t.elo} · att ${t.attack.toFixed(2)} · def ${t.defense.toFixed(2)} · pen skill ${(t.shootout*100).toFixed(0)}%</span></h3>
+    ${funnelSvg(t, cclr(t.confed))}
+    ${t.market_odds ? `<div style="margin-top:10px; font-size:12px; color:var(--muted)">Bookmaker odds <b style="color:var(--text)">${t.market_odds}</b>${t.poly ? ` · Polymarket <b style="color:var(--text)">${t.poly}%</b>` : ""}</div>` : ""}
+  `;
+}
+
+// --- market ---
+function renderMarket() {
+  const m = DATA.market;
+  const tbody = $("#market-tbody");
+  if (!m.rows.length) { $("#market-card").style.display = "none"; return; }
+  const hasPoly = m.rows.some(r => r.poly != null);
+  $("#market-overround").textContent = `~${m.overround}%`;
+  const head = `<th>Team</th><th>Model</th><th>Market</th>${hasPoly ? "<th>Polymkt</th>" : ""}<th>Odds</th><th>Lean</th>`;
+  $("#market-thead").innerHTML = `<tr>${head}</tr>`;
+  tbody.innerHTML = "";
+  m.rows.sort((a, b) => a.odds - b.odds);
+  m.rows.forEach(r => {
+    let lean = "≈"; let cls = "lean-eq";
+    if (r.model > r.market * 1.15) { lean = "model ▲"; cls = "lean-up"; }
+    else if (r.model < r.market * 0.85) { lean = "market ▲"; cls = "lean-down"; }
+    tbody.innerHTML += `
+      <tr>
+        <td>${r.name}</td>
+        <td>${pct(r.model)}</td>
+        <td>${pct(r.market)}</td>
+        ${hasPoly ? `<td>${r.poly != null ? r.poly.toFixed(1) + "%" : "—"}</td>` : ""}
+        <td>${r.odds}</td>
+        <td class="${cls}">${lean}</td>
+      </tr>`;
+  });
+}
+
+// --- groups view ---
+function renderGroups() {
+  const root = $("#groups-grid");
+  root.innerHTML = "";
+  Object.keys(DATA.groups).sort().forEach(letter => {
+    const card = document.createElement("div");
+    card.className = "group-card";
+    card.innerHTML = `<h3>Group ${letter}</h3>`;
+    const teams = DATA.groups[letter].map(n => byName[n]);
+    teams.sort((a, b) => b.advance - a.advance);
+    const maxAdv = Math.max(...teams.map(t => t.advance), 0.01);
+    teams.forEach(t => {
+      card.innerHTML += `
+        <div class="group-team" title="Elo ${t.elo} · att ${t.attack.toFixed(2)} · def ${t.defense.toFixed(2)} · champ ${pct(t.champion)}">
+          <span class="confed-chip" style="background:${cclr(t.confed)}"></span>
+          <span><span class="fl">${flag(t.name)}</span>${t.name}</span>
+          <div class="mini-bar"><div class="fill" style="width:${(t.advance/maxAdv*100).toFixed(0)}%; background:${cclr(t.confed)}"></div></div>
+          <span class="num">${pct(t.advance)}</span>
+        </div>`;
+    });
+    const pairs = DATA.group_pairs[letter] || [];
+    if (pairs.length) {
+      const p = pairs[0];
+      card.innerHTML += `<div class="pair-line">Most likely qualifiers · <b>${p.a}</b> + <b>${p.b}</b> · ${pct(p.p)}</div>`;
+    }
+    root.appendChild(card);
+  });
+}
+
+// --- bracket view ---
+let highlightTeam = null;
+function renderBracket() {
+  const grid = $("#bracket-grid");
+  grid.innerHTML = "";
+  DATA.bracket.forEach((tie, i) => {
+    const card = document.createElement("div");
+    card.className = "tie";
+    card.innerHTML = `
+      <div class="tie-head"><span>Tie ${i+1}</span><span>${tie.slot_a} v ${tie.slot_b}</span></div>
+      <div class="side" data-side="a">
+        ${tie.side_a.map(o => `<div class="side-row" data-team="${o.name}"><span class="confed-chip" style="background:${cclr(byName[o.name].confed)}"></span><span class="fl">${flag(o.name)}</span><span class="nm">${o.name}</span><span class="pp">${pct(o.p)}</span></div>`).join("")}
+      </div>
+      <div class="divider">vs</div>
+      <div class="side" data-side="b">
+        ${tie.side_b.map(o => `<div class="side-row" data-team="${o.name}"><span class="confed-chip" style="background:${cclr(byName[o.name].confed)}"></span><span class="fl">${flag(o.name)}</span><span class="nm">${o.name}</span><span class="pp">${pct(o.p)}</span></div>`).join("")}
+      </div>
+      ${tie.pairs.length ? `<div class="pair-most">Top pairing · <b style="color:var(--text)">${tie.pairs[0].a}</b> vs <b style="color:var(--text)">${tie.pairs[0].b}</b> · ${pct(tie.pairs[0].p)}</div>` : ""}
+    `;
+    grid.appendChild(card);
+  });
+  $$(".tie .side-row").forEach(row => {
+    row.addEventListener("click", () => {
+      const team = row.dataset.team;
+      highlightTeam = (highlightTeam === team) ? null : team;
+      applyHighlight();
+      updateBracketStatus();
+    });
+  });
+  // Populate team-finder select.
+  const sel = $("#bracket-team");
+  sel.innerHTML = `<option value="">— Highlight a team —</option>` +
+    [...DATA.teams].sort((a,b) => a.name.localeCompare(b.name))
+      .map(t => `<option value="${t.name}">${flag(t.name)} ${t.name} (G${t.group})</option>`).join("");
+  sel.addEventListener("change", () => {
+    highlightTeam = sel.value || null;
+    applyHighlight();
+    updateBracketStatus();
+  });
+  $("#bracket-clear").addEventListener("click", () => {
+    highlightTeam = null;
+    sel.value = "";
+    applyHighlight();
+    updateBracketStatus();
+  });
+}
+function applyHighlight() {
+  $$(".tie .side-row").forEach(row => {
+    row.classList.toggle("highlight", highlightTeam != null && row.dataset.team === highlightTeam);
+  });
+  $("#bracket-team").value = highlightTeam || "";
+}
+function updateBracketStatus() {
+  const out = $("#bracket-status");
+  if (!highlightTeam) { out.innerHTML = ""; return; }
+  const t = byName[highlightTeam];
+  // Slots where the team appears, sorted by probability.
+  const slots = DATA.bracket.flatMap((tie) => {
+    const a = tie.side_a.find(o => o.name === highlightTeam);
+    const b = tie.side_b.find(o => o.name === highlightTeam);
+    const rows = [];
+    if (a) rows.push({tie: tie.idx + 1, side: tie.slot_a, p: a.p});
+    if (b) rows.push({tie: tie.idx + 1, side: tie.slot_b, p: b.p});
+    return rows;
+  }).sort((x, y) => y.p - x.p);
+  out.innerHTML = `
+    <div class="panel" style="margin-top:14px">
+      <h2 style="margin-bottom:8px"><span class="fl" style="font-size:1.3em">${flag(t.name)}</span>${t.name} · path probabilities</h2>
+      ${funnelSvg(t, cclr(t.confed))}
+      ${slots.length ? `<div style="margin-top:12px; font-size:12px; color:var(--muted)">Most likely R32 slots: ${slots.slice(0,4).map(s => `Tie ${s.tie} (${s.side}) <b style="color:var(--text)">${pct(s.p)}</b>`).join(" · ")}</div>` : ""}
+    </div>
+  `;
+}
+
+// --- tipps view ---
+function renderTipps() {
+  const root = $("#tipps-grid");
+  root.innerHTML = "";
+  Object.keys(DATA.tipps).sort().forEach(letter => {
+    const matches = DATA.tipps[letter];
+    const card = document.createElement("div");
+    card.className = "tipps-card";
+    const total = matches.reduce((s, m) => s + m.ev, 0);
+    let html = `<h3>Group ${letter}</h3>`;
+    matches.forEach(m => {
+      const warn = m.diverges ? "warn" : "";
+      html += `
+        <div class="tipps-match ${warn}">
+          <div class="matchup">
+            <div><span class="fl">${flag(m.home)}</span>${m.home} <span style="color:var(--muted)">–</span> <span class="fl">${flag(m.away)}</span>${m.away}</div>
+            <div class="wdl">${pct(m.pw)} · ${pct(m.pd)} · ${pct(m.pl)} · most likely ${m.ml[0]}–${m.ml[1]}</div>
+          </div>
+          <div><span class="tip-pill">${m.tip[0]}–${m.tip[1]}</span></div>
+          <div class="ev">${m.ev.toFixed(2)} pts</div>
+        </div>`;
+    });
+    html += `<div class="footer">Expected total · <b style="color:var(--text)">${total.toFixed(2)} pts</b></div>`;
+    card.innerHTML = html;
+    root.appendChild(card);
+  });
+}
+
+// --- how-it-works tab -----------------------------------------------------
+// Re-implements the Python match model in JS for the explanatory widgets.
+// Kept in lockstep with src/model.py — change one, change both.
+
+const LG_AVG = DATA.meta.lg_avg;
+const DC_RHO = DATA.meta.dc_rho;
+const HOSTS = new Set(DATA.meta.hosts);
+const HOST_ATT = DATA.meta.host_attack_mult;
+const HOST_DEF = DATA.meta.host_defense_mult;
+const MIN_LAM  = DATA.meta.min_lambda;
+
+function lambdas(a, b) {
+  let la = a.attack * b.defense / LG_AVG;
+  let lb = b.attack * a.defense / LG_AVG;
+  if (HOSTS.has(a.name)) { la *= HOST_ATT; lb *= HOST_DEF; }
+  if (HOSTS.has(b.name)) { lb *= HOST_ATT; la *= HOST_DEF; }
+  return [Math.max(MIN_LAM, la), Math.max(MIN_LAM, lb)];
+}
+function poisson(k, lam) {
+  // exp(-lam) * lam^k / k!
+  let p = Math.exp(-lam);
+  for (let i = 1; i <= k; i++) p *= lam / i;
+  return p;
+}
+function dcTau(x, y, la, lb, rho) {
+  if (x === 0 && y === 0) return Math.max(0, 1 - la*lb*rho);
+  if (x === 0 && y === 1) return Math.max(0, 1 + la*rho);
+  if (x === 1 && y === 0) return Math.max(0, 1 + lb*rho);
+  if (x === 1 && y === 1) return Math.max(0, 1 - rho);
+  return 1.0;
+}
+function scoreGrid(la, lb, N=8) {
+  const px = []; const py = [];
+  for (let k = 0; k <= N; k++) { px.push(poisson(k, la)); py.push(poisson(k, lb)); }
+  const grid = [];
+  let total = 0;
+  for (let x = 0; x <= N; x++) {
+    const row = [];
+    for (let y = 0; y <= N; y++) {
+      const v = px[x] * py[y] * dcTau(x, y, la, lb, DC_RHO);
+      row.push(v); total += v;
+    }
+    grid.push(row);
+  }
+  for (let x = 0; x <= N; x++) for (let y = 0; y <= N; y++) grid[x][y] /= total;
+  return {grid, px, py};
+}
+function samplePoisson(lam) {
+  // Knuth — fine for small lam.
+  const L = Math.exp(-lam);
+  let k = 0, p = 1;
+  while (true) {
+    p *= Math.random();
+    if (p <= L) return k;
+    k++;
+  }
+}
+function rollMatch(la, lb) {
+  // Rejection sampling against the DC correction (cap = max tau).
+  const m = Math.max(1, 1 - la*lb*DC_RHO, 1 - DC_RHO);
+  while (true) {
+    const x = samplePoisson(la), y = samplePoisson(lb);
+    if (Math.random() * m <= dcTau(x, y, la, lb, DC_RHO)) return [x, y];
+  }
+}
+
+function renderWikiFlow() {
+  const steps = [
+    {lbl: "Ratings",         sub: "attack · defense",  color: cclr("UEFA")},
+    {lbl: "Expected goals",  sub: "λ_A, λ_B",          color: cclr("CONMEBOL")},
+    {lbl: "Score sample",    sub: "Poisson + DC",      color: cclr("CONCACAF")},
+    {lbl: "Group table",     sub: "6 matches",         color: cclr("CAF")},
+    {lbl: "Bracket",         sub: "32 → 1",            color: cclr("AFC")},
+    {lbl: "Champion",        sub: "count / 20k",       color: cclr("OFC")},
+  ];
+  const W = 900, H = 100, w = (W - 30) / steps.length;
+  let inner = "";
+  steps.forEach((s, i) => {
+    const x = 8 + i * w;
+    inner += `<rect x="${x}" y="22" width="${w-14}" height="58" rx="6" fill="${s.color}" opacity="0.18" stroke="${s.color}" stroke-width="1.5"/>`;
+    inner += `<text x="${x + (w-14)/2}" y="46" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">${s.lbl}</text>`;
+    inner += `<text x="${x + (w-14)/2}" y="66" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="ui-monospace,monospace">${s.sub}</text>`;
+    if (i < steps.length - 1) {
+      const ax = x + (w-14), bx = 8 + (i+1)*w;
+      inner += `<path d="M ${ax} 51 L ${bx} 51" stroke="var(--accent)" stroke-width="1.5" fill="none" marker-end="url(#wikiArrow)"/>`;
+    }
+  });
+  const svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs><marker id="wikiArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="var(--accent)"/></marker></defs>
+    ${inner}
+  </svg>`;
+  $("#wiki-flow").innerHTML = svg;
+}
+
+function renderWikiBars() {
+  const teams = [...DATA.teams].sort((a, b) => b.attack - a.attack).slice(0, 8);
+  const teams_def = [...DATA.teams].sort((a, b) => a.defense - b.defense).slice(0, 8);
+  const maxA = Math.max(...DATA.teams.map(t => t.attack));
+  const maxD = Math.max(...DATA.teams.map(t => t.defense));
+  let html = `<div class="wiki-grid-2">
+    <div><div class="wiki-sublabel">Top attacks (goals scored vs avg)</div>`;
+  teams.forEach(t => {
+    html += `<div class="wiki-bar-row">
+      <div class="lbl"><span class="confed-chip" style="background:${cclr(t.confed)}"></span><span class="fl">${flag(t.name)}</span>${t.name}</div>
+      <div class="bar"><div class="fill" style="width:${(t.attack/maxA*100).toFixed(0)}%; background:var(--accent)"></div></div>
+      <div class="num">${t.attack.toFixed(2)}</div>
+    </div>`;
+  });
+  html += `</div><div><div class="wiki-sublabel">Best defenses (goals conceded vs avg)</div>`;
+  teams_def.forEach(t => {
+    html += `<div class="wiki-bar-row">
+      <div class="lbl"><span class="confed-chip" style="background:${cclr(t.confed)}"></span><span class="fl">${flag(t.name)}</span>${t.name}</div>
+      <div class="bar"><div class="fill" style="width:${(t.defense/maxD*100).toFixed(0)}%; background:var(--accent-2)"></div></div>
+      <div class="num">${t.defense.toFixed(2)}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  $("#wiki-bars").innerHTML = html;
+  $("#wiki-lgavg").textContent = LG_AVG.toFixed(2);
+  $("#wiki-rho").textContent = DC_RHO.toFixed(4);
+  $("#wiki-sigma").textContent = DATA.meta.rating_sigma.toFixed(0);
+}
+
+function renderWikiFormula() {
+  const a = byName[$("#wiki-team-a").value];
+  const b = byName[$("#wiki-team-b").value];
+  if (!a || !b) return;
+  const [la, lb] = lambdas(a, b);
+  const hostNote = HOSTS.has(a.name) || HOSTS.has(b.name)
+    ? `<div style="color:var(--accent); font-size:11px; margin-top:6px">⚐ Host edge applied: home-soil teams × ${HOST_ATT} attack, × ${HOST_DEF} defense.</div>`
+    : "";
+  $("#wiki-formula").innerHTML = `
+    <div><span class="ann">// raw λ for ${a.name}</span></div>
+    <div>λ<sub>${a.name}</sub> = <span class="var">attack(${a.name})</span> × <span class="opn">defense(${b.name})</span> / LG_AVG</div>
+    <div>             = <span class="num">${a.attack.toFixed(2)}</span> × <span class="num">${b.defense.toFixed(2)}</span> / <span class="num">${LG_AVG.toFixed(2)}</span> <span class="arrow">→</span> <span class="num"><b>${la.toFixed(2)}</b> goals</span></div>
+    <div style="height:6px"></div>
+    <div><span class="ann">// raw λ for ${b.name}</span></div>
+    <div>λ<sub>${b.name}</sub> = <span class="var">attack(${b.name})</span> × <span class="opn">defense(${a.name})</span> / LG_AVG</div>
+    <div>             = <span class="num">${b.attack.toFixed(2)}</span> × <span class="num">${a.defense.toFixed(2)}</span> / <span class="num">${LG_AVG.toFixed(2)}</span> <span class="arrow">→</span> <span class="num"><b>${lb.toFixed(2)}</b> goals</span></div>
+    ${hostNote}
+  `;
+  renderWikiHeatmap(a, b, la, lb);
+}
+
+function renderWikiHeatmap(a, b, la, lb) {
+  const N = 6;
+  const {grid, px, py} = scoreGrid(la, lb, N);
+  // Poisson marginal bars (one for each side).
+  let bars = `<div style="margin-bottom:10px"><div class="wiki-sublabel"><span class="fl">${flag(a.name)}</span>${a.name} — λ = ${la.toFixed(2)}</div>`;
+  let mx = Math.max(...px.slice(0, N+1));
+  for (let k = 0; k <= N; k++) {
+    bars += `<div class="wiki-pois-row">
+      <div class="k">${k}</div>
+      <div class="dot" style="background:${cclr(a.confed)}"></div>
+      <div class="bar"><div class="fill" style="width:${(px[k]/mx*100).toFixed(0)}%; background:${cclr(a.confed)}"></div></div>
+      <div class="pp">${(px[k]*100).toFixed(1)}%</div>
+    </div>`;
+  }
+  bars += `</div><div><div class="wiki-sublabel"><span class="fl">${flag(b.name)}</span>${b.name} — λ = ${lb.toFixed(2)}</div>`;
+  mx = Math.max(...py.slice(0, N+1));
+  for (let k = 0; k <= N; k++) {
+    bars += `<div class="wiki-pois-row">
+      <div class="k">${k}</div>
+      <div class="dot" style="background:${cclr(b.confed)}"></div>
+      <div class="bar"><div class="fill" style="width:${(py[k]/mx*100).toFixed(0)}%; background:${cclr(b.confed)}"></div></div>
+      <div class="pp">${(py[k]*100).toFixed(1)}%</div>
+    </div>`;
+  }
+  bars += `</div>`;
+  $("#wiki-marginals").innerHTML = bars;
+
+  // Joint heatmap as SVG.
+  const cell = 44, pad = 32;
+  const size = pad + (N+1) * cell + 8;
+  let svg = `<svg viewBox="0 0 ${size} ${size}" preserveAspectRatio="none">`;
+  let maxG = 0;
+  for (let x = 0; x <= N; x++) for (let y = 0; y <= N; y++) if (grid[x][y] > maxG) maxG = grid[x][y];
+  // Cells
+  for (let x = 0; x <= N; x++) {
+    for (let y = 0; y <= N; y++) {
+      const p = grid[x][y];
+      const t = maxG > 0 ? p / maxG : 0;
+      const fill = `rgba(240, 165, 0, ${(0.05 + t*0.95).toFixed(3)})`;  // accent gold
+      const dc = (x <= 1 && y <= 1);
+      const stroke = dc ? cclr("UEFA") : "rgba(255,255,255,0.06)";
+      const strokeW = dc ? 1.5 : 1;
+      svg += `<rect x="${pad + y*cell}" y="${pad + x*cell}" width="${cell-2}" height="${cell-2}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" rx="2"/>`;
+      svg += `<text x="${pad + y*cell + (cell-2)/2}" y="${pad + x*cell + (cell-2)/2 + 4}" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="${t>0.4?'#0d1117':'var(--text)'}">${(p*100).toFixed(p>=0.1?0:1)}%</text>`;
+    }
+  }
+  // Axis labels
+  for (let k = 0; k <= N; k++) {
+    svg += `<text x="${pad + k*cell + (cell-2)/2}" y="${pad - 8}" text-anchor="middle" fill="var(--muted)" font-size="11">${k}</text>`;
+    svg += `<text x="${pad - 8}" y="${pad + k*cell + (cell-2)/2 + 4}" text-anchor="end" fill="var(--muted)" font-size="11">${k}</text>`;
+  }
+  svg += `<text x="${size/2 + cell/2}" y="12" text-anchor="middle" fill="var(--muted)" font-size="10" font-family="ui-monospace,monospace">${b.name} goals →</text>`;
+  svg += `<text x="10" y="${size/2 + cell/2}" text-anchor="middle" fill="var(--muted)" font-size="10" font-family="ui-monospace,monospace" transform="rotate(-90 10 ${size/2 + cell/2})">${a.name} goals →</text>`;
+  svg += `</svg>`;
+  $("#wiki-heatmap").innerHTML = svg + `<div style="color:var(--muted); font-size:11px; margin-top:4px">Cells (0,0) · (0,1) · (1,0) · (1,1) outlined in blue: Dixon-Coles bumps these. Brightest cell = most likely scoreline.</div>`;
+}
+
+// --- roll-a-match state ---
+const rollState = { n: 0, w: 0, d: 0, l: 0 };
+function rollUpdateTally(x, y, isLast) {
+  rollState.n++;
+  if (x > y) rollState.w++;
+  else if (x < y) rollState.l++;
+  else rollState.d++;
+  if (isLast) $("#wiki-roll-last").textContent = `${x} · ${y}`;
+  $("#wiki-roll-n").textContent = rollState.n;
+  $("#wiki-roll-w").textContent = rollState.w;
+  $("#wiki-roll-d").textContent = rollState.d;
+  $("#wiki-roll-l").textContent = rollState.l;
+  const f = (n) => rollState.n ? `${(n/rollState.n*100).toFixed(0)}%` : "—";
+  $("#wiki-roll-w-p").textContent = f(rollState.w);
+  $("#wiki-roll-d-p").textContent = f(rollState.d);
+  $("#wiki-roll-l-p").textContent = f(rollState.l);
+}
+function rollReset() {
+  rollState.n = rollState.w = rollState.d = rollState.l = 0;
+  rollUpdateTally(0, 0, false);
+  $("#wiki-roll-last").textContent = "— · —";
+}
+
+function renderWikiBracketPic() {
+  // Schematic 5-column bracket: 32 → 16 → 8 → 4 → 2 → 1.
+  const cols = [32, 16, 8, 4, 2, 1];
+  const labels = ["R32", "R16", "QF", "SF", "Final", "Champ"];
+  const W = 900, H = 220, padX = 30, padY = 18;
+  const colW = (W - 2*padX) / (cols.length - 1);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+  cols.forEach((n, i) => {
+    const x = padX + i * colW;
+    const slotH = (H - 2*padY) / Math.max(n, 2);
+    for (let k = 0; k < n; k++) {
+      const y = padY + slotH * k + slotH/2;
+      svg += `<rect x="${x-22}" y="${y-3}" width="44" height="6" rx="2" fill="${cclr("UEFA")}" opacity="${0.25 + i*0.13}"/>`;
+      if (i < cols.length - 1 && k % 2 === 0) {
+        const y2 = padY + slotH * (k+1) + slotH/2;
+        const ny = (padY + ((H - 2*padY) / Math.max(cols[i+1], 2)) * Math.floor(k/2) + ((H - 2*padY) / Math.max(cols[i+1], 2))/2);
+        svg += `<path d="M ${x+22} ${y} L ${x+colW-22} ${ny}" stroke="${cclr("UEFA")}" stroke-width="1" opacity="0.4" fill="none"/>`;
+        svg += `<path d="M ${x+22} ${y2} L ${x+colW-22} ${ny}" stroke="${cclr("UEFA")}" stroke-width="1" opacity="0.4" fill="none"/>`;
+      }
+    }
+    svg += `<text x="${x}" y="${H-2}" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="ui-monospace,monospace">${labels[i]} · ${n}</text>`;
+  });
+  svg += `</svg>`;
+  $("#wiki-bracket-pic").innerHTML = svg;
+}
+
+function renderWiki() {
+  // Populate team pickers.
+  const opts = [...DATA.teams].sort((a, b) => a.name.localeCompare(b.name))
+    .map(t => `<option value="${t.name}">${flag(t.name)} ${t.name} (G${t.group})</option>`).join("");
+  $("#wiki-team-a").innerHTML = opts;
+  $("#wiki-team-b").innerHTML = opts;
+  $("#wiki-team-a").value = "Spain";
+  $("#wiki-team-b").value = "Haiti";
+  $("#wiki-team-a").addEventListener("change", renderWikiFormula);
+  $("#wiki-team-b").addEventListener("change", renderWikiFormula);
+  $("#wiki-swap").addEventListener("click", () => {
+    const a = $("#wiki-team-a").value, b = $("#wiki-team-b").value;
+    $("#wiki-team-a").value = b;
+    $("#wiki-team-b").value = a;
+    renderWikiFormula();
+    rollReset();
+  });
+  $("#wiki-roll-btn").addEventListener("click", () => {
+    const a = byName[$("#wiki-team-a").value], b = byName[$("#wiki-team-b").value];
+    const [la, lb] = lambdas(a, b);
+    const [x, y] = rollMatch(la, lb);
+    rollUpdateTally(x, y, true);
+  });
+  $("#wiki-roll-100").addEventListener("click", () => {
+    const a = byName[$("#wiki-team-a").value], b = byName[$("#wiki-team-b").value];
+    const [la, lb] = lambdas(a, b);
+    let last = [0, 0];
+    for (let i = 0; i < 100; i++) {
+      last = rollMatch(la, lb);
+      rollUpdateTally(last[0], last[1], false);
+    }
+    $("#wiki-roll-last").textContent = `${last[0]} · ${last[1]}`;
+  });
+  $("#wiki-roll-reset").addEventListener("click", rollReset);
+
+  renderWikiFlow();
+  renderWikiBars();
+  renderWikiFormula();
+  renderWikiBracketPic();
+}
+
+renderChampion();
+renderGroups();
+renderBracket();
+renderTipps();
+renderWiki();
+
+</script>
+</body>
+</html>
