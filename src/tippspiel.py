@@ -63,6 +63,13 @@ PRESETS = {
         exact=4, diff=3, tendency=2, diff_applies_to_draws=True,
         name="CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)"),
     "kicktipp": ScoringRule(name="kicktipp (4/3/2)"),
+    # TippBlitz per-match tiers: 4 exact / 3 goal-diff / 2 tendency. Bonuses
+    # (early tips, perfect matchdays, KO multiplier, advancement, outright
+    # questions) are separate from per-match scoring and don't shift the
+    # expected-points-optimal tip, so they aren't modeled in ScoringRule.
+    "tippblitz": ScoringRule(
+        exact=4, diff=3, tendency=2, diff_applies_to_draws=False,
+        name="TippBlitz (4 exact / 3 goal-diff / 2 tendency + bonuses)"),
 }
 
 

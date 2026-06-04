@@ -32,14 +32,18 @@ representative favourite win scores more on average).
 
 ```bash
 python tipps.py --preset check24                 # CHECK24 rules -> output/tipps.md
+python tipps.py --preset tippblitz               # TippBlitz 4/3/2 + bonuses
 python tipps.py                                  # kicktipp 4/3/2
 python tipps.py --exact 3 --diff 2 --tendency 1  # match any pool's rules
 ```
 
 Built-in presets: **`check24`** (4 exact / 3 right tendency **and** goal
 difference / 2 right winner — so a correct non-exact draw scores 3; bonus
-questions worth 10 pts are separate) and `kicktipp` (4/3/2). The committed
-[`output/tipps.md`](output/tipps.md) uses the CHECK24 ruleset.
+questions worth 10 pts are separate), **`tippblitz`** (4 exact / 3 goal
+difference / 2 tendency, plus early-tip / perfect-matchday / K.O.-multiplier /
+*Wer kommt weiter?* / outright bonuses — bonuses are independent of per-match
+scoring, so the optimal tips don't shift), and `kicktipp` (4/3/2). The
+committed [`output/tipps.md`](output/tipps.md) uses the CHECK24 ruleset.
 
 Output: [`output/tipps.md`](output/tipps.md) — the EV-optimal tip, its expected
 points, the win/draw/loss split, and the most likely score for each match.

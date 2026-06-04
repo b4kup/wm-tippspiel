@@ -64,6 +64,18 @@ def main(argv=None):
             "- **Bonus questions** are worth **10 points** each — separate from "
             "per-match scoring, so they don't change the optimal tips above, but "
             "they're high-value: answer them.")
+    elif args.preset == "tippblitz":
+        extra_note = (
+            "- **TippBlitz scoring:** 4 pts exact result · 3 pts right goal "
+            "difference · 2 pts right tendency (win/draw/loss).\n"
+            "- **Bonuses** (independent of per-match scoring, so the tips above "
+            "stay optimal): early-tip bonus, perfect-matchday bonus, K.O.-stage "
+            "multiplier, +1 pt for each correct *Wer kommt weiter?* pick, plus "
+            "outright bonus questions (Weltmeister, Torschützenkönig, …). Exact "
+            "values vary per Tippschein — check *Punkteregeln*.\n"
+            "- Strategy implication: KO multiplier raises the value of knockout "
+            "tips (re-run `tipps.py` after the bracket resolves); outright + "
+            "advancement questions are high-leverage — answer them deliberately.")
     teams = load_teams(injuries=not args.no_injuries)
     groups = groups_from_teams(teams)
 
