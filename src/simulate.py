@@ -48,8 +48,52 @@ class Stats:
         return counter[name] / self.n if self.n else 0.0
 
 
+def _make_ko_fatigue_callback(ko_state: dict, ties, p):
+    """Build the `(stage, tie_idx, a, b) -> (fa, fb)` callback for the
+    knockout walk. Tracks each team's last-played (date, city) as it
+    advances; computes per-tie travel/rest/altitude/heat fatigue from
+    that lookback to the scheduled KO venue.
+
+    Cross-round mapping (consecutive pairing in run_knockout):
+        R16 tie i  ← R32 ties (2i, 2i+1)
+        QF  tie i  ← R16 ties (2i, 2i+1) ← R32 ties (4i..4i+3)
+        ...
+    """
+    from .travel import ko_team_fatigue, fatigue_score, KO_SCHEDULE
+
+    last = dict(ko_state["last_group_fixture"])  # team_name -> (date, city)
+    venues = ko_state["venues"]
+    schedule = ko_state.get("ko_schedule", KO_SCHEDULE)
+
+    def _fatigue_for(team_name: str, fixture) -> float:
+        prev = last.get(team_name)
+        if prev is None:
+            return 0.0
+        tf = ko_team_fatigue(team_name, prev[0], prev[1], fixture, venues)
+        return fatigue_score(tf, p.travel_per_1000km, p.rest_day_value,
+                             p.altitude_per_1000m, p.heat_per_degree)
+
+    def callback(stage, tie_idx, a, b):
+        fixture = schedule.get((stage, tie_idx))
+        if fixture is None:
+            return 0.0, 0.0
+        fa = _fatigue_for(a.name, fixture)
+        fb = _fatigue_for(b.name, fixture)
+        # Update both teams' last fixture so the *winner's* next-round lookup
+        # has the right starting point. (Losers don't play another round.)
+        last[a.name] = (fixture.date, fixture.city)
+        last[b.name] = (fixture.date, fixture.city)
+        return fa, fb
+
+    return callback
+
+
 def simulate_tournament_once(groups, rng, p, stats: Stats, results=None,
-                             fatigues=None):
+                             fatigues=None, ko_state=None):
+    """`ko_state`, when provided, is a dict carrying immutable refs needed
+    by the KO travel calc: `last_group_fixture` ({team -> (date, city)}),
+    `venues` ({city -> Venue}), `ko_schedule` ({(round, idx) -> KOFixture}).
+    Missing/None disables KO carryover."""
     winners_by_group, runners_by_group = {}, {}
     third_entries = []  # (group_letter, Team)
 
@@ -95,7 +139,8 @@ def simulate_tournament_once(groups, rng, p, stats: Stats, results=None,
         pair = tuple(sorted((a.name, b.name)))
         stats.r32_pairs[i][pair] += 1
 
-    reached = run_knockout(ties, rng, p, results)
+    ko_callback = _make_ko_fatigue_callback(ko_state, ties, p) if ko_state else None
+    reached = run_knockout(ties, rng, p, results, ko_fatigues=ko_callback)
     for t in reached["R32"]:
         stats.reach_r32[t.name] += 1
     for t in reached["R16"]:
@@ -119,13 +164,25 @@ def run(n_sims: int, params: ModelParams, seed: int | None = None,
     teams = teams or load_teams()
     groups = groups_from_teams(teams)
     fatigues = None
+    ko_state = None
     if travel:
         try:
-            from .travel import compute_match_fatigues
-            fatigues = compute_match_fatigues()
+            from .travel import (compute_match_fatigues, load_schedule,
+                                 load_venues, team_last_group_fixture,
+                                 KO_SCHEDULE)
+            schedule = load_schedule()
+            venues = load_venues()
+            fatigues = compute_match_fatigues(schedule, venues)
+            ko_state = {
+                "last_group_fixture": team_last_group_fixture(schedule),
+                "venues": venues,
+                "ko_schedule": KO_SCHEDULE,
+            }
         except FileNotFoundError:
             fatigues = None
+            ko_state = None
     stats = Stats(n=n_sims)
     for _ in range(n_sims):
-        simulate_tournament_once(groups, rng, params, stats, results, fatigues)
+        simulate_tournament_once(groups, rng, params, stats, results, fatigues,
+                                 ko_state=ko_state)
     return stats, groups

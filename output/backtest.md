@@ -1,6 +1,6 @@
 # Model backtest — 2018 + 2022 World Cups
 
-*Generated 2026-06-03. Scored on 120 matches; outcome = W/D/L at 90 minutes (extra-time / penalty results ignored — they're a separate model).*
+*Generated 2026-06-04. Scored on 120 matches; outcome = W/D/L at 90 minutes (extra-time / penalty results ignored — they're a separate model).*
 
 ## Headline
 
@@ -24,20 +24,22 @@
 
 ## Calibration — tuned model
 
-Bins of predicted probability vs. how often the predicted event actually happened. A well-calibrated model has `gap ≈ 0` per bin.
+Bins of predicted probability vs. how often the predicted event actually happened. A well-calibrated model has `gap ≈ 0` per bin; the `reliability` column shows the observed frequency (█) overlaid with the predicted bin centre (│) on the same 0-100% scale.
 
-| Predicted prob | Observed freq | n | gap |
-|---------------:|--------------:|--:|----:|
-| 6.0% | 8.0% | 25 | +2.0% |
-| 15.8% | 11.0% | 73 | -4.8% |
-| 24.1% | 27.2% | 125 | +3.1% |
-| 33.4% | 27.8% | 18 | -5.7% |
-| 45.1% | 48.6% | 37 | +3.5% |
-| 55.6% | 45.5% | 33 | -10.2% |
-| 64.9% | 66.7% | 21 | +1.8% |
-| 74.5% | 88.9% | 18 | +14.4% |
-| 84.6% | 66.7% | 6 | -17.9% |
-| 93.1% | 100.0% | 4 | +6.9% |
+**ECE** (sample-weighted mean |gap|): **5.0 pp**; 5/10 bins miss by > 5 pp.
+
+| Predicted prob | Observed freq | n | gap | reliability |
+|---------------:|--------------:|--:|----:|:------------|
+| 6.0% | 8.0% | 25 | +2.0% | `█│······················` |
+| 15.8% | 11.0% | 73 | -4.8% | `██·│····················` |
+| 24.1% | 27.2% | 125 | +3.1% | `██████··················` |
+| 33.4% | 27.8% | 18 | -5.7% | `██████··│···············` |
+| 45.1% | 48.6% | 37 | +3.5% | `███████████·············` |
+| 55.6% | 45.5% | 33 | -10.2% | `██████████···│··········` |
+| 64.9% | 66.7% | 21 | +1.8% | `████████████████········` |
+| 74.5% | 88.9% | 18 | +14.4% | `█████████████████████···` |
+| 84.6% | 66.7% | 6 | -17.9% | `████████████████····│···` |
+| 93.1% | 100.0% | 4 | +6.9% | `████████████████████████` |
 
 ## How to apply
 

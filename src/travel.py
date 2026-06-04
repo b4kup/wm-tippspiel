@@ -1,18 +1,19 @@
 """
-Per-team travel + rest-day + altitude fatigue going into each group match.
+Per-team travel + rest-day + altitude + heat fatigue going into each match.
 
 Why this matters in 2026
 ------------------------
 US-Canada-Mexico is the most geographically spread World Cup ever. Some teams
 play a Mexico City → Vancouver → Miami group; others stay within one cluster.
-And Mexico City sits at 2240 m: matches there punish lowland sides who haven't
-acclimated, while Mexico and the South American highland nations are at home.
-Sports-science literature finds:
+Mexico City sits at 2240 m, and Miami/Houston/Dallas/Monterrey are summer
+furnaces. Sports-science literature finds:
   - ~3-5% performance hit per leg of long-haul travel with short rest,
-  - ~3-5% aerobic-capacity drop per 1000 m above ~1500 m for unacclimated sides.
+  - ~3-5% aerobic-capacity drop per 1000 m above ~1500 m for unacclimated sides,
+  - ~1-2% drop per °C above ~25 °C in WBGT for unacclimated sides
+    (Miami/Houston/Dallas summer afternoons reach 32-35 °C ambient; indoor
+    venues with climate control cancel the effect).
 
-Both effects are small but real, and *asymmetric* between the two teams in
-a given fixture.
+All effects are small but real, and *asymmetric* between the two teams.
 
 How fatigue is computed
 -----------------------
@@ -22,31 +23,35 @@ For each team going into each match:
   rest_days       = days since their previous match (large value for match 1)
   altitude_excess = max(0, venue_altitude - ALTITUDE_THRESHOLD_M),
                     but 0 for teams from altitude-acclimated nations
+  heat_excess     = max(0, effective_temp_c - HEAT_THRESHOLD_C),
+                    halved for teams from hot-climate nations; 0 when the
+                    stadium is climate-controlled (Vancouver, Atlanta, Dallas,
+                    Houston, LA, SoFi).
 
 These map to a fatigue score that scales the team's **attack** in that match:
 
   fatigue = travel_per_1000km * km_since / 1000
           + rest_day_value    * max(0, REST_BASELINE_DAYS - rest_days)
           + altitude_per_1000m * altitude_excess / 1000
+          + heat_per_degree   * heat_excess
   attack *= exp(-K_Q * fatigue / 4)        # damp by /4 — keeps the multiplier
                                            # consistent with injury/elo nudges
 
 (K_Q-style scaling keeps the magnitude consistent with how injuries and
 Elo-deltas map to ratings; see src/injuries.py and data/derive_ratings.py.)
 
-A rested team with no travel playing at sea level has zero fatigue. Tunable
-via `ModelParams.travel_per_1000km`, `rest_day_value`, `altitude_per_1000m`.
+A rested team with no travel playing at sea level in a 22 °C / climate-
+controlled venue has zero fatigue. Tunable via the relevant `ModelParams`.
 
 Limitations
 -----------
-- Group stage only. KO venues depend on which teams advance, so a per-sim
-  KO travel calc would require threading the schedule through the bracket
-  solver; for now the upper rounds use no travel adjustment.
 - Travel is treated as a one-shot fatigue carryover, not cumulative across
   the whole group stage. Good enough for the scale of effect.
-- Altitude acclimation is a binary list of confederations/countries with
-  significant high-altitude population centres — not a per-camp acclimation
-  schedule.
+- Altitude / heat acclimation are binary lists of countries with
+  significant high-altitude or hot-climate domestic football — not per-camp
+  acclimation schedules.
+- KO-stage carryover uses the same logic but is computed per sim, once the
+  bracket fills in. See `ko_match_fatigue`.
 """
 
 from __future__ import annotations
@@ -59,6 +64,8 @@ from dataclasses import dataclass
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 REST_BASELINE_DAYS = 3.5    # 3-4 days is the typical group-stage cadence
 ALTITUDE_THRESHOLD_M = 1500.0  # below this, no altitude effect
+HEAT_THRESHOLD_C = 25.0        # below this, no heat effect
+INDOOR_EFFECTIVE_C = 21.0      # climate-controlled stadium proxy
 
 # National teams whose populations / training bases sit at or near tournament
 # altitudes — they don't take an altitude hit playing in Mexico City or
@@ -66,6 +73,19 @@ ALTITUDE_THRESHOLD_M = 1500.0  # below this, no altitude effect
 # Colombia (Bogotá 2640 m).
 ALTITUDE_ACCLIMATED_TEAMS = frozenset({
     "Mexico", "Ecuador", "Colombia",
+})
+
+# Teams from hot-climate nations whose squads train and play in similar
+# summer conditions year-round; they're less affected by heat at Miami,
+# Houston, Dallas, etc. They still take half the heat penalty (heat affects
+# everyone above 30 °C, just less). Sources: tropical / subtropical / Gulf
+# domestic leagues that play through June-July heat.
+HEAT_ACCLIMATED_TEAMS = frozenset({
+    "Mexico", "Saudi Arabia", "Qatar", "IR Iran", "United Arab Emirates",
+    "Brazil", "Ecuador", "Colombia", "Paraguay", "Venezuela", "Bolivia",
+    "Senegal", "Ivory Coast", "Ghana", "Egypt", "Nigeria", "Cameroon",
+    "Morocco", "Tunisia", "Algeria", "DR Congo", "Cabo Verde",
+    "Jamaica", "Haiti", "Cuba", "Curaçao", "Trinidad and Tobago",
 })
 
 
@@ -76,6 +96,14 @@ class Venue:
     latitude: float
     longitude: float
     altitude_m: float
+    temp_c: float = 25.0      # mean June/July afternoon high (outdoor)
+    indoor: bool = False      # climate-controlled stadium
+
+    @property
+    def effective_temp_c(self) -> float:
+        """Temperature the players experience: outdoor ambient unless the
+        stadium is climate-controlled."""
+        return INDOOR_EFFECTIVE_C if self.indoor else self.temp_c
 
 
 @dataclass(frozen=True)
@@ -110,6 +138,8 @@ def load_venues(path: str | None = None) -> dict[str, Venue]:
                 latitude=float(r["latitude"]),
                 longitude=float(r["longitude"]),
                 altitude_m=float(r.get("altitude_m", 0) or 0),
+                temp_c=float(r.get("temp_c") or 25.0),
+                indoor=str(r.get("indoor", "0")).strip() in ("1", "true", "yes"),
             )
     return out
 
@@ -148,6 +178,7 @@ class TeamFatigue:
     km_since: float
     rest_days: int
     altitude_excess_m: float    # 0 if at sea level or team is acclimated
+    heat_excess_c: float = 0.0  # °C above HEAT_THRESHOLD_C, halved if acclimated
 
 
 @dataclass(frozen=True)
@@ -180,17 +211,21 @@ def compute_match_fatigues(
     for m in schedule:
         venue = venues.get(m.city)
         alt = max(0.0, (venue.altitude_m if venue else 0) - ALTITUDE_THRESHOLD_M)
+        heat = max(0.0, ((venue.effective_temp_c if venue else 25.0)
+                         - HEAT_THRESHOLD_C))
         home_km, home_rest = _carryover(by_team[m.home], m.date, venues)
         away_km, away_rest = _carryover(by_team[m.away], m.date, venues)
         home_alt = 0.0 if m.home in ALTITUDE_ACCLIMATED_TEAMS else alt
         away_alt = 0.0 if m.away in ALTITUDE_ACCLIMATED_TEAMS else alt
+        home_heat = heat * (0.5 if m.home in HEAT_ACCLIMATED_TEAMS else 1.0)
+        away_heat = heat * (0.5 if m.away in HEAT_ACCLIMATED_TEAMS else 1.0)
         a_name, b_name = sorted((m.home, m.away))
         if m.home == a_name:
-            a = TeamFatigue(home_km, home_rest, home_alt)
-            b = TeamFatigue(away_km, away_rest, away_alt)
+            a = TeamFatigue(home_km, home_rest, home_alt, home_heat)
+            b = TeamFatigue(away_km, away_rest, away_alt, away_heat)
         else:
-            a = TeamFatigue(away_km, away_rest, away_alt)
-            b = TeamFatigue(home_km, home_rest, home_alt)
+            a = TeamFatigue(away_km, away_rest, away_alt, away_heat)
+            b = TeamFatigue(home_km, home_rest, home_alt, home_heat)
         out[(a_name, b_name)] = MatchFatigue(a=a, b=b)
     return out
 
@@ -208,14 +243,16 @@ def lookup_fatigue(fatigues: dict[tuple[str, str], MatchFatigue],
 
 
 def fatigue_score(tf: TeamFatigue, travel_per_1000km: float,
-                  rest_day_value: float, altitude_per_1000m: float) -> float:
-    """Combine travel / rest-deficit / altitude into one small non-negative
-    scalar (typically 0-0.05) suitable for use as a goals-multiplier exponent.
-    See `src/model.expected_goals`."""
+                  rest_day_value: float, altitude_per_1000m: float,
+                  heat_per_degree: float = 0.0) -> float:
+    """Combine travel / rest-deficit / altitude / heat into one small
+    non-negative scalar (typically 0-0.07) suitable for use as a goals-
+    multiplier exponent. See `src/model.expected_goals`."""
     return (
         travel_per_1000km * tf.km_since / 1000.0
         + rest_day_value * max(0.0, REST_BASELINE_DAYS - tf.rest_days)
         + altitude_per_1000m * tf.altitude_excess_m / 1000.0
+        + heat_per_degree * tf.heat_excess_c
     )
 
 
@@ -240,6 +277,94 @@ def _carryover(team_history: list[tuple[str, str]], match_date: str,
     km = haversine_km(prev_v.latitude, prev_v.longitude,
                       cur_v.latitude, cur_v.longitude)
     return km, _days_between(prev[0], match_date)
+
+
+@dataclass(frozen=True)
+class KOFixture:
+    """Date + venue for a fixed slot in the knockout bracket. Indexed by
+    (round_label, bracket_index): bracket_index goes 0..15 for R32, 0..7 for
+    R16, 0..3 for QF, 0..1 for SF, 0 for Final, in bracket order — matching
+    the consecutive pairing used in `src/tournament.run_knockout`."""
+    date: str
+    city: str
+
+
+# Real 2026 KO schedule, transcribed from FIFA's published draw. R32 venues
+# are in `data/bracket.py` comments; R16/QF/SF/F per FIFA news releases.
+# Dates for R32 ties not specifically reported are placed inside the
+# Jun 28 - Jul 3 window so each winner gets a plausible rest gap.
+KO_SCHEDULE: dict[tuple[str, int], KOFixture] = {
+    ("R32",  0): KOFixture("2026-06-29", "Boston"),
+    ("R32",  1): KOFixture("2026-06-30", "New York"),
+    ("R32",  2): KOFixture("2026-06-28", "Los Angeles"),
+    ("R32",  3): KOFixture("2026-06-28", "Monterrey"),
+    ("R32",  4): KOFixture("2026-07-02", "Toronto"),
+    ("R32",  5): KOFixture("2026-07-02", "Los Angeles"),
+    ("R32",  6): KOFixture("2026-07-01", "San Francisco"),
+    ("R32",  7): KOFixture("2026-07-01", "Seattle"),
+    ("R32",  8): KOFixture("2026-06-29", "Houston"),
+    ("R32",  9): KOFixture("2026-06-30", "Dallas"),
+    ("R32", 10): KOFixture("2026-06-30", "Mexico City"),
+    ("R32", 11): KOFixture("2026-07-01", "Atlanta"),
+    ("R32", 12): KOFixture("2026-07-03", "Miami"),
+    ("R32", 13): KOFixture("2026-07-03", "Dallas"),
+    ("R32", 14): KOFixture("2026-07-02", "Vancouver"),
+    ("R32", 15): KOFixture("2026-07-03", "Kansas City"),
+    ("R16",  0): KOFixture("2026-07-04", "Philadelphia"),
+    ("R16",  1): KOFixture("2026-07-04", "Houston"),
+    ("R16",  2): KOFixture("2026-07-06", "Dallas"),
+    ("R16",  3): KOFixture("2026-07-06", "Seattle"),
+    ("R16",  4): KOFixture("2026-07-05", "New York"),
+    ("R16",  5): KOFixture("2026-07-05", "Mexico City"),
+    ("R16",  6): KOFixture("2026-07-07", "Atlanta"),
+    ("R16",  7): KOFixture("2026-07-07", "Vancouver"),
+    ("QF",   0): KOFixture("2026-07-09", "Boston"),
+    ("QF",   1): KOFixture("2026-07-10", "Kansas City"),
+    ("QF",   2): KOFixture("2026-07-10", "Los Angeles"),
+    ("QF",   3): KOFixture("2026-07-11", "Miami"),
+    ("SF",   0): KOFixture("2026-07-14", "Dallas"),
+    ("SF",   1): KOFixture("2026-07-15", "Atlanta"),
+    ("Final", 0): KOFixture("2026-07-19", "New York"),
+}
+
+
+def team_last_group_fixture(schedule: list[ScheduledMatch] | None = None
+                            ) -> dict[str, tuple[str, str]]:
+    """For each team, return (date, city) of their final group-stage match.
+    Used as the starting point for KO travel/rest accounting."""
+    schedule = schedule or load_schedule()
+    last: dict[str, tuple[str, str]] = {}
+    for m in schedule:
+        for t in (m.home, m.away):
+            cur = last.get(t)
+            if cur is None or m.date > cur[0]:
+                last[t] = (m.date, m.city)
+    return last
+
+
+def ko_team_fatigue(team_name: str, last_date: str, last_city: str,
+                    target: KOFixture,
+                    venues: dict[str, Venue]) -> TeamFatigue:
+    """Travel/rest/altitude/heat carryover for one team into one KO match.
+
+    Uses the same accounting as the group stage: km between consecutive
+    venues, rest days since last match, altitude/heat at the target venue
+    with acclimation rules applied."""
+    prev_v = venues.get(last_city)
+    cur_v = venues.get(target.city)
+    if prev_v is None or cur_v is None:
+        km = 0.0
+    else:
+        km = haversine_km(prev_v.latitude, prev_v.longitude,
+                          cur_v.latitude, cur_v.longitude)
+    rest = _days_between(last_date, target.date)
+    alt_raw = max(0.0, (cur_v.altitude_m if cur_v else 0.0)
+                  - ALTITUDE_THRESHOLD_M)
+    heat_raw = max(0.0, ((cur_v.effective_temp_c if cur_v else 25.0)
+                         - HEAT_THRESHOLD_C))
+    alt = 0.0 if team_name in ALTITUDE_ACCLIMATED_TEAMS else alt_raw
+    heat = heat_raw * (0.5 if team_name in HEAT_ACCLIMATED_TEAMS else 1.0)
+    return TeamFatigue(km, rest, alt, heat)
 
 
 def total_travel_per_team(

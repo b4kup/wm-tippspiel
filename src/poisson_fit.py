@@ -90,6 +90,43 @@ class FittedTeam:
         return lg_avg * math.exp(self.alpha), lg_avg * math.exp(-self.delta)
 
 
+def _recency_weights(matches: list[dict],
+                     weight_by_year: dict[str, float] | None,
+                     half_life_days: float | None,
+                     ref_date: str | None) -> list[float]:
+    """Per-match weight in [0, 1] from date-level exp decay or coarse year
+    buckets. No decay (uniform 1.0) when neither is given.
+
+    Date-level decay: weight = 0.5 ** ((ref_date - match_date).days /
+    half_life_days). Smooth and principled — preferred over year buckets
+    when match dates are available."""
+    if half_life_days and half_life_days > 0:
+        from datetime import date
+        ref = date(*_parse_iso(ref_date)) if ref_date else None
+        w: list[float] = []
+        for m in matches:
+            md = m.get("date", "") or ""
+            if not md or ref is None:
+                w.append(1.0)
+                continue
+            try:
+                d = date(*_parse_iso(md))
+            except Exception:
+                w.append(1.0)
+                continue
+            delta = max(0.0, (ref - d).days)
+            w.append(0.5 ** (delta / half_life_days))
+        return w
+    if weight_by_year:
+        return [weight_by_year.get((m["date"] or "")[:4], 1.0) for m in matches]
+    return [1.0] * len(matches)
+
+
+def _parse_iso(date_str: str) -> tuple[int, int, int]:
+    y, mo, d = date_str.split("-")
+    return int(y), int(mo), int(d)
+
+
 def load_matches(path: str | None = None) -> list[dict]:
     path = path or os.path.join(DATA_DIR, "matches_recent.csv")
     out: list[dict] = []
@@ -109,6 +146,8 @@ def load_matches(path: str | None = None) -> list[dict]:
 def fit_poisson(matches: list[dict], *,
                 max_iter: int = 300, tol: float = 1e-5,
                 weight_by_year: dict[str, float] | None = None,
+                half_life_days: float | None = None,
+                ref_date: str | None = None,
                 damping: float = 0.4,
                 param_clip: float = 1.4,
                 l2_prior_strength: float = 4.0,
@@ -117,7 +156,11 @@ def fit_poisson(matches: list[dict], *,
 
     Returns (per-team fit, home-advantage γ in log-space).
 
-    `weight_by_year`: optional {year: weight} for recency weighting.
+    `weight_by_year`: optional {year: weight} coarse recency weighting.
+    `half_life_days` + `ref_date`: optional date-level exponential decay
+        (overrides weight_by_year). A match `d` days before `ref_date` is
+        weighted `0.5 ** (d / half_life_days)`. Smooth, principled recency
+        — fresher signal counts more without the cliff of year buckets.
     `damping`: under-relaxation factor — each iteration moves only `damping`
         of the way to the new Maher fixed point. Prevents oscillation on
         teams with very lopsided records (Liechtenstein-tier minnows).
@@ -133,11 +176,9 @@ def fit_poisson(matches: list[dict], *,
     idx = {t: i for i, t in enumerate(teams)}
     n = len(teams)
 
-    # Per-match weight (recency)
-    w: list[float] = []
-    for m in matches:
-        year = m["date"][:4] if m["date"] else ""
-        w.append(weight_by_year.get(year, 1.0) if weight_by_year else 1.0)
+    # Per-match weight (recency). Date-level exponential decay takes
+    # precedence over coarse year buckets when both are supplied.
+    w = _recency_weights(matches, weight_by_year, half_life_days, ref_date)
 
     # Initialise α, δ from goal averages (centred).
     gf: dict[int, float] = defaultdict(float)

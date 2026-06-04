@@ -23,6 +23,23 @@ def _pct(x: float) -> str:
     return "—"
 
 
+def _ci95(p: float, n: int) -> float:
+    """95% binomial standard-error half-width (Wald). Use for Monte Carlo
+    uncertainty on a probability estimated from n iid simulations."""
+    if n <= 0:
+        return 0.0
+    return 1.96 * math.sqrt(max(p * (1 - p), 0.0) / n)
+
+
+def _pct_ci(p: float, n: int) -> str:
+    """Probability with a ±95% Monte Carlo sampling-error half-width. Skip the
+    ± part on tiny probabilities (the CI dwarfs the point estimate and clutters
+    the table)."""
+    if p < 0.005:
+        return _pct(p)
+    return f"{_pct(p)} ±{_ci95(p, n)*100:.1f}"
+
+
 def _sorted_by(counter: dict, stats: Stats, names: list[str]) -> list[tuple[str, float]]:
     return sorted(((n, stats.prob(counter, n)) for n in names),
                   key=lambda kv: kv[1], reverse=True)
@@ -124,11 +141,14 @@ def build_report(stats: Stats, groups: dict[str, list[Team]],
 
     # ---- Title odds ------------------------------------------------------
     L.append("## 🏆 Title probability (all 48 teams)\n")
+    L.append(f"*Champion column shows the 95% Monte Carlo CI (`p ± "
+             f"1.96 · √(p(1−p)/{n_sims:,})`); other columns omit it for "
+             "readability.*\n")
     L.append("| # | Team | Champion | Final | Semi | Quarter | R16 |")
     L.append("|--:|------|---------:|------:|-----:|--------:|----:|")
     champ_sorted = _sorted_by(stats.champion, stats, names)
     for i, (name, p) in enumerate(champ_sorted, 1):
-        L.append(f"| {i} | {name} | {_pct(p)} "
+        L.append(f"| {i} | {name} | {_pct_ci(p, n_sims)} "
                  f"| {_pct(stats.prob(stats.reach_final, name))} "
                  f"| {_pct(stats.prob(stats.reach_sf, name))} "
                  f"| {_pct(stats.prob(stats.reach_qf, name))} "

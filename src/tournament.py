@@ -83,16 +83,63 @@ class GroupRow:
     points: int = 0
     gf: int = 0
     ga: int = 0
+    # Per-opponent ledger: opp_name -> (points, gf, ga) for that head-to-head
+    # fixture. Populated as the round-robin plays out; consumed by the FIFA
+    # tiebreaker chain when teams finish on equal points + overall GD + GF.
+    h2h: dict = field(default_factory=dict)
 
     @property
     def gd(self) -> int:
         return self.gf - self.ga
 
 
-def _rank_key(row: GroupRow, rng: random.Random):
-    # Points, then goal difference, then goals for; a random nudge stands in
-    # for head-to-head / fair-play / drawing-of-lots tie-breakers.
-    return (row.points, row.gd, row.gf, rng.random())
+def _overall_key(row: GroupRow) -> tuple:
+    """FIFA's first three tiebreakers: points, GD, then GF."""
+    return (row.points, row.gd, row.gf)
+
+
+def _head_to_head_key(row: GroupRow, group_rows: list[GroupRow],
+                      tied_names: frozenset[str]) -> tuple:
+    """FIFA tiebreakers 4-6: points / GD / GF in the mini-table of matches
+    played between the tied teams only."""
+    pts = gf = ga = 0
+    for opp in tied_names:
+        if opp == row.team.name:
+            continue
+        rec = row.h2h.get(opp)
+        if rec is None:
+            continue
+        p_, gf_, ga_ = rec
+        pts += p_; gf += gf_; ga += ga_
+    return (pts, gf - ga, gf)
+
+
+def _resolve_overall_ties(rows: list[GroupRow], rng: random.Random
+                          ) -> list[GroupRow]:
+    """Sort one group's rows applying the full FIFA tiebreaker chain.
+
+    Order: overall points / GD / GF, then a head-to-head mini-table among any
+    teams still tied (points / GD / GF in matches played between them only),
+    then a random nudge (which stands in for fair-play / drawing of lots)."""
+    # Group rows by the overall key; tied rows inside each bucket get the
+    # head-to-head treatment, then a coin flip for any residual ties.
+    rows = sorted(rows, key=_overall_key, reverse=True)
+    out: list[GroupRow] = []
+    i = 0
+    while i < len(rows):
+        j = i + 1
+        while j < len(rows) and _overall_key(rows[j]) == _overall_key(rows[i]):
+            j += 1
+        bucket = rows[i:j]
+        if len(bucket) > 1:
+            tied_names = frozenset(r.team.name for r in bucket)
+            bucket.sort(
+                key=lambda r: (_head_to_head_key(r, bucket, tied_names),
+                               rng.random()),
+                reverse=True)
+        out.extend(bucket)
+        i = j
+    return out
 
 
 def play_group(teams: list[Team], rng: random.Random,
@@ -113,21 +160,26 @@ def play_group(teams: list[Team], rng: random.Random,
             if pair is not None:
                 ta, tb = pair
                 fa = fatigue_score(ta, p.travel_per_1000km, p.rest_day_value,
-                                   p.altitude_per_1000m)
+                                   p.altitude_per_1000m, p.heat_per_degree)
                 fb = fatigue_score(tb, p.travel_per_1000km, p.rest_day_value,
-                                   p.altitude_per_1000m)
+                                   p.altitude_per_1000m, p.heat_per_degree)
         ga, gb = actual if actual is not None else simulate_match(
             a, b, rng, p, fatigue_a=fa, fatigue_b=fb)
         ra, rb = rows[a.name], rows[b.name]
         ra.gf += ga; ra.ga += gb
         rb.gf += gb; rb.ga += ga
         if ga > gb:
+            pa, pb = 3, 0
             ra.points += 3
         elif gb > ga:
+            pa, pb = 0, 3
             rb.points += 3
         else:
+            pa = pb = 1
             ra.points += 1; rb.points += 1
-    return sorted(rows.values(), key=lambda r: _rank_key(r, rng), reverse=True)
+        ra.h2h[b.name] = (pa, ga, gb)
+        rb.h2h[a.name] = (pb, gb, ga)
+    return _resolve_overall_ties(list(rows.values()), rng)
 
 
 # --------------------------------------------------------------------------
@@ -136,10 +188,12 @@ def play_group(teams: list[Team], rng: random.Random,
 
 def select_best_thirds(thirds: list[tuple[str, GroupRow]], n: int,
                        rng: random.Random) -> list[tuple[str, GroupRow]]:
-    """Rank the 12 third-placed teams and return the best `n`."""
+    """Rank the 12 third-placed teams and return the best `n`. Third-placed
+    teams sit in different groups, so head-to-head doesn't apply — fall back
+    to overall points / GD / GF and break residual ties randomly."""
     return sorted(
         thirds,
-        key=lambda gr: _rank_key(gr[1], rng),
+        key=lambda gr: (_overall_key(gr[1]), rng.random()),
         reverse=True,
     )[:n]
 
@@ -209,12 +263,16 @@ def _ko_winner_from_result(r, a: Team, b: Team):
 
 
 def run_knockout(round_of_32_ties, rng: random.Random, p: ModelParams,
-                 results=None):
+                 results=None, ko_fatigues=None):
     """
     Run a single-elimination bracket from concrete Round-of-32 ties (each a
     (Team, Team) pair). Consecutive ties are paired down the tree. Any tie whose
     result is recorded in `results` uses the real outcome instead of simulating.
     Returns dict with the team that reached each round.
+
+    `ko_fatigues` (optional): callable `(stage, tie_idx, team_a, team_b) ->
+    (fatigue_a, fatigue_b)` giving each team's travel/rest/altitude/heat
+    fatigue score going into the match. Defaults to no carryover.
     """
     reached = {"R32": [], "R16": [], "QF": [], "SF": [], "Final": [], "Champion": None,
                "RunnerUp": None}
@@ -227,10 +285,16 @@ def run_knockout(round_of_32_ties, rng: random.Random, p: ModelParams,
     for stage, label in zip(["R32", "R16", "QF", "SF", "Final"],
                             ["R16", "QF", "SF", "Final", "Champion"]):
         winners = []
-        for a, b in current:
+        for tie_idx, (a, b) in enumerate(current):
             r = results.ko_result(stage, a.name, b.name) if results else None
-            winners.append(_ko_winner_from_result(r, a, b) if r is not None
-                           else simulate_knockout(a, b, rng, p))
+            if r is not None:
+                winners.append(_ko_winner_from_result(r, a, b))
+            else:
+                fa = fb = 0.0
+                if ko_fatigues is not None:
+                    fa, fb = ko_fatigues(stage, tie_idx, a, b)
+                winners.append(simulate_knockout(a, b, rng, p,
+                                                 fatigue_a=fa, fatigue_b=fb))
         if label == "Champion":
             champ = winners[0]
             final_a, final_b = current[0]

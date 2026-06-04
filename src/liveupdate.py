@@ -43,12 +43,14 @@ def load_our_tips(path):
                 for r in csv.DictReader(fh) if r.get("team_a")]
 
 
-def group_tips(groups, rule: ScoringRule, p: ModelParams):
-    """EV-optimal tip for every group-stage pairing."""
+def group_tips(groups, rule: ScoringRule, p: ModelParams,
+               risk: str = "safe"):
+    """EV-optimal tip for every group-stage pairing under `risk`."""
     out = []
     for teams in groups.values():
         for a, b in combinations(teams, 2):
-            tip, _ev = optimal_tip(score_distribution(a, b, p), rule)
+            tip, _ev = optimal_tip(score_distribution(a, b, p), rule,
+                                   risk=risk)
             out.append((GROUP, a.name, b.name, tip[0], tip[1]))
     return out
 

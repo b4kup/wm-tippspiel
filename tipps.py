@@ -38,6 +38,13 @@ def main(argv=None):
     ap.add_argument("--no-injuries", action="store_true",
                     help="ignore data/injuries.csv (full-strength ratings)")
     ap.add_argument("--seed", type=int, default=2026)
+    ap.add_argument("--risk", default="safe",
+                    choices=("safe", "aggressive", "contrarian"),
+                    help="tip strategy. safe = pure EV (default); "
+                         "aggressive = chase exact scores (use when "
+                         "trailing in the pool); contrarian = EV with a "
+                         "small penalty for picking the same score as "
+                         "the crowd (gain differentiation in a tied pool)")
     ap.add_argument("--out", default=os.path.join("output", "tipps.md"))
     ap.add_argument("--save-tips", metavar="PATH",
                     help="also write machine-readable group tips (CSV) for "
@@ -89,10 +96,12 @@ def main(argv=None):
 
     if args.save_tips:
         from src.liveupdate import group_tips, save_our_tips
-        save_our_tips(args.save_tips, group_tips(groups, rule, DEFAULT_PARAMS))
+        save_our_tips(args.save_tips,
+                      group_tips(groups, rule, DEFAULT_PARAMS, risk=args.risk))
         print(f"Saved machine-readable group tips to {args.save_tips}")
 
-    report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top, extra_note)
+    report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top,
+                                extra_note, risk=args.risk)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)

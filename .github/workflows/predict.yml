@@ -1,0 +1,61 @@
+name: Regenerate predictions
+
+# Auto-rebuild the predictions, tips and live-status reports so the
+# committed Markdown / HTML in `output/` always reflects the current
+# model + data. Cron runs nightly during the tournament; manual
+# dispatch lets you trigger off-cycle.
+
+on:
+  push:
+    branches: [main, claude/**]
+    paths:
+      - "data/**"
+      - "src/**"
+      - "run.py"
+      - "tipps.py"
+      - "update.py"
+      - "tune.py"
+  schedule:
+    # Nightly at 04:00 UTC during the 2026 World Cup window.
+    - cron: "0 4 * 6,7 *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Smoke tests
+        run: python tests/test_model.py
+      - name: Regenerate predictions
+        run: python run.py --sims 20000
+      - name: Regenerate Tippspiel tips
+        run: python tipps.py --preset check24
+      - name: Regenerate live status (if results exist)
+        run: |
+          if [ -s data/results.csv ] && [ "$(wc -l < data/results.csv)" -gt 1 ]; then
+            python update.py || true
+          else
+            echo "no results yet — skipping update.py"
+          fi
+      - name: Commit refreshed reports
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: regenerate reports [skip ci]"
+            git push
+          else
+            echo "no changes to commit"
+          fi

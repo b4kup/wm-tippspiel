@@ -35,12 +35,46 @@ def _fmt(stats: BacktestStats) -> str:
 
 
 def _calibration_table(stats: BacktestStats) -> list[str]:
-    L = ["| Predicted prob | Observed freq | n | gap |",
-         "|---------------:|--------------:|--:|----:|"]
+    L = ["| Predicted prob | Observed freq | n | gap | reliability |",
+         "|---------------:|--------------:|--:|----:|:------------|"]
     for p, freq, n in stats.calibration:
         gap = freq - p
-        L.append(f"| {p*100:.1f}% | {freq*100:.1f}% | {n} | {gap*100:+.1f}% |")
+        L.append(f"| {p*100:.1f}% | {freq*100:.1f}% | {n} | {gap*100:+.1f}% "
+                 f"| {_reliability_bar(p, freq)} |")
     return L
+
+
+def _reliability_bar(predicted: float, observed: float, width: int = 24) -> str:
+    """Side-by-side mini-bar: `P` marks the predicted bin centre on a
+    0-100% scale, `█` overlays the observed frequency. Good calibration =
+    the `█` ends roughly where `P` sits. Wide gap = visibly mis-calibrated.
+    """
+    p_pos = max(0, min(width - 1, int(predicted * width)))
+    o_pos = max(0, min(width, int(observed * width)))
+    chars = []
+    for i in range(width):
+        if i < o_pos:
+            chars.append("█")
+        elif i == p_pos:
+            chars.append("│")
+        else:
+            chars.append("·")
+    return "`" + "".join(chars) + "`"
+
+
+def _calibration_summary(stats: BacktestStats) -> str:
+    """Single-line summary: mean |gap| across bins (expected calibration
+    error, ECE) and how many bins are off by >5 pp."""
+    if not stats.calibration:
+        return "no bins"
+    ece = sum(n * abs(freq - p) for p, freq, n in stats.calibration)
+    total = sum(n for _, _, n in stats.calibration)
+    if total == 0:
+        return "no samples"
+    ece /= total
+    bad = sum(1 for p, freq, _n in stats.calibration if abs(freq - p) > 0.05)
+    return (f"**ECE** (sample-weighted mean |gap|): **{ece*100:.1f} pp**; "
+            f"{bad}/{len(stats.calibration)} bins miss by > 5 pp.")
 
 
 def _sparkline(history: list[tuple[int, float]]) -> str:
@@ -108,7 +142,11 @@ def write_report(baseline_v: list[float], tuned: TunedParams,
         "## Calibration — tuned model",
         "",
         "Bins of predicted probability vs. how often the predicted event "
-        "actually happened. A well-calibrated model has `gap ≈ 0` per bin.",
+        "actually happened. A well-calibrated model has `gap ≈ 0` per bin; "
+        "the `reliability` column shows the observed frequency (█) overlaid "
+        "with the predicted bin centre (│) on the same 0-100% scale.",
+        "",
+        _calibration_summary(sa),
         "",
         *_calibration_table(sa),
         "",

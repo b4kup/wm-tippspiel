@@ -1,17 +1,17 @@
-city,stadium,latitude,longitude,altitude_m
-Mexico City,Estadio Azteca,19.3029,-99.1505,2240
-Guadalajara,Estadio Akron,20.6823,-103.4625,1567
-Monterrey,Estadio BBVA,25.6692,-100.2444,534
-Toronto,BMO Field,43.6328,-79.4187,76
-Vancouver,BC Place,49.2767,-123.1119,3
-Atlanta,Mercedes-Benz Stadium,33.7553,-84.4006,320
-Boston,Gillette Stadium,42.0909,-71.2643,49
-Dallas,AT&T Stadium,32.7473,-97.0945,178
-Houston,NRG Stadium,29.6847,-95.4107,15
-Kansas City,Arrowhead Stadium,39.0489,-94.4839,265
-Los Angeles,SoFi Stadium,33.9534,-118.3392,32
-Miami,Hard Rock Stadium,25.9580,-80.2389,3
-New York,MetLife Stadium,40.8136,-74.0744,2
-Philadelphia,Lincoln Financial Field,39.9012,-75.1675,12
-San Francisco,Levi's Stadium,37.4040,-121.9697,5
-Seattle,Lumen Field,47.5952,-122.3316,5
+city,stadium,latitude,longitude,altitude_m,temp_c,indoor
+Mexico City,Estadio Azteca,19.3029,-99.1505,2240,23,0
+Guadalajara,Estadio Akron,20.6823,-103.4625,1567,26,0
+Monterrey,Estadio BBVA,25.6692,-100.2444,534,33,0
+Toronto,BMO Field,43.6328,-79.4187,76,26,0
+Vancouver,BC Place,49.2767,-123.1119,3,21,1
+Atlanta,Mercedes-Benz Stadium,33.7553,-84.4006,320,31,1
+Boston,Gillette Stadium,42.0909,-71.2643,49,26,0
+Dallas,AT&T Stadium,32.7473,-97.0945,178,35,1
+Houston,NRG Stadium,29.6847,-95.4107,15,34,1
+Kansas City,Arrowhead Stadium,39.0489,-94.4839,265,31,0
+Los Angeles,SoFi Stadium,33.9534,-118.3392,32,26,1
+Miami,Hard Rock Stadium,25.9580,-80.2389,3,32,0
+New York,MetLife Stadium,40.8136,-74.0744,2,28,0
+Philadelphia,Lincoln Financial Field,39.9012,-75.1675,12,29,0
+San Francisco,Levi's Stadium,37.4040,-121.9697,5,22,0
+Seattle,Lumen Field,47.5952,-122.3316,5,24,0

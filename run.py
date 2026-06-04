@@ -44,6 +44,18 @@ def main(argv=None):
     ap.add_argument("--no-injuries", action="store_true",
                     help="ignore data/injuries.csv and run every team at full "
                          "strength (default: apply the availability layer)")
+    ap.add_argument("--market-weight", type=float, default=0.0,
+                    help="Bayesian shrinkage toward the betting market's "
+                         "de-vigged title probabilities. 0 = model only "
+                         "(default); 0.2 = nudge ratings 20%% of the way "
+                         "to the market signal; 0.5 = strong anchor. Skip "
+                         "for a pure model view.")
+    ap.add_argument("--scenario", action="append", default=[],
+                    metavar="TEAM:field*FACTOR",
+                    help="nudge a team rating and re-run, e.g. "
+                         "'Spain:attack*0.85' or 'Brazil:elo+30'. Repeat for "
+                         "multi-team scenarios. Allowed fields: elo, attack, "
+                         "defense. Operators: '*' multiplicative, '+' additive.")
     ap.add_argument("--results", default=os.path.join("data", "results.csv"),
                     help="path to results CSV (re-tune ratings + condition the "
                          "simulation on played matches; default data/results.csv)")
@@ -66,6 +78,17 @@ def main(argv=None):
 
     injuries = [] if args.no_injuries else load_injuries()
     teams = load_teams(injuries=not args.no_injuries)
+
+    if args.market_weight > 0:
+        from src.market_fit import apply_market_shrinkage
+        teams = apply_market_shrinkage(teams, args.market_weight)
+        print(f"market shrinkage applied (weight {args.market_weight:.2f})")
+
+    if args.scenario:
+        from src.scenario import apply_scenarios
+        teams, applied = apply_scenarios(teams, args.scenario)
+        for line in applied:
+            print(f"scenario: {line}")
 
     results = None if args.no_results else load_results(args.results)
     n_results = len(results) if results is not None else 0

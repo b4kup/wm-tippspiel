@@ -54,13 +54,25 @@ class ModelParams:
     # (more low-scoring games and draws), matching real football. Set 0 to
     # disable (pure independent Poisson). Typical range ~[-0.15, 0].
     dc_rho: float = -0.0885
-    # Travel/rest/altitude fatigue weights. The tired side scores less and
+    # Bivariate-Poisson shared component (Karlis-Ntzoufras). When > 0, draw
+    # a common Poisson(λ_shared) shock Z and add to both teams' goals,
+    # producing positive correlation (open-game effect: high-scoring games
+    # often score both ways). Default 0 (off) — DC already captures the
+    # dominant low-score correlation. Use λ_shared ~ 0.05-0.20 for
+    # experiments. Subtract λ_shared from each team's λ when active so the
+    # marginals stay calibrated.
+    bivariate_shared_lambda: float = 0.0
+    # Travel/rest/altitude/heat fatigue weights. The tired side scores less and
     # concedes more (applied as a differential between the two teams). Defaults
     # are conservative reads of the sports-science literature; set any to 0 to
     # disable that channel. See src/travel.py.
     travel_per_1000km: float = 0.002      # ~0.2% goals per 1000 km flown
     rest_day_value: float = 0.010         # ~1% goals per missing rest day
     altitude_per_1000m: float = 0.040     # ~4% goals per 1000 m above 1500 m
+    heat_per_degree: float = 0.006        # ~0.6% goals per °C above 25 °C
+                                          # at outdoor venues (climate-controlled
+                                          # stadiums and heat-acclimated teams
+                                          # exempt; see src/travel.py).
 
 
 DEFAULT_PARAMS = ModelParams()
@@ -134,10 +146,31 @@ def _dc_tau(x: int, y: int, la: float, lb: float, rho: float) -> float:
     return 1.0
 
 
-def _sample_goals(la: float, lb: float, rng: random.Random, rho: float):
-    """Draw a scoreline. With rho == 0 this is independent Poisson; otherwise
-    it samples exactly from the Dixon-Coles distribution by rejection (the
-    only cells where tau != 1 are the four low-score corners)."""
+def _sample_goals(la: float, lb: float, rng: random.Random, rho: float,
+                  shared_lambda: float = 0.0):
+    """Draw a scoreline.
+
+    Three modes:
+    - `rho == 0` and `shared_lambda == 0`: independent Poisson (fast path).
+    - `shared_lambda > 0` (with optional DC): bivariate-Poisson shared
+      component — draw Z ~ Poisson(shared_lambda) and add to both sides,
+      after subtracting shared_lambda from each marginal so the totals stay
+      calibrated.
+    - otherwise: Dixon-Coles by exact rejection sampling.
+    """
+    if shared_lambda > 0.0:
+        la_eff = max(0.0, la - shared_lambda)
+        lb_eff = max(0.0, lb - shared_lambda)
+        if rho == 0.0:
+            z = _poisson(shared_lambda, rng)
+            return _poisson(la_eff, rng) + z, _poisson(lb_eff, rng) + z
+        # DC + bivariate: apply tau on the independent component, add Z.
+        m = max(1.0, 1.0 - la_eff * lb_eff * rho, 1.0 - rho)
+        while True:
+            x, y = _poisson(la_eff, rng), _poisson(lb_eff, rng)
+            if rng.random() * m <= _dc_tau(x, y, la_eff, lb_eff, rho):
+                z = _poisson(shared_lambda, rng)
+                return x + z, y + z
     if rho == 0.0:
         return _poisson(la, rng), _poisson(lb, rng)
     # tau peaks at the (0,0) / (1,1) cells when rho < 0; bound the ratio there.
@@ -153,18 +186,20 @@ def simulate_match(team_a, team_b, rng: random.Random,
                    fatigue_a: float = 0.0, fatigue_b: float = 0.0):
     """Simulate a group match. Returns (goals_a, goals_b)."""
     la, lb = expected_goals(team_a, team_b, p, fatigue_a, fatigue_b)
-    return _sample_goals(la, lb, rng, p.dc_rho)
+    return _sample_goals(la, lb, rng, p.dc_rho, p.bivariate_shared_lambda)
 
 
 def simulate_knockout(team_a, team_b, rng: random.Random,
-                      p: ModelParams = DEFAULT_PARAMS):
+                      p: ModelParams = DEFAULT_PARAMS,
+                      fatigue_a: float = 0.0, fatigue_b: float = 0.0):
     """Simulate a knockout match. Returns the winning team (no draws).
 
     A drawn 90' is resolved with the **shootout model** (see src/shootout.py):
     a Bayesian-shrunk team-specific shootout skill, not an Elo coin flip.
     Open-play Elo doesn't predict penalty outcomes — historical records do,
     once shrunk toward 50% to handle small samples."""
-    ga, gb = simulate_match(team_a, team_b, rng, p)
+    ga, gb = simulate_match(team_a, team_b, rng, p,
+                            fatigue_a=fatigue_a, fatigue_b=fatigue_b)
     if ga > gb:
         return team_a
     if gb > ga:

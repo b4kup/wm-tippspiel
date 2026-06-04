@@ -108,25 +108,62 @@ def most_likely_score(grid):
     return best, bp
 
 
-def optimal_tip(grid, rule: ScoringRule):
-    """Tip (x, y) maximizing expected points, plus that expected value.
+def optimal_tip(grid, rule: ScoringRule, risk: str = "safe"):
+    """Tip (x, y) maximizing expected points under the chosen risk profile.
 
-    Candidate tips are capped at a small score range (almost all expected-points
-    optima are low scores); outcomes are summed over the full grid."""
+    Risk modes:
+    - `safe` (default): straight EV maximisation — the right call when
+      you're not chasing the leader.
+    - `aggressive`: bias toward exact-score tips. Picks the most likely
+      scoreline; trades some EV for a higher chance of a four-pointer when
+      you need a swing.
+    - `contrarian`: maximise EV with a small penalty against the single
+      most-likely score (the tip the crowd will gravitate to). Useful in
+      a pool where tying the field on a 'safe' tip costs you relative
+      standing; you give up a touch of EV to gain differentiation.
+
+    Candidate tips are capped at a small score range (almost all expected-
+    points optima are low scores); outcomes are summed over the full grid.
+    """
     n = len(grid)
     cap = min(n - 1, 6)
+    most_likely, _ = most_likely_score(grid)
+    if risk == "aggressive":
+        ev = _ev(grid, most_likely, rule)
+        return most_likely, ev
+
+    crowd_penalty = _crowd_penalty(grid, rule) if risk == "contrarian" else 0.0
     best_tip, best_ev = (0, 0), -1.0
     for tx in range(cap + 1):
         for ty in range(cap + 1):
-            ev = 0.0
-            for ax in range(n):
-                for ay in range(n):
-                    pts = points((tx, ty), (ax, ay), rule)
-                    if pts:
-                        ev += grid[ax][ay] * pts
-            if ev > best_ev:
-                best_ev, best_tip = ev, (tx, ty)
-    return best_tip, best_ev
+            ev = _ev(grid, (tx, ty), rule)
+            adjusted = ev - (crowd_penalty if (tx, ty) == most_likely else 0.0)
+            if adjusted > best_ev:
+                best_ev, best_tip = adjusted, (tx, ty)
+    # Report the *true* EV at the chosen tip — the penalty was only a tie-break.
+    return best_tip, _ev(grid, best_tip, rule)
+
+
+def _ev(grid, tip, rule: ScoringRule) -> float:
+    """Expected points for `tip` against the analytic scoreline distribution."""
+    n = len(grid)
+    ev = 0.0
+    for ax in range(n):
+        for ay in range(n):
+            pts = points(tip, (ax, ay), rule)
+            if pts:
+                ev += grid[ax][ay] * pts
+    return ev
+
+
+def _crowd_penalty(grid, rule: ScoringRule) -> float:
+    """Heuristic differentiation discount applied to the most-likely score
+    in contrarian mode. Anchored to the rule's exact-score reward so it's
+    comparable across pools: a player who picks the crowd's favourite
+    sacrifices ~5% of the exact-tier payout to stand out — small enough to
+    keep the choice EV-rational, big enough to break a near-tie with a
+    less-popular tip."""
+    return 0.05 * rule.exact
 
 
 def _pct(x: float) -> str:
@@ -134,13 +171,19 @@ def _pct(x: float) -> str:
 
 
 def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
-                       champion_top=None, extra_note: str = "") -> str:
+                       champion_top=None, extra_note: str = "",
+                       risk: str = "safe") -> str:
     """Markdown report of point-maximizing tips for every group-stage match."""
     L: list[str] = []
     L.append("# 2026 World Cup — Tippspiel tips (point-maximizing)\n")
+    risk_blurb = {"safe": "expected-value-maximizing",
+                  "aggressive": "exact-score chasing (highest-EV when behind)",
+                  "contrarian": "EV-optimal with crowd-overlap penalty"}.get(
+        risk, risk)
     L.append(f"*Generated {date.today().isoformat()}. "
              f"Scoring: **{rule.name}** — exact {rule.exact}, goal-difference "
-             f"{rule.diff}, tendency {rule.tendency} pts.*\n")
+             f"{rule.diff}, tendency {rule.tendency} pts. "
+             f"Risk profile: **{risk}** ({risk_blurb}).*\n")
     L.append("> For each match the **tip** below maximizes expected points "
              "under your scoring rule. It is **not always the most likely "
              "score** — when an exact score is unlikely, a safer tendency/"
@@ -159,7 +202,7 @@ def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
         L.append("|-------|:---:|-------:|:-------------:|:-----------:|")
         for a, b in combinations(teams, 2):
             grid = score_distribution(a, b, p)
-            tip, ev = optimal_tip(grid, rule)
+            tip, ev = optimal_tip(grid, rule, risk=risk)
             pw, pd, pl = outcome_probs(grid)
             (mx, my), _mp = most_likely_score(grid)
             flag = "" if tip == (mx, my) else " ⚠️"

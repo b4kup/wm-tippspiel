@@ -139,8 +139,13 @@ def derive():
         matches_path = os.path.join(os.path.dirname(__file__), "matches_recent.csv")
         if os.path.exists(matches_path):
             matches = load_matches(matches_path)
-            weights = {"2026": 1.0, "2025": 1.0, "2024": 0.9, "2023": 0.7, "2022": 0.5}
-            fitted, _gamma = fit_poisson(matches, weight_by_year=weights,
+            # Date-level exponential time-decay (preferred over the year-
+            # bucket weighting). 18-month half-life matches the typical
+            # international-football turnover: a campaign-cycle ago is
+            # worth ~50%, two cycles ago ~25%. Tighter than the previous
+            # bucket schedule, smoother across calendar boundaries.
+            fitted, _gamma = fit_poisson(matches, half_life_days=540,
+                                         ref_date="2026-06-03",
                                          max_iter=400, tol=1e-6)
             poisson_fit_table = fitted
     except Exception:
@@ -150,17 +155,41 @@ def derive():
     qual_blend = None
     if poisson_fit_table is None:
         try:
-            from src.qualifying_fit import load_qualifying, blend as q_blend
-            qual_records = load_qualifying()
-            qual_blend = q_blend
+            # Prefer xG-based blend when an xG qualifying table has been
+            # supplied (see src/xg_fit.py for the file format and why).
+            from src.xg_fit import load_xg, blend as xg_blend
+            xg_records = load_xg()
+            if xg_records:
+                qual_records = xg_records
+                qual_blend = xg_blend
         except Exception:
-            pass
+            qual_records = None
+        if qual_records is None:
+            try:
+                from src.qualifying_fit import load_qualifying, blend as q_blend
+                qual_records = load_qualifying()
+                qual_blend = q_blend
+            except Exception:
+                pass
+
+    # Per-confederation log-offsets calibrated from cross-confed match
+    # history (Elo prior alone is biased when confederations don't play
+    # each other often). Falls back to all-zero offsets if data missing.
+    confed_offsets = {}
+    try:
+        from src.confederation_fit import fit_offsets
+        confed_offsets = fit_offsets(lg_avg=LG_AVG, k_q=K_Q)
+    except Exception:
+        confed_offsets = {}
 
     rows = []
     for name, (group, confed, elo, style, odds, poly) in TEAMS.items():
         q = (elo - elo_avg) / 400.0
-        attack_prior = LG_AVG * math.exp(K_Q * q + K_STYLE * style)
-        defense_prior = LG_AVG * math.exp(-K_Q * q + K_STYLE * style)
+        co = confed_offsets.get(confed)
+        a_shift = co.alpha_offset if co else 0.0
+        d_shift = co.delta_offset if co else 0.0
+        attack_prior = LG_AVG * math.exp(K_Q * q + K_STYLE * style + a_shift)
+        defense_prior = LG_AVG * math.exp(-K_Q * q + K_STYLE * style - d_shift)
 
         if poisson_fit_table is not None and name in poisson_fit_table:
             ft = poisson_fit_table[name]

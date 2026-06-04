@@ -35,15 +35,17 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 
 def remaining_group_tips(groups, results, rule, params, risk):
-    """(team_a, team_b, tip, (pw,pd,pl)) for each not-yet-played group match."""
+    """(team_a, team_b, tip, (pw,pd,pl)) for each not-yet-played group match.
+
+    `risk` mirrors `tipps.py`: safe (EV-optimal), aggressive (most likely
+    exact score), contrarian (EV with a small crowd-overlap penalty)."""
     out = []
     for teams in groups.values():
         for a, b in combinations(teams, 2):
             if results.group_score(a.name, b.name) is not None:
                 continue  # already played
             grid = score_distribution(a, b, params)
-            tip = (most_likely_score(grid)[0] if risk == "aggressive"
-                   else optimal_tip(grid, rule)[0])
+            tip, _ev = optimal_tip(grid, rule, risk=risk)
             out.append((a.name, b.name, tip, outcome_probs(grid)))
     return out
 
@@ -52,8 +54,12 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Live Tippspiel update")
     ap.add_argument("--preset", default="check24", choices=sorted(PRESETS),
                     help="scoring preset (default check24)")
-    ap.add_argument("--risk", default="safe", choices=("safe", "aggressive"),
-                    help="tip strategy for upcoming matches (default safe)")
+    ap.add_argument("--risk", default="safe",
+                    choices=("safe", "aggressive", "contrarian"),
+                    help="tip strategy for upcoming matches. safe = pure EV "
+                         "(default); aggressive = chase exact scores when "
+                         "trailing; contrarian = EV with a small crowd-overlap "
+                         "penalty to gain differentiation in a tied pool")
     ap.add_argument("--sims", type=int, default=30000)
     ap.add_argument("--no-injuries", action="store_true",
                     help="ignore data/injuries.csv (full-strength ratings)")
