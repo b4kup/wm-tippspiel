@@ -63,26 +63,34 @@ def _team_rounds(stats: Stats, name: str) -> dict[str, float]:
 
 def _tipps_data(groups: dict[str, list[Team]], rule: ScoringRule,
                 params: ModelParams) -> dict[str, list[dict]]:
-    """Per-group analytic tip table."""
+    """Per-group analytic tip table. Each match carries the EV-optimal tip
+    under all three risk modes (safe / aggressive / contrarian) so the
+    dashboard can switch between guessing approaches without re-running."""
     out: dict[str, list[dict]] = {}
+    risks = ("safe", "aggressive", "contrarian")
     for letter, teams in groups.items():
         matches = []
         for a, b in combinations(teams, 2):
             grid = score_distribution(a, b, params)
-            tip, ev = optimal_tip(grid, rule)
             (mx, my), mp = most_likely_score(grid)
             pw, pd, pl = outcome_probs(grid)
+            tips = {}
+            for risk in risks:
+                tip, ev = optimal_tip(grid, rule, risk=risk)
+                tips[risk] = {
+                    "tip":      [tip[0], tip[1]],
+                    "ev":       round(ev, 2),
+                    "diverges": tip != (mx, my),
+                }
             matches.append({
                 "home":  a.name,
                 "away":  b.name,
-                "tip":   [tip[0], tip[1]],
-                "ev":    round(ev, 2),
                 "ml":    [mx, my],
                 "ml_p":  round(mp, 4),
                 "pw":    round(pw, 4),
                 "pd":    round(pd, 4),
                 "pl":    round(pl, 4),
-                "diverges": tip != (mx, my),
+                "tips":  tips,
             })
         out[letter] = matches
     return out
@@ -498,6 +506,38 @@ h2 {
 }
 
 /* --- tipps view --- */
+.risk-toggle {
+  display: inline-flex;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.risk-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  transition: background 120ms, color 120ms;
+}
+.risk-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.risk-btn.active {
+  background: var(--accent);
+  color: #0d1117;
+}
+.risk-btn.active .risk-sub { color: rgba(13,17,23,0.7); }
+.risk-btn .risk-label { font-size: 13px; font-weight: 600; letter-spacing: 0.2px; }
+.risk-btn .risk-sub { font-size: 10px; color: var(--muted); font-family: ui-monospace, monospace; }
+
 .tipps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
@@ -929,6 +969,8 @@ function updateBracketStatus() {
 }
 
 // --- tipps view ---
+let currentRisk = "safe";
+
 function renderTipps() {
   const root = $("#tipps-grid");
   root.innerHTML = "";
@@ -936,23 +978,45 @@ function renderTipps() {
     const matches = DATA.tipps[letter];
     const card = document.createElement("div");
     card.className = "tipps-card";
-    const total = matches.reduce((s, m) => s + m.ev, 0);
+    // Each match carries `tips: {safe, aggressive, contrarian}`; pick the
+    // active variant and sum its EV for the group footer.
+    const total = matches.reduce((s, m) => s + (m.tips[currentRisk]?.ev ?? 0), 0);
     let html = `<h3>Group ${letter}</h3>`;
     matches.forEach(m => {
-      const warn = m.diverges ? "warn" : "";
+      const t = m.tips[currentRisk];
+      if (!t) return;
+      const warn = t.diverges ? "warn" : "";
       html += `
         <div class="tipps-match ${warn}">
           <div class="matchup">
             <div><span class="fl">${flag(m.home)}</span>${m.home} <span style="color:var(--muted)">–</span> <span class="fl">${flag(m.away)}</span>${m.away}</div>
             <div class="wdl">${pct(m.pw)} · ${pct(m.pd)} · ${pct(m.pl)} · most likely ${m.ml[0]}–${m.ml[1]}</div>
           </div>
-          <div><span class="tip-pill">${m.tip[0]}–${m.tip[1]}</span></div>
-          <div class="ev">${m.ev.toFixed(2)} pts</div>
+          <div><span class="tip-pill">${t.tip[0]}–${t.tip[1]}</span></div>
+          <div class="ev">${t.ev.toFixed(2)} pts</div>
         </div>`;
     });
-    html += `<div class="footer">Expected total · <b style="color:var(--text)">${total.toFixed(2)} pts</b></div>`;
+    html += `<div class="footer">Expected total · <b style="color:var(--text)">${total.toFixed(2)} pts</b> · <span style="text-transform:uppercase; letter-spacing:1px">${currentRisk}</span></div>`;
     card.innerHTML = html;
     root.appendChild(card);
+  });
+}
+
+// Wire the risk toggle once on first render. Buttons live in #view-tipps;
+// clicking flips `currentRisk` and re-renders.
+function bindRiskToggle() {
+  document.querySelectorAll(".risk-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const next = btn.dataset.risk;
+      if (next === currentRisk) return;
+      currentRisk = next;
+      document.querySelectorAll(".risk-btn").forEach(b => {
+        const active = b.dataset.risk === currentRisk;
+        b.classList.toggle("active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      renderTipps();
+    });
   });
 }
 
@@ -1252,6 +1316,7 @@ renderChampion();
 renderGroups();
 renderBracket();
 renderTipps();
+bindRiskToggle();
 renderWiki();
 """
 
@@ -1362,10 +1427,24 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
 <section id="view-tipps" class="view">
   <div class="panel" style="margin-bottom:14px">
     <h2>CHECK24 — point-maximizing tips per group match</h2>
-    <div style="color:var(--muted); font-size:12px">
+    <div style="color:var(--muted); font-size:12px; margin-bottom:10px">
       4 pts exact · 3 pts tendency+goal-diff (incl. non-exact draws) · 2 pts winner only.
-      <span style="color:var(--accent)"> Orange pills</span> mark matches where the EV-optimal tip differs from the most likely scoreline.
-      <b style="color:var(--text)">Expected total</b> per group sums the per-match EV.
+      <span style="color:var(--accent)"> Orange pills</span> mark matches where the tip differs from the most likely scoreline.
+      <b style="color:var(--text)">Expected total</b> per group sums the per-match EV under the active guessing approach.
+    </div>
+    <div class="risk-toggle" role="tablist" aria-label="Guessing approach">
+      <button class="risk-btn active" data-risk="safe" role="tab" aria-selected="true">
+        <span class="risk-label">Safe</span>
+        <span class="risk-sub">EV-optimal · ride the favourite</span>
+      </button>
+      <button class="risk-btn" data-risk="aggressive" role="tab" aria-selected="false">
+        <span class="risk-label">Aggressive</span>
+        <span class="risk-sub">Chase exact scores · when you're behind</span>
+      </button>
+      <button class="risk-btn" data-risk="contrarian" role="tab" aria-selected="false">
+        <span class="risk-label">Contrarian</span>
+        <span class="risk-sub">EV with crowd-overlap penalty</span>
+      </button>
     </div>
   </div>
   <div id="tipps-grid" class="tipps-grid"></div>
