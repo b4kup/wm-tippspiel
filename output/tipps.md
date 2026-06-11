@@ -142,6 +142,85 @@
 | Croatia – Panama | **2–1** ⚠️ | 1.56 | 62% · 22% · 17% | 1–1 |
 | Ghana – Panama | **1–2** ⚠️ | 1.18 | 31% · 24% · 45% | 1–1 |
 
+## Group-stage tips by date
+
+> The same point-maximizing tips as above, but every fixture listed in kickoff order (times are **MESZ/CEST**). Home team first, as in the official schedule.
+
+| # | Kickoff (MESZ) | Grp | Match | Tip | E[pts] | Venue |
+|--:|----------------|:---:|-------|:---:|-------:|-------|
+| 1 | Thu 11 Jun, 21:00 | A | Mexico – South Africa | **2–1** | 1.65 | Mexico City |
+| 2 | Fri 12 Jun, 04:00 | A | South Korea – Czechia | **2–1** ⚠️ | 1.18 | Guadalajara |
+| 3 | Fri 12 Jun, 21:00 | B | Canada – Bosnia & Herzegovina | **2–1** ⚠️ | 1.32 | Toronto |
+| 4 | Sat 13 Jun, 03:00 | D | United States – Paraguay | **1–2** ⚠️ | 1.04 | Los Angeles |
+| 8 | Sat 13 Jun, 21:00 | B | Qatar – Switzerland | **1–2** | 1.54 | San Francisco Bay Area |
+| 7 | Sun 14 Jun, 00:00 | C | Brazil – Morocco | **2–1** ⚠️ | 1.24 | New York/New Jersey |
+| 5 | Sun 14 Jun, 03:00 | C | Haiti – Scotland | **1–2** ⚠️ | 1.40 | Boston |
+| 6 | Sun 14 Jun, 06:00 | D | Australia – Türkiye | **1–2** ⚠️ | 1.12 | Vancouver |
+| 10 | Sun 14 Jun, 19:00 | E | Germany – Curaçao | **3–1** ⚠️ | 1.83 | Houston |
+| 11 | Sun 14 Jun, 22:00 | F | Netherlands – Japan | **2–1** ⚠️ | 1.10 | Dallas |
+| 9 | Mon 15 Jun, 01:00 | E | Ivory Coast – Ecuador | **1–2** ⚠️ | 1.65 | Philadelphia |
+| 12 | Mon 15 Jun, 04:00 | F | Sweden – Tunisia | **2–1** ⚠️ | 1.22 | Monterrey |
+| 14 | Mon 15 Jun, 18:00 | H | Spain – Cabo Verde | **3–0** ⚠️ | 2.15 | Atlanta |
+| 16 | Mon 15 Jun, 21:00 | G | Belgium – Egypt | **2–1** | 1.68 | Seattle |
+| 13 | Tue 16 Jun, 00:00 | H | Saudi Arabia – Uruguay | **0–1** ⚠️ | 1.62 | Miami |
+| 15 | Tue 16 Jun, 03:00 | G | IR Iran – New Zealand | **2–1** | 1.59 | Los Angeles |
+| 17 | Tue 16 Jun, 21:00 | I | France – Senegal | **2–1** | 1.59 | New York/New Jersey |
+| 18 | Wed 17 Jun, 00:00 | I | Iraq – Norway | **1–2** ⚠️ | 1.36 | Boston |
+| 19 | Wed 17 Jun, 03:00 | J | Argentina – Algeria | **3–1** ⚠️ | 1.90 | Kansas City |
+| 20 | Wed 17 Jun, 06:00 | J | Austria – Jordan | **2–1** ⚠️ | 1.31 | San Francisco Bay Area |
+| 23 | Wed 17 Jun, 19:00 | K | Portugal – DR Congo | **3–1** | 1.88 | Houston |
+| 22 | Wed 17 Jun, 22:00 | L | England – Croatia | **2–1** ⚠️ | 1.31 | Dallas |
+| 21 | Thu 18 Jun, 01:00 | L | Ghana – Panama | **1–2** ⚠️ | 1.18 | Toronto |
+| 24 | Thu 18 Jun, 04:00 | K | Uzbekistan – Colombia | **1–2** | 1.60 | Mexico City |
+| 25 | Thu 18 Jun, 18:00 | A | Czechia – South Africa | **2–1** ⚠️ | 1.22 | Atlanta |
+| 26 | Thu 18 Jun, 21:00 | B | Switzerland – Bosnia & Herzegovina | **2–1** ⚠️ | 1.42 | Los Angeles |
+| 27 | Fri 19 Jun, 00:00 | B | Canada – Qatar | **2–1** | 1.46 | Vancouver |
+| 28 | Fri 19 Jun, 03:00 | A | Mexico – South Korea | **2–1** ⚠️ | 1.35 | Guadalajara |
+| 32 | Fri 19 Jun, 21:00 | D | United States – Australia | **1–2** ⚠️ | 1.12 | Seattle |
+| 30 | Sat 20 Jun, 00:00 | C | Scotland – Morocco | **1–2** ⚠️ | 1.31 | Boston |
+| 29 | Sat 20 Jun, 02:30 | C | Brazil – Haiti | **2–0** ⚠️ | 1.85 | Philadelphia |
+| 31 | Sat 20 Jun, 05:00 | D | Türkiye – Paraguay | **2–1** ⚠️ | 1.16 | San Francisco Bay Area |
+| 35 | Sat 20 Jun, 19:00 | F | Netherlands – Sweden | **2–1** | 1.70 | Houston |
+| 33 | Sat 20 Jun, 22:00 | E | Germany – Ivory Coast | **2–1** | 1.69 | Toronto |
+| 34 | Sun 21 Jun, 02:00 | E | Ecuador – Curaçao | **2–0** | 1.80 | Kansas City |
+| 36 | Sun 21 Jun, 06:00 | F | Tunisia – Japan | **0–2** | 1.78 | Monterrey |
+| 38 | Sun 21 Jun, 18:00 | H | Spain – Saudi Arabia | **3–0** | 2.04 | Atlanta |
+| 39 | Sun 21 Jun, 21:00 | G | Belgium – IR Iran | **2–1** ⚠️ | 1.30 | Los Angeles |
+| 37 | Mon 22 Jun, 00:00 | H | Uruguay – Cabo Verde | **2–0** | 1.82 | Miami |
+| 40 | Mon 22 Jun, 03:00 | G | New Zealand – Egypt | **1–2** ⚠️ | 1.21 | Vancouver |
+| 43 | Mon 22 Jun, 19:00 | J | Argentina – Austria | **2–1** | 1.69 | Dallas |
+| 42 | Mon 22 Jun, 23:00 | I | France – Iraq | **2–0** ⚠️ | 1.97 | Philadelphia |
+| 41 | Tue 23 Jun, 02:00 | I | Norway – Senegal | **1–2** ⚠️ | 1.27 | New York/New Jersey |
+| 44 | Tue 23 Jun, 05:00 | J | Jordan – Algeria | **1–2** ⚠️ | 1.02 | San Francisco Bay Area |
+| 47 | Tue 23 Jun, 19:00 | K | Portugal – Uzbekistan | **2–1** | 1.63 | Houston |
+| 45 | Tue 23 Jun, 22:00 | L | England – Ghana | **2–0** ⚠️ | 1.92 | Boston |
+| 46 | Wed 24 Jun, 01:00 | L | Panama – Croatia | **1–2** ⚠️ | 1.56 | Toronto |
+| 48 | Wed 24 Jun, 04:00 | K | Colombia – DR Congo | **2–0** ⚠️ | 1.84 | Guadalajara |
+| 51 | Wed 24 Jun, 21:00 | B | Switzerland – Canada | **2–1** ⚠️ | 1.14 | Vancouver |
+| 52 | Wed 24 Jun, 21:00 | B | Bosnia & Herzegovina – Qatar | **2–1** ⚠️ | 1.16 | Seattle |
+| 49 | Thu 25 Jun, 00:00 | C | Scotland – Brazil | **1–2** | 1.55 | Miami |
+| 50 | Thu 25 Jun, 00:00 | C | Morocco – Haiti | **2–1** ⚠️ | 1.64 | Atlanta |
+| 53 | Thu 25 Jun, 03:00 | A | Czechia – Mexico | **1–2** ⚠️ | 1.48 | Mexico City |
+| 54 | Thu 25 Jun, 03:00 | A | South Africa – South Korea | **1–2** ⚠️ | 1.38 | Monterrey |
+| 55 | Thu 25 Jun, 22:00 | E | Curaçao – Ivory Coast | **1–2** ⚠️ | 1.24 | Philadelphia |
+| 56 | Thu 25 Jun, 22:00 | E | Ecuador – Germany | **2–1** ⚠️ | 1.07 | New York/New Jersey |
+| 57 | Fri 26 Jun, 01:00 | F | Japan – Sweden | **2–1** | 1.64 | Dallas |
+| 58 | Fri 26 Jun, 01:00 | F | Tunisia – Netherlands | **0–2** | 1.85 | Kansas City |
+| 59 | Fri 26 Jun, 04:00 | D | Türkiye – United States | **2–1** ⚠️ | 1.23 | Los Angeles |
+| 60 | Fri 26 Jun, 04:00 | D | Paraguay – Australia | **1–2** ⚠️ | 1.05 | San Francisco Bay Area |
+| 61 | Fri 26 Jun, 21:00 | I | Norway – France | **1–3** | 1.81 | Boston |
+| 62 | Fri 26 Jun, 21:00 | I | Senegal – Iraq | **2–1** ⚠️ | 1.54 | Toronto |
+| 65 | Sat 27 Jun, 02:00 | H | Cabo Verde – Saudi Arabia | **1–2** ⚠️ | 1.24 | Houston |
+| 66 | Sat 27 Jun, 02:00 | H | Uruguay – Spain | **1–2** ⚠️ | 1.55 | Guadalajara |
+| 63 | Sat 27 Jun, 05:00 | G | Egypt – IR Iran | **1–2** ⚠️ | 1.41 | Seattle |
+| 64 | Sat 27 Jun, 05:00 | G | New Zealand – Belgium | **0–2** | 1.83 | Vancouver |
+| 67 | Sat 27 Jun, 23:00 | L | Panama – England | **0–2** | 1.79 | New York/New Jersey |
+| 68 | Sat 27 Jun, 23:00 | L | Croatia – Ghana | **2–1** | 1.71 | Philadelphia |
+| 71 | Sun 28 Jun, 01:30 | K | Colombia – Portugal | **1–2** ⚠️ | 1.03 | Miami |
+| 72 | Sun 28 Jun, 01:30 | K | DR Congo – Uzbekistan | **1–2** ⚠️ | 1.30 | Atlanta |
+| 69 | Sun 28 Jun, 04:00 | J | Algeria – Austria | **1–2** ⚠️ | 1.32 | Kansas City |
+| 70 | Sun 28 Jun, 04:00 | J | Jordan – Argentina | **0–2** | 1.89 | Dallas |
+
 ## Notes
 
 - ⚠️ marks matches where the point-maximizing tip differs from the most likely score — the interesting cases.
