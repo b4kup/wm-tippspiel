@@ -1,6 +1,6 @@
 # 2026 FIFA World Cup — Statistical Predictions
 
-*Generated 2026-06-10 from 20,000 Monte Carlo simulations (seed `2026`).*
+*Generated 2026-06-11 from 20,000 Monte Carlo simulations (seed `2026`).*
 
 > Hosts: United States · Canada · Mexico. 48 teams, 12 groups of 4. Top 2 of each group plus the 8 best third-placed teams reach the Round of 32.
 
