@@ -10,6 +10,7 @@ import os
 import random
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime
 from itertools import combinations
 
 from data.bracket import is_third, third_allowed_groups
@@ -71,6 +72,49 @@ def groups_from_teams(teams: list[Team]) -> dict[str, list[Team]]:
     for t in teams:
         groups[t.group].append(t)
     return dict(sorted(groups.items()))
+
+
+# --------------------------------------------------------------------------
+# Fixture list (group-stage schedule)
+# --------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Fixture:
+    """One scheduled group-stage match. `home`/`away` are team names (the home
+    team as listed in the official fixture); `kickoff` is CEST/MESZ."""
+    number: int            # official match number (Spiel 1-72)
+    kickoff: datetime      # kickoff in Central European Summer Time (MESZ)
+    group: str
+    home: str
+    away: str
+    venue: str
+
+
+def load_fixtures(path: str | None = None) -> list[Fixture]:
+    """Load the group-stage schedule from data/fixtures.csv, sorted by kickoff.
+
+    Returns [] if the file is absent. Kickoff dates/times are MESZ (the source
+    is a German fixture list), so the ordering is the one a Central-European
+    viewer sees."""
+    path = path or os.path.join(DATA_DIR, "fixtures.csv")
+    if not os.path.exists(path):
+        return []
+    fixtures: list[Fixture] = []
+    with open(path, newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if not row.get("home"):
+                continue  # skip blank / template lines
+            fixtures.append(Fixture(
+                number=int(row["number"]),
+                kickoff=datetime.strptime(
+                    f"{row['date'].strip()} {row['time'].strip()}",
+                    "%Y-%m-%d %H:%M"),
+                group=row["group"].strip(),
+                home=row["home"].strip(),
+                away=row["away"].strip(),
+                venue=row["venue"].strip(),
+            ))
+    return sorted(fixtures, key=lambda f: (f.kickoff, f.number))
 
 
 # --------------------------------------------------------------------------

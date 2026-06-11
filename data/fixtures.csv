@@ -1,0 +1,73 @@
+number,date,time,group,home,away,venue
+1,2026-06-11,21:00,A,Mexico,South Africa,Mexico City
+2,2026-06-12,04:00,A,South Korea,Czechia,Guadalajara
+3,2026-06-12,21:00,B,Canada,Bosnia & Herzegovina,Toronto
+4,2026-06-13,03:00,D,United States,Paraguay,Los Angeles
+5,2026-06-14,03:00,C,Haiti,Scotland,Boston
+6,2026-06-14,06:00,D,Australia,Türkiye,Vancouver
+7,2026-06-14,00:00,C,Brazil,Morocco,New York/New Jersey
+8,2026-06-13,21:00,B,Qatar,Switzerland,San Francisco Bay Area
+9,2026-06-15,01:00,E,Ivory Coast,Ecuador,Philadelphia
+10,2026-06-14,19:00,E,Germany,Curaçao,Houston
+11,2026-06-14,22:00,F,Netherlands,Japan,Dallas
+12,2026-06-15,04:00,F,Sweden,Tunisia,Monterrey
+13,2026-06-16,00:00,H,Saudi Arabia,Uruguay,Miami
+14,2026-06-15,18:00,H,Spain,Cabo Verde,Atlanta
+15,2026-06-16,03:00,G,IR Iran,New Zealand,Los Angeles
+16,2026-06-15,21:00,G,Belgium,Egypt,Seattle
+17,2026-06-16,21:00,I,France,Senegal,New York/New Jersey
+18,2026-06-17,00:00,I,Iraq,Norway,Boston
+19,2026-06-17,03:00,J,Argentina,Algeria,Kansas City
+20,2026-06-17,06:00,J,Austria,Jordan,San Francisco Bay Area
+21,2026-06-18,01:00,L,Ghana,Panama,Toronto
+22,2026-06-17,22:00,L,England,Croatia,Dallas
+23,2026-06-17,19:00,K,Portugal,DR Congo,Houston
+24,2026-06-18,04:00,K,Uzbekistan,Colombia,Mexico City
+25,2026-06-18,18:00,A,Czechia,South Africa,Atlanta
+26,2026-06-18,21:00,B,Switzerland,Bosnia & Herzegovina,Los Angeles
+27,2026-06-19,00:00,B,Canada,Qatar,Vancouver
+28,2026-06-19,03:00,A,Mexico,South Korea,Guadalajara
+29,2026-06-20,02:30,C,Brazil,Haiti,Philadelphia
+30,2026-06-20,00:00,C,Scotland,Morocco,Boston
+31,2026-06-20,05:00,D,Türkiye,Paraguay,San Francisco Bay Area
+32,2026-06-19,21:00,D,United States,Australia,Seattle
+33,2026-06-20,22:00,E,Germany,Ivory Coast,Toronto
+34,2026-06-21,02:00,E,Ecuador,Curaçao,Kansas City
+35,2026-06-20,19:00,F,Netherlands,Sweden,Houston
+36,2026-06-21,06:00,F,Tunisia,Japan,Monterrey
+37,2026-06-22,00:00,H,Uruguay,Cabo Verde,Miami
+38,2026-06-21,18:00,H,Spain,Saudi Arabia,Atlanta
+39,2026-06-21,21:00,G,Belgium,IR Iran,Los Angeles
+40,2026-06-22,03:00,G,New Zealand,Egypt,Vancouver
+41,2026-06-23,02:00,I,Norway,Senegal,New York/New Jersey
+42,2026-06-22,23:00,I,France,Iraq,Philadelphia
+43,2026-06-22,19:00,J,Argentina,Austria,Dallas
+44,2026-06-23,05:00,J,Jordan,Algeria,San Francisco Bay Area
+45,2026-06-23,22:00,L,England,Ghana,Boston
+46,2026-06-24,01:00,L,Panama,Croatia,Toronto
+47,2026-06-23,19:00,K,Portugal,Uzbekistan,Houston
+48,2026-06-24,04:00,K,Colombia,DR Congo,Guadalajara
+49,2026-06-25,00:00,C,Scotland,Brazil,Miami
+50,2026-06-25,00:00,C,Morocco,Haiti,Atlanta
+51,2026-06-24,21:00,B,Switzerland,Canada,Vancouver
+52,2026-06-24,21:00,B,Bosnia & Herzegovina,Qatar,Seattle
+53,2026-06-25,03:00,A,Czechia,Mexico,Mexico City
+54,2026-06-25,03:00,A,South Africa,South Korea,Monterrey
+55,2026-06-25,22:00,E,Curaçao,Ivory Coast,Philadelphia
+56,2026-06-25,22:00,E,Ecuador,Germany,New York/New Jersey
+57,2026-06-26,01:00,F,Japan,Sweden,Dallas
+58,2026-06-26,01:00,F,Tunisia,Netherlands,Kansas City
+59,2026-06-26,04:00,D,Türkiye,United States,Los Angeles
+60,2026-06-26,04:00,D,Paraguay,Australia,San Francisco Bay Area
+61,2026-06-26,21:00,I,Norway,France,Boston
+62,2026-06-26,21:00,I,Senegal,Iraq,Toronto
+63,2026-06-27,05:00,G,Egypt,IR Iran,Seattle
+64,2026-06-27,05:00,G,New Zealand,Belgium,Vancouver
+65,2026-06-27,02:00,H,Cabo Verde,Saudi Arabia,Houston
+66,2026-06-27,02:00,H,Uruguay,Spain,Guadalajara
+67,2026-06-27,23:00,L,Panama,England,New York/New Jersey
+68,2026-06-27,23:00,L,Croatia,Ghana,Philadelphia
+69,2026-06-28,04:00,J,Algeria,Austria,Kansas City
+70,2026-06-28,04:00,J,Jordan,Argentina,Dallas
+71,2026-06-28,01:30,K,Colombia,Portugal,Miami
+72,2026-06-28,01:30,K,DR Congo,Uzbekistan,Atlanta

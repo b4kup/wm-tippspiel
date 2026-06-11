@@ -237,6 +237,47 @@ def test_load_teams_injuries_toggle():
     assert adj["Brazil"].attack < full["Brazil"].attack    # Rodrygo & co. out
 
 
+def test_fixtures_complete_and_consistent():
+    from itertools import combinations
+    from src.tournament import load_fixtures
+    fixtures = load_fixtures()
+    # 12 groups x 6 round-robin matches = 72 group-stage fixtures.
+    assert len(fixtures) == 72
+    # Sorted by kickoff, and match numbers are the full 1..72 set.
+    assert [f.kickoff for f in fixtures] == sorted(f.kickoff for f in fixtures)
+    assert {f.number for f in fixtures} == set(range(1, 73))
+
+    groups = groups_from_teams(load_teams())
+    names = {t.name for g in groups.values() for t in g}
+    by_group = {}
+    for f in fixtures:
+        # Both sides are real teams and belong to the fixture's own group.
+        assert f.home in names and f.away in names, f"unknown team in match {f.number}"
+        by_group.setdefault(f.group, []).append(frozenset((f.home, f.away)))
+    # Each group lists exactly its 6 distinct round-robin pairings.
+    for letter, teams in groups.items():
+        expected = {frozenset((a.name, b.name)) for a, b in combinations(teams, 2)}
+        assert set(by_group[letter]) == expected, f"group {letter} pairings"
+        assert len(by_group[letter]) == 6
+
+
+def test_schedule_section_renders_in_order():
+    from src.tippspiel import build_schedule_section, PRESETS
+    from src.tournament import load_fixtures
+    from src.model import DEFAULT_PARAMS
+    teams = load_teams()
+    by_name = {t.name: t for t in teams}
+    fixtures = load_fixtures()
+    lines = build_schedule_section(fixtures, by_name, PRESETS["check24"],
+                                   DEFAULT_PARAMS)
+    text = "\n".join(lines)
+    assert "Group-stage tips by date" in text
+    # One table row per fixture (plus header, separator, heading, note, blank).
+    rows = [l for l in lines if l.startswith("| ") and "Kickoff" not in l
+            and not l.startswith("|--")]
+    assert len(rows) == len(fixtures)
+
+
 def test_conditioning_uses_real_group_score():
     import random
     from src.results import MatchResult, Results

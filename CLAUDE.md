@@ -26,6 +26,7 @@ src/report.py               # predictions.md generator
 data/teams.csv              # team ratings (the inputs you tweak)
 data/derive_ratings.py      # generates attack/defense from Elo + style
 data/bracket.py             # knockout bracket structure (editable config)
+data/fixtures.csv           # group-stage schedule (date/time MESZ, venue) for the by-date view
 data/results.csv            # live match results, append as matches play
 data/our_tips.csv           # frozen Tippspiel tips for scoring
 tests/test_model.py         # smoke tests

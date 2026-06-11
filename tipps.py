@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from src.model import DEFAULT_PARAMS
 from src.simulate import run
 from src.tippspiel import PRESETS, ScoringRule, build_tipps_report
-from src.tournament import groups_from_teams, load_teams
+from src.tournament import groups_from_teams, load_fixtures, load_teams
 
 
 def main(argv=None):
@@ -37,6 +37,8 @@ def main(argv=None):
                     help="sims for the outright-winner pick (0 to skip)")
     ap.add_argument("--no-injuries", action="store_true",
                     help="ignore data/injuries.csv (full-strength ratings)")
+    ap.add_argument("--no-schedule", action="store_true",
+                    help="omit the by-date fixture view (data/fixtures.csv)")
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--risk", default="safe",
                     choices=("safe", "aggressive", "contrarian"),
@@ -100,8 +102,9 @@ def main(argv=None):
                       group_tips(groups, rule, DEFAULT_PARAMS, risk=args.risk))
         print(f"Saved machine-readable group tips to {args.save_tips}")
 
+    fixtures = None if args.no_schedule else load_fixtures()
     report = build_tipps_report(groups, rule, DEFAULT_PARAMS, champion_top,
-                                extra_note, risk=args.risk)
+                                extra_note, risk=args.risk, fixtures=fixtures)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(report)

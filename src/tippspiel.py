@@ -170,9 +170,48 @@ def _pct(x: float) -> str:
     return f"{x*100:.0f}%" if x >= 0.10 else f"{x*100:.1f}%"
 
 
+_WEEKDAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+_MONTHS = ("", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def _fmt_kickoff(dt) -> str:
+    """e.g. 'Thu 11 Jun, 21:00'."""
+    return (f"{_WEEKDAYS[dt.weekday()]} {dt.day} {_MONTHS[dt.month]}, "
+            f"{dt:%H:%M}")
+
+
+def build_schedule_section(fixtures, team_by_name, rule: ScoringRule,
+                           p: ModelParams, risk: str = "safe") -> list[str]:
+    """Markdown lines: every group-stage fixture in kickoff order with its
+    point-maximizing tip. `fixtures` is a list of tournament.Fixture; missing
+    teams (a fixture whose sides aren't in `team_by_name`) are skipped."""
+    L: list[str] = []
+    L.append("## Group-stage tips by date\n")
+    L.append("> The same point-maximizing tips as above, but every fixture "
+             "listed in kickoff order (times are **MESZ/CEST**). Home team "
+             "first, as in the official schedule.\n")
+    L.append("| # | Kickoff (MESZ) | Grp | Match | Tip | E[pts] | Venue |")
+    L.append("|--:|----------------|:---:|-------|:---:|-------:|-------|")
+    for fx in fixtures:
+        a = team_by_name.get(fx.home)
+        b = team_by_name.get(fx.away)
+        if a is None or b is None:
+            continue
+        grid = score_distribution(a, b, p)
+        tip, ev = optimal_tip(grid, rule, risk=risk)
+        (mx, my), _mp = most_likely_score(grid)
+        flag = "" if tip == (mx, my) else " ⚠️"
+        L.append(f"| {fx.number} | {_fmt_kickoff(fx.kickoff)} | {fx.group} "
+                 f"| {fx.home} – {fx.away} | **{tip[0]}–{tip[1]}**{flag} "
+                 f"| {ev:.2f} | {fx.venue} |")
+    L.append("")
+    return L
+
+
 def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
                        champion_top=None, extra_note: str = "",
-                       risk: str = "safe") -> str:
+                       risk: str = "safe", fixtures=None) -> str:
     """Markdown report of point-maximizing tips for every group-stage match."""
     L: list[str] = []
     L.append("# 2026 World Cup — Tippspiel tips (point-maximizing)\n")
@@ -210,6 +249,10 @@ def build_tipps_report(groups, rule: ScoringRule, p: ModelParams,
                      f"| {ev:.2f} | {_pct(pw)} · {_pct(pd)} · {_pct(pl)} "
                      f"| {mx}–{my} |")
         L.append("")
+
+    if fixtures:
+        team_by_name = {t.name: t for teams in groups.values() for t in teams}
+        L.extend(build_schedule_section(fixtures, team_by_name, rule, p, risk))
 
     L.append("## Notes\n")
     L.append(
