@@ -1,14 +1,23 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-03. 0 matches recorded (0 group, 0 knockout).*
+*Generated 2026-06-12. 2 matches recorded (2 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-No scored matches yet (add results to `data/results.csv`).
+**6 points** from 2 scored matches (avg 3.00/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
+
+| Match | Our tip | Result | Pts |
+|-------|:-------:|:------:|----:|
+| Czechia – South Korea | 1–2 | 1–2 | 4 |
+| Mexico – South Africa | 2–1 | 2–0 | 2 |
 
 ## 📏 Did reality match our predictions?
 
-No matches played yet.
+Over 2 played matches (vs our pre-tournament model):
+
+- **Tendency accuracy:** 100% (share where our favourite/draw call was right)
+- **Brier score:** 0.316 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 0.606 (lower is better)
 
 ## 🔮 Updated title odds (conditioned + re-tuned)
 
@@ -16,18 +25,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 20.6% |
-| France | 16.5% |
-| Spain | 15.9% |
-| England | 8.8% |
-| Portugal | 6.3% |
-| Colombia | 4.6% |
+| Argentina | 17.5% |
+| Spain | 13.7% |
+| France | 13.0% |
+| England | 8.9% |
+| Portugal | 5.4% |
+| Colombia | 5.4% |
+| Mexico | 3.7% |
 | Brazil | 3.5% |
-| Netherlands | 3.3% |
-| Ecuador | 2.3% |
-| Germany | 2.3% |
-| Croatia | 2.1% |
-| Belgium | 1.8% |
+| Netherlands | 2.9% |
+| Ecuador | 2.8% |
+| Croatia | 2.8% |
+| Germany | 2.7% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -35,78 +44,76 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Match | Tip | Win–Draw–Loss |
 |-------|:---:|:-------------:|
-| Mexico – South Korea | **2–1** | 54% · 25% · 22% |
-| Mexico – Czechia | **2–1** | 55% · 25% · 20% |
-| Mexico – South Africa | **2–1** | 60% · 24% · 17% |
-| South Korea – Czechia | **2–1** | 39% · 27% · 34% |
-| South Korea – South Africa | **2–1** | 43% · 27% · 30% |
-| Czechia – South Africa | **2–1** | 40% · 28% · 32% |
-| Switzerland – Canada | **1–0** | 41% · 29% · 30% |
-| Switzerland – Bosnia & Herzegovina | **1–0** | 51% · 27% · 22% |
-| Switzerland – Qatar | **1–0** | 57% · 26% · 17% |
-| Canada – Bosnia & Herzegovina | **2–1** | 48% · 26% · 27% |
-| Canada – Qatar | **2–1** | 54% · 25% · 21% |
-| Bosnia & Herzegovina – Qatar | **2–1** | 43% · 27% · 30% |
-| Brazil – Morocco | **2–1** | 45% · 27% · 28% |
-| Brazil – Scotland | **2–1** | 59% · 23% · 19% |
-| Brazil – Haiti | **2–0** | 75% · 16% · 10% |
-| Morocco – Scotland | **1–0** | 46% · 29% · 25% |
-| Morocco – Haiti | **1–0** | 61% · 24% · 15% |
-| Scotland – Haiti | **2–1** | 51% · 26% · 23% |
-| Türkiye – Paraguay | **1–0** | 45% · 28% · 27% |
-| Türkiye – Australia | **2–1** | 50% · 26% · 25% |
-| Türkiye – United States | **2–1** | 49% · 24% · 26% |
-| Paraguay – Australia | **1–1** | 37% · 32% · 31% |
-| Paraguay – United States | **1–1** | 37% · 30% · 33% |
-| Australia – United States | **1–2** | 34% · 28% · 37% |
-| Germany – Ecuador | **2–1** | 36% · 28% · 36% |
-| Germany – Ivory Coast | **2–1** | 64% · 20% · 16% |
-| Germany – Curaçao | **2–0** | 73% · 17% · 10% |
-| Ecuador – Ivory Coast | **1–0** | 59% · 24% · 17% |
-| Ecuador – Curaçao | **1–0** | 68% · 21% · 11% |
-| Ivory Coast – Curaçao | **2–1** | 47% · 26% · 27% |
-| Netherlands – Japan | **2–1** | 45% · 26% · 29% |
-| Netherlands – Sweden | **2–1** | 63% · 21% · 16% |
-| Netherlands – Tunisia | **1–0** | 69% · 20% · 11% |
-| Japan – Sweden | **2–1** | 53% · 25% · 21% |
-| Japan – Tunisia | **1–0** | 60% · 25% · 15% |
-| Sweden – Tunisia | **1–0** | 43% · 30% · 27% |
-| Belgium – IR Iran | **2–1** | 50% · 27% · 24% |
-| Belgium – Egypt | **2–1** | 59% · 23% · 18% |
-| Belgium – New Zealand | **2–0** | 71% · 18% · 11% |
-| IR Iran – Egypt | **1–0** | 42% · 30% · 28% |
-| IR Iran – New Zealand | **1–0** | 54% · 27% · 19% |
-| Egypt – New Zealand | **1–0** | 47% · 29% · 25% |
-| Spain – Uruguay | **1–0** | 61% · 23% · 16% |
-| Spain – Cabo Verde | **3–0** | 87% · 9% · 3% |
-| Spain – Saudi Arabia | **3–0** | 88% · 9% · 3% |
-| Uruguay – Cabo Verde | **1–0** | 63% · 24% · 13% |
-| Uruguay – Saudi Arabia | **1–0** | 65% · 23% · 13% |
-| Cabo Verde – Saudi Arabia | **1–1** | 35% · 29% · 35% |
-| France – Senegal | **2–1** | 60% · 23% · 17% |
-| France – Norway | **2–0** | 76% · 15% · 9% |
-| France – Iraq | **2–0** | 83% · 12% · 4% |
-| Senegal – Norway | **2–1** | 51% · 24% · 25% |
-| Senegal – Iraq | **1–0** | 63% · 23% · 14% |
-| Norway – Iraq | **2–1** | 53% · 25% · 22% |
-| Argentina – Austria | **2–1** | 69% · 19% · 12% |
-| Argentina – Algeria | **2–0** | 74% · 16% · 9% |
-| Argentina – Jordan | **2–0** | 79% · 15% · 6% |
-| Austria – Algeria | **2–1** | 42% · 26% · 31% |
-| Austria – Jordan | **1–0** | 50% · 27% · 23% |
-| Algeria – Jordan | **1–0** | 45% · 28% · 27% |
-| Portugal – Colombia | **2–1** | 40% · 26% · 34% |
-| Portugal – Uzbekistan | **2–1** | 68% · 20% · 12% |
-| Portugal – DR Congo | **2–0** | 74% · 16% · 10% |
-| Colombia – Uzbekistan | **1–0** | 62% · 23% · 14% |
-| Colombia – DR Congo | **2–1** | 69% · 19% · 12% |
-| Uzbekistan – DR Congo | **2–1** | 40% · 28% · 32% |
-| England – Croatia | **1–0** | 47% · 28% · 25% |
-| England – Ghana | **2–1** | 69% · 20% · 12% |
-| England – Panama | **1–0** | 67% · 21% · 12% |
-| Croatia – Ghana | **2–1** | 55% · 25% · 20% |
-| Croatia – Panama | **1–0** | 54% · 27% · 19% |
-| Ghana – Panama | **2–1** | 36% · 28% · 35% |
+| Mexico – South Korea | **2–1** | 53% · 23% · 24% |
+| Mexico – Czechia | **2–1** | 64% · 21% · 16% |
+| South Korea – South Africa | **2–1** | 60% · 21% · 19% |
+| Czechia – South Africa | **2–1** | 46% · 25% · 29% |
+| Switzerland – Canada | **2–1** | 42% · 26% · 32% |
+| Switzerland – Bosnia & Herzegovina | **2–1** | 55% · 24% · 21% |
+| Switzerland – Qatar | **2–1** | 61% · 21% · 17% |
+| Canada – Bosnia & Herzegovina | **2–1** | 51% · 23% · 26% |
+| Canada – Qatar | **2–1** | 58% · 21% · 21% |
+| Bosnia & Herzegovina – Qatar | **2–1** | 44% · 23% · 33% |
+| Brazil – Morocco | **2–1** | 47% · 25% · 28% |
+| Brazil – Scotland | **2–1** | 62% · 20% · 18% |
+| Brazil – Haiti | **2–0** | 78% · 14% · 8% |
+| Morocco – Scotland | **2–1** | 50% · 25% · 25% |
+| Morocco – Haiti | **2–1** | 66% · 20% · 14% |
+| Scotland – Haiti | **2–1** | 55% · 23% · 23% |
+| Türkiye – Paraguay | **2–1** | 43% · 25% · 31% |
+| Türkiye – Australia | **2–1** | 42% · 23% · 34% |
+| Türkiye – United States | **2–1** | 48% · 22% · 30% |
+| Paraguay – Australia | **1–2** | 34% · 28% · 38% |
+| Paraguay – United States | **2–1** | 38% · 28% · 35% |
+| Australia – United States | **2–1** | 42% · 25% · 33% |
+| Germany – Ecuador | **1–2** | 35% · 26% · 39% |
+| Germany – Ivory Coast | **2–1** | 71% · 16% · 13% |
+| Germany – Curaçao | **3–1** | 77% · 14% · 9% |
+| Ecuador – Ivory Coast | **2–1** | 66% · 21% · 13% |
+| Ecuador – Curaçao | **2–0** | 72% · 19% · 9% |
+| Ivory Coast – Curaçao | **2–1** | 47% · 25% · 28% |
+| Netherlands – Japan | **2–1** | 42% · 23% · 35% |
+| Netherlands – Sweden | **2–1** | 71% · 17% · 13% |
+| Netherlands – Tunisia | **2–0** | 76% · 15% · 8% |
+| Japan – Sweden | **2–1** | 67% · 19% · 14% |
+| Japan – Tunisia | **2–0** | 73% · 17% · 10% |
+| Sweden – Tunisia | **2–1** | 46% · 27% · 28% |
+| Belgium – IR Iran | **2–1** | 50% · 23% · 27% |
+| Belgium – Egypt | **2–1** | 69% · 18% · 13% |
+| Belgium – New Zealand | **2–0** | 77% · 14% · 9% |
+| IR Iran – Egypt | **2–1** | 55% · 24% · 21% |
+| IR Iran – New Zealand | **2–1** | 63% · 21% · 16% |
+| Egypt – New Zealand | **2–1** | 45% · 26% · 29% |
+| Spain – Uruguay | **2–1** | 61% · 22% · 17% |
+| Spain – Cabo Verde | **3–0** | 93% · 5% · 2% |
+| Spain – Saudi Arabia | **3–0** | 87% · 9% · 4% |
+| Uruguay – Cabo Verde | **2–0** | 74% · 17% · 9% |
+| Uruguay – Saudi Arabia | **1–0** | 64% · 22% · 14% |
+| Cabo Verde – Saudi Arabia | **1–2** | 27% · 26% · 46% |
+| France – Senegal | **2–1** | 64% · 20% · 16% |
+| France – Norway | **3–1** | 76% · 14% · 10% |
+| France – Iraq | **2–0** | 83% · 11% · 5% |
+| Senegal – Norway | **2–1** | 49% · 22% · 28% |
+| Senegal – Iraq | **2–1** | 61% · 22% · 17% |
+| Norway – Iraq | **2–1** | 53% · 22% · 25% |
+| Argentina – Austria | **2–1** | 70% · 17% · 13% |
+| Argentina – Algeria | **3–1** | 81% · 12% · 7% |
+| Argentina – Jordan | **2–0** | 79% · 13% · 7% |
+| Austria – Algeria | **2–1** | 51% · 23% · 26% |
+| Austria – Jordan | **2–1** | 50% · 24% · 26% |
+| Algeria – Jordan | **2–1** | 38% · 25% · 37% |
+| Portugal – Colombia | **2–1** | 39% · 23% · 38% |
+| Portugal – Uzbekistan | **2–1** | 66% · 19% · 15% |
+| Portugal – DR Congo | **3–1** | 80% · 12% · 8% |
+| Colombia – Uzbekistan | **2–1** | 64% · 20% · 15% |
+| Colombia – DR Congo | **2–0** | 78% · 14% · 8% |
+| Uzbekistan – DR Congo | **2–1** | 50% · 24% · 26% |
+| England – Croatia | **2–1** | 50% · 25% · 25% |
+| England – Ghana | **2–0** | 82% · 12% · 6% |
+| England – Panama | **2–0** | 73% · 17% · 10% |
+| Croatia – Ghana | **2–1** | 71% · 17% · 12% |
+| Croatia – Panama | **2–1** | 62% · 22% · 17% |
+| Ghana – Panama | **1–2** | 31% · 24% · 45% |
 
 ## 🧭 Strategy
 

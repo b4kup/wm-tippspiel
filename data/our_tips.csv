@@ -1,6 +1,6 @@
 stage,team_a,team_b,tip_a,tip_b
 group,Czechia,Mexico,1,2
-group,Czechia,South Korea,2,1
+group,Czechia,South Korea,1,2
 group,Czechia,South Africa,2,1
 group,Mexico,South Korea,2,1
 group,Mexico,South Africa,2,1
@@ -17,9 +17,9 @@ group,Brazil,Haiti,2,0
 group,Morocco,Scotland,1,0
 group,Morocco,Haiti,1,0
 group,Scotland,Haiti,2,1
-group,United States,Türkiye,2,1
-group,United States,Paraguay,1,0
-group,United States,Australia,2,1
+group,United States,Türkiye,1,2
+group,United States,Paraguay,0,1
+group,United States,Australia,1,2
 group,Türkiye,Paraguay,1,0
 group,Türkiye,Australia,2,1
 group,Paraguay,Australia,1,1
@@ -64,10 +64,10 @@ group,Portugal,DR Congo,2,1
 group,Portugal,Uzbekistan,2,0
 group,Colombia,DR Congo,2,1
 group,Colombia,Uzbekistan,1,0
-group,DR Congo,Uzbekistan,2,1
+group,DR Congo,Uzbekistan,1,2
 group,England,Croatia,1,0
 group,England,Ghana,2,1
 group,England,Panama,2,0
 group,Croatia,Ghana,2,1
 group,Croatia,Panama,1,0
-group,Ghana,Panama,2,1
+group,Ghana,Panama,1,2
