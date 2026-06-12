@@ -278,6 +278,26 @@ def test_schedule_section_renders_in_order():
     assert len(rows) == len(fixtures)
 
 
+def test_dashboard_schedule_view():
+    from src.dashboard import _schedule_data, build_dashboard_html
+    from src.tippspiel import PRESETS
+    from src.model import DEFAULT_PARAMS
+    from src.simulate import run
+    groups = groups_from_teams(load_teams())
+    sched = _schedule_data(groups, PRESETS["check24"], DEFAULT_PARAMS)
+    # One entry per group-stage fixture, each with all three risk-mode tips.
+    assert len(sched) == 72
+    assert all(set(r["tips"]) == {"safe", "aggressive", "contrarian"}
+               for r in sched)
+    assert sched[0]["home"] == "Mexico" and sched[0]["num"] == 1  # opener first
+    # The rendered dashboard exposes the by-date layout toggle + container.
+    stats, groups = run(200, DEFAULT_PARAMS, seed=1)
+    html = build_dashboard_html(stats, groups, DEFAULT_PARAMS, 200, 1)
+    assert 'data-layout="date"' in html
+    assert 'id="tipps-schedule"' in html
+    assert "renderSchedule" in html
+
+
 def test_conditioning_uses_real_group_score():
     import random
     from src.results import MatchResult, Results
