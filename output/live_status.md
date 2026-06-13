@@ -1,23 +1,25 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-13. 2 matches recorded (2 group, 0 knockout).*
+*Generated 2026-06-13. 4 matches recorded (4 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**6 points** from 2 scored matches (avg 3.00/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
+**6 points** from 4 scored matches (avg 1.50/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
 | Czechia – South Korea | 1–2 | 1–2 | 4 |
 | Mexico – South Africa | 2–1 | 2–0 | 2 |
+| Canada – Bosnia & Herzegovina | 2–1 | 1–1 | 0 |
+| United States – Paraguay | 0–1 | 4–1 | 0 |
 
 ## 📏 Did reality match our predictions?
 
-Over 2 played matches (vs our pre-tournament model):
+Over 4 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 100% (share where our favourite/draw call was right)
-- **Brier score:** 0.316 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 0.606 (lower is better)
+- **Tendency accuracy:** 50% (share where our favourite/draw call was right)
+- **Brier score:** 0.550 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 0.937 (lower is better)
 
 ## 🔮 Updated title odds (conditioned + re-tuned)
 
@@ -25,17 +27,17 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 17.5% |
-| Spain | 13.7% |
-| France | 13.0% |
-| England | 8.9% |
-| Portugal | 5.4% |
-| Colombia | 5.4% |
+| Argentina | 17.7% |
+| Spain | 13.9% |
+| France | 12.8% |
+| England | 8.5% |
+| Portugal | 5.5% |
+| Colombia | 5.1% |
 | Mexico | 3.7% |
-| Brazil | 3.5% |
-| Netherlands | 2.9% |
+| Brazil | 3.3% |
 | Ecuador | 2.8% |
-| Croatia | 2.8% |
+| Netherlands | 2.8% |
+| Croatia | 2.7% |
 | Germany | 2.7% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
@@ -48,24 +50,22 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Mexico – Czechia | **2–1** | 64% · 21% · 16% |
 | South Korea – South Africa | **2–1** | 60% · 21% · 19% |
 | Czechia – South Africa | **2–1** | 46% · 25% · 29% |
-| Switzerland – Canada | **2–1** | 42% · 26% · 32% |
+| Switzerland – Canada | **2–1** | 43% · 26% · 31% |
 | Switzerland – Bosnia & Herzegovina | **2–1** | 55% · 24% · 21% |
 | Switzerland – Qatar | **2–1** | 61% · 21% · 17% |
-| Canada – Bosnia & Herzegovina | **2–1** | 51% · 23% · 26% |
 | Canada – Qatar | **2–1** | 58% · 21% · 21% |
-| Bosnia & Herzegovina – Qatar | **2–1** | 44% · 23% · 33% |
+| Bosnia & Herzegovina – Qatar | **2–1** | 44% · 23% · 32% |
 | Brazil – Morocco | **2–1** | 47% · 25% · 28% |
 | Brazil – Scotland | **2–1** | 62% · 20% · 18% |
 | Brazil – Haiti | **2–0** | 78% · 14% · 8% |
 | Morocco – Scotland | **2–1** | 50% · 25% · 25% |
 | Morocco – Haiti | **2–1** | 66% · 20% · 14% |
 | Scotland – Haiti | **2–1** | 55% · 23% · 23% |
-| Türkiye – Paraguay | **2–1** | 43% · 25% · 31% |
+| Türkiye – Paraguay | **2–1** | 50% · 24% · 26% |
 | Türkiye – Australia | **2–1** | 42% · 23% · 34% |
-| Türkiye – United States | **2–1** | 48% · 22% · 30% |
-| Paraguay – Australia | **1–2** | 34% · 28% · 38% |
-| Paraguay – United States | **2–1** | 38% · 28% · 35% |
-| Australia – United States | **2–1** | 42% · 25% · 33% |
+| Türkiye – United States | **2–1** | 41% · 23% · 36% |
+| Paraguay – Australia | **0–1** | 28% · 28% · 44% |
+| Australia – United States | **1–2** | 36% · 25% · 39% |
 | Germany – Ecuador | **1–2** | 35% · 26% · 39% |
 | Germany – Ivory Coast | **2–1** | 71% · 16% · 13% |
 | Germany – Curaçao | **3–1** | 77% · 14% · 9% |
