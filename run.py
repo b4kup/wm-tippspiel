@@ -114,7 +114,7 @@ def main(argv=None):
     if not args.no_html:
         from src.dashboard import build_dashboard_html
         html = build_dashboard_html(stats, groups, params, args.sims, args.seed,
-                                    n_results=n_results)
+                                    n_results=n_results, results=results)
         os.makedirs(os.path.dirname(os.path.abspath(args.html)), exist_ok=True)
         with open(args.html, "w", encoding="utf-8") as fh:
             fh.write(html)

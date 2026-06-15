@@ -107,12 +107,14 @@ def _match_tips(grid, rule: ScoringRule):
 
 
 def _schedule_data(groups: dict[str, list[Team]], rule: ScoringRule,
-                   params: ModelParams) -> list[dict]:
+                   params: ModelParams, results=None) -> list[dict]:
     """Every group-stage fixture in kickoff order (MESZ) with its per-risk
     point-maximizing tip — the data behind the dashboard's by-date view.
 
     Built from data/fixtures.csv via load_fixtures(); returns [] if absent.
-    Home team is listed first, matching the official schedule."""
+    Home team is listed first, matching the official schedule. When `results`
+    is supplied, played fixtures carry their real scoreline (oriented home
+    first) so the by-date view can show actual results next to the tips."""
     by_name = {t.name: t for gteams in groups.values() for t in gteams}
     rows: list[dict] = []
     for fx in load_fixtures():
@@ -120,6 +122,7 @@ def _schedule_data(groups: dict[str, list[Team]], rule: ScoringRule,
         if a is None or b is None:
             continue
         (mx, my), tips = _match_tips(score_distribution(a, b, params), rule)
+        score = results.group_score(fx.home, fx.away) if results else None
         rows.append({
             "num":   fx.number,
             "day":   f"{_WEEKDAYS[fx.kickoff.weekday()]} {fx.kickoff.day} "
@@ -131,6 +134,7 @@ def _schedule_data(groups: dict[str, list[Team]], rule: ScoringRule,
             "venue": fx.venue,
             "ml":    [mx, my],
             "tips":  tips,
+            "result": list(score) if score else None,
         })
     return rows
 
@@ -195,7 +199,8 @@ def _team_payload(t: Team, stats: Stats) -> dict:
 
 def _build_payload(stats: Stats, groups: dict[str, list[Team]],
                    params: ModelParams, n_sims: int, seed,
-                   rule: ScoringRule, n_results: int = 0) -> dict:
+                   rule: ScoringRule, n_results: int = 0,
+                   results=None) -> dict:
     from .model import HOSTS
     teams_flat = [t for g in groups.values() for t in g]
     top_pair = max(stats.finals.items(), key=lambda kv: kv[1])
@@ -229,7 +234,7 @@ def _build_payload(stats: Stats, groups: dict[str, list[Team]],
         "bracket":       _bracket_data(stats),
         "market":        _market_data(teams_flat, stats),
         "tipps":         _tipps_data(groups, rule, params),
-        "schedule":      _schedule_data(groups, rule, params),
+        "schedule":      _schedule_data(groups, rule, params, results),
         "headline": {
             "final_a":     fa,
             "final_b":     fb,
@@ -666,6 +671,23 @@ h2 {
   text-transform: uppercase; letter-spacing: 1px; font-size: 11px;
 }
 .sched-table tbody tr:hover:not(.sched-day) { background: var(--panel-2); }
+/* played fixtures: actual result + points the active tip scored */
+.sched-table tr.played { background: rgba(63,185,80,0.05); }
+.res-pending { color: var(--border); }
+.res-pill {
+  display: inline-block; font-family: ui-monospace, monospace; font-weight: 700;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 2px 8px; color: var(--text);
+}
+.pts-badge {
+  display: inline-block; min-width: 20px; text-align: center;
+  font-family: ui-monospace, monospace; font-weight: 700; font-size: 11px;
+  border-radius: 5px; padding: 2px 6px;
+}
+.pts-badge.pts-0 { background: rgba(248,81,73,0.15); color: #f85149; }
+.pts-badge.pts-2 { background: rgba(240,165,0,0.18); color: var(--accent); }
+.pts-badge.pts-3 { background: rgba(88,166,255,0.18); color: var(--accent-2); }
+.pts-badge.pts-4 { background: rgba(63,185,80,0.22); color: #3fb950; }
 
 /* --- how-it-works (wiki) view --- */
 .wiki-pickers {
@@ -1087,6 +1109,18 @@ function renderTipps() {
   });
 }
 
+// CHECK24 scoring (mirrors src/tippspiel.py points(): 4 exact / 3 right
+// tendency+goal-diff, incl. non-exact draws / 2 right winner only).
+function tipPoints(tip, res) {
+  if (tip[0] === res[0] && tip[1] === res[1]) return 4;
+  const pt = Math.sign(tip[0] - tip[1]);
+  const at = Math.sign(res[0] - res[1]);
+  if (pt !== at) return 0;
+  if (pt === 0) return 3;  // both draws (diff applies to draws under CHECK24)
+  if (tip[0] - tip[1] === res[0] - res[1]) return 3;
+  return 2;
+}
+
 // --- by-date schedule view ---
 // Same per-match tips as the group cards, but every fixture in kickoff order
 // (MESZ). Shares `currentRisk`; a day-change inserts a sub-header row.
@@ -1099,21 +1133,31 @@ function renderSchedule() {
   }
   let html = `<table class="sched-table"><thead><tr>
     <th>#</th><th>Kickoff (MESZ)</th><th>Grp</th><th>Match</th>
-    <th>Tip</th><th>E[pts]</th><th>Venue</th></tr></thead><tbody>`;
+    <th>Tip</th><th>Result</th><th>Pts</th><th>E[pts]</th><th>Venue</th></tr></thead><tbody>`;
   let lastDay = null;
   sched.forEach(m => {
     const t = m.tips[currentRisk];
     if (!t) return;
     if (m.day !== lastDay) {
-      html += `<tr class="sched-day"><td colspan="7">${m.day}</td></tr>`;
+      html += `<tr class="sched-day"><td colspan="9">${m.day}</td></tr>`;
       lastDay = m.day;
     }
-    html += `<tr class="${t.diverges ? "warn" : ""}">
+    // Actual result + points the active tip scores against it (if played).
+    let resCell = `<span class="res-pending">—</span>`;
+    let ptsCell = "";
+    if (m.result) {
+      const pts = tipPoints(t.tip, m.result);
+      resCell = `<span class="res-pill">${m.result[0]}–${m.result[1]}</span>`;
+      ptsCell = `<span class="pts-badge pts-${pts}">${pts}</span>`;
+    }
+    html += `<tr class="${m.result ? "played" : (t.diverges ? "warn" : "")}">
       <td class="num">${m.num}</td>
       <td class="time">${m.time}</td>
       <td class="grp">${m.group}</td>
       <td class="match"><span class="fl">${flag(m.home)}</span>${m.home} <span style="color:var(--muted)">–</span> <span class="fl">${flag(m.away)}</span>${m.away}</td>
       <td><span class="tip-pill">${t.tip[0]}–${t.tip[1]}</span></td>
+      <td>${resCell}</td>
+      <td>${ptsCell}</td>
       <td class="ev">${t.ev.toFixed(2)}</td>
       <td class="venue">${m.venue}</td>
     </tr>`;
@@ -1141,8 +1185,9 @@ function bindRiskToggle() {
   });
 }
 
-// Toggle between the by-group grid and the by-date table.
-let currentLayout = "group";
+// Toggle between the by-group grid and the by-date table. By-date is the
+// default — it shows every fixture in kickoff order with actual results.
+let currentLayout = "date";
 function applyLayout() {
   $("#tipps-grid").style.display = currentLayout === "group" ? "" : "none";
   $("#tipps-schedule").style.display = currentLayout === "date" ? "" : "none";
@@ -1475,10 +1520,10 @@ def _safe_json(obj) -> str:
 def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
                          params: ModelParams, n_sims: int, seed,
                          rule: ScoringRule | None = None,
-                         n_results: int = 0) -> str:
+                         n_results: int = 0, results=None) -> str:
     rule = rule or PRESETS["check24"]
     payload = _build_payload(stats, groups, params, n_sims, seed, rule,
-                             n_results=n_results)
+                             n_results=n_results, results=results)
     head = payload["headline"]
     meta = payload["meta"]
     top = sorted(payload["teams"], key=lambda t: -t["champion"])[:3]
@@ -1579,8 +1624,8 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
       <b style="color:var(--text)">Expected total</b> per group sums the per-match EV under the active guessing approach.
     </div>
     <div class="layout-toggle" role="tablist" aria-label="Layout" style="margin-bottom:10px">
-      <button class="layout-btn active" data-layout="group" role="tab" aria-selected="true">📊 By group</button>
-      <button class="layout-btn" data-layout="date" role="tab" aria-selected="false">📅 By date</button>
+      <button class="layout-btn" data-layout="group" role="tab" aria-selected="false">📊 By group</button>
+      <button class="layout-btn active" data-layout="date" role="tab" aria-selected="true">📅 By date</button>
     </div>
     <div class="risk-toggle" role="tablist" aria-label="Guessing approach">
       <button class="risk-btn active" data-risk="safe" role="tab" aria-selected="true">
@@ -1597,8 +1642,8 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
       </button>
     </div>
   </div>
-  <div id="tipps-grid" class="tipps-grid"></div>
-  <div id="tipps-schedule" class="panel" style="display:none"></div>
+  <div id="tipps-grid" class="tipps-grid" style="display:none"></div>
+  <div id="tipps-schedule" class="panel"></div>
 </section>
 
 <section id="view-howto" class="view">
