@@ -1,25 +1,39 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-15. 4 matches recorded (4 group, 0 knockout).*
+*Generated 2026-06-15. 12 matches recorded (12 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**6 points** from 4 scored matches (avg 1.50/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
+**13 points** from 12 scored matches (avg 1.08/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
 | Czechia – South Korea | 1–2 | 1–2 | 4 |
 | Mexico – South Africa | 2–1 | 2–0 | 2 |
+| Switzerland – Qatar | 1–0 | 1–1 | 0 |
 | Canada – Bosnia & Herzegovina | 2–1 | 1–1 | 0 |
+| Brazil – Morocco | 2–1 | 1–1 | 0 |
+| Scotland – Haiti | 2–1 | 1–0 | 3 |
 | United States – Paraguay | 0–1 | 4–1 | 0 |
+| Türkiye – Australia | 2–1 | 0–2 | 0 |
+| Germany – Curaçao | 2–0 | 7–1 | 2 |
+| Ecuador – Ivory Coast | 1–0 | 0–1 | 0 |
+| Netherlands – Japan | 2–1 | 2–2 | 0 |
+| Sweden – Tunisia | 1–0 | 5–1 | 2 |
 
 ## 📏 Did reality match our predictions?
 
-Over 4 played matches (vs our pre-tournament model):
+Over 12 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 50% (share where our favourite/draw call was right)
-- **Brier score:** 0.550 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 0.937 (lower is better)
+- **Tendency accuracy:** 42% (share where our favourite/draw call was right)
+- **Brier score:** 0.642 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 1.074 (lower is better)
+
+**Biggest surprises** (results our model rated unlikely):
+
+| Match | Result | Our prob. of that outcome |
+|-------|:------:|--------------------------:|
+| Ivory Coast – Ecuador | 1–0 | 13% |
 
 ## 🔮 Updated title odds (conditioned + re-tuned)
 
@@ -28,17 +42,17 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Team | Champion |
 |------|---------:|
 | Argentina | 17.7% |
-| Spain | 13.9% |
-| France | 12.8% |
-| England | 8.5% |
-| Portugal | 5.5% |
-| Colombia | 5.1% |
-| Mexico | 3.7% |
+| Spain | 13.5% |
+| France | 13.4% |
+| England | 8.8% |
+| Portugal | 5.4% |
+| Colombia | 5.4% |
+| Mexico | 3.5% |
+| Germany | 3.4% |
 | Brazil | 3.3% |
-| Ecuador | 2.8% |
-| Netherlands | 2.8% |
-| Croatia | 2.7% |
-| Germany | 2.7% |
+| Croatia | 3.0% |
+| Netherlands | 2.7% |
+| Belgium | 2.5% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -50,34 +64,26 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Mexico – Czechia | **2–1** | 64% · 21% · 16% |
 | South Korea – South Africa | **2–1** | 60% · 21% · 19% |
 | Czechia – South Africa | **2–1** | 46% · 25% · 29% |
-| Switzerland – Canada | **2–1** | 43% · 26% · 31% |
-| Switzerland – Bosnia & Herzegovina | **2–1** | 55% · 24% · 21% |
-| Switzerland – Qatar | **2–1** | 61% · 21% · 17% |
-| Canada – Qatar | **2–1** | 58% · 21% · 21% |
-| Bosnia & Herzegovina – Qatar | **2–1** | 44% · 23% · 32% |
-| Brazil – Morocco | **2–1** | 47% · 25% · 28% |
-| Brazil – Scotland | **2–1** | 62% · 20% · 18% |
-| Brazil – Haiti | **2–0** | 78% · 14% · 8% |
-| Morocco – Scotland | **2–1** | 50% · 25% · 25% |
-| Morocco – Haiti | **2–1** | 66% · 20% · 14% |
-| Scotland – Haiti | **2–1** | 55% · 23% · 23% |
-| Türkiye – Paraguay | **2–1** | 50% · 24% · 26% |
-| Türkiye – Australia | **2–1** | 42% · 23% · 34% |
-| Türkiye – United States | **2–1** | 41% · 23% · 36% |
-| Paraguay – Australia | **0–1** | 28% · 28% · 44% |
-| Australia – United States | **1–2** | 36% · 25% · 39% |
-| Germany – Ecuador | **1–2** | 35% · 26% · 39% |
-| Germany – Ivory Coast | **2–1** | 71% · 16% · 13% |
-| Germany – Curaçao | **3–1** | 77% · 14% · 9% |
-| Ecuador – Ivory Coast | **2–1** | 66% · 21% · 13% |
-| Ecuador – Curaçao | **2–0** | 72% · 19% · 9% |
-| Ivory Coast – Curaçao | **2–1** | 47% · 25% · 28% |
-| Netherlands – Japan | **2–1** | 42% · 23% · 35% |
-| Netherlands – Sweden | **2–1** | 71% · 17% · 13% |
-| Netherlands – Tunisia | **2–0** | 76% · 15% · 8% |
-| Japan – Sweden | **2–1** | 67% · 19% · 14% |
-| Japan – Tunisia | **2–0** | 73% · 17% · 10% |
-| Sweden – Tunisia | **2–1** | 46% · 27% · 28% |
+| Switzerland – Canada | **2–1** | 41% · 26% · 33% |
+| Switzerland – Bosnia & Herzegovina | **2–1** | 53% · 24% · 23% |
+| Canada – Qatar | **2–1** | 56% · 21% · 23% |
+| Bosnia & Herzegovina – Qatar | **2–1** | 43% · 24% · 34% |
+| Brazil – Scotland | **2–1** | 60% · 21% · 19% |
+| Brazil – Haiti | **2–0** | 79% · 13% · 8% |
+| Morocco – Scotland | **2–1** | 48% · 26% · 26% |
+| Morocco – Haiti | **2–1** | 68% · 19% · 13% |
+| Türkiye – Paraguay | **2–1** | 44% · 25% · 31% |
+| Türkiye – United States | **1–2** | 35% · 23% · 43% |
+| Paraguay – Australia | **0–1** | 24% · 27% · 49% |
+| Australia – United States | **2–1** | 41% · 25% · 34% |
+| Germany – Ecuador | **2–1** | 41% · 26% · 33% |
+| Germany – Ivory Coast | **2–1** | 69% · 17% · 14% |
+| Ecuador – Curaçao | **1–0** | 70% · 20% · 10% |
+| Ivory Coast – Curaçao | **2–1** | 54% · 23% · 23% |
+| Netherlands – Sweden | **2–1** | 66% · 18% · 15% |
+| Netherlands – Tunisia | **2–0** | 79% · 14% · 7% |
+| Japan – Sweden | **2–1** | 63% · 20% · 17% |
+| Japan – Tunisia | **2–0** | 77% · 15% · 8% |
 | Belgium – IR Iran | **2–1** | 50% · 23% · 27% |
 | Belgium – Egypt | **2–1** | 69% · 18% · 13% |
 | Belgium – New Zealand | **2–0** | 77% · 14% · 9% |
