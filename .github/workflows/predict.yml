@@ -37,22 +37,25 @@ jobs:
           python-version: "3.12"
       - name: Smoke tests
         run: python tests/test_model.py
-      - name: Regenerate predictions
-        run: python run.py --sims 20000
-      - name: Regenerate Tippspiel tips
-        run: python tipps.py --preset check24
-      - name: Regenerate live status (if results exist)
+      # Live update FIRST: re-tune from results, detect tip-recommendation
+      # changes, append data/notifications.json + sync data/our_tips.csv. Runs
+      # before run.py so the dashboard build embeds the fresh notification feed.
+      - name: Live update + tip-change notifications (if results exist)
         run: |
           if [ -s data/results.csv ] && [ "$(wc -l < data/results.csv)" -gt 1 ]; then
             python update.py || true
           else
             echo "no results yet — skipping update.py"
           fi
-      - name: Commit refreshed reports
+      - name: Regenerate predictions + dashboard
+        run: python run.py --sims 20000
+      - name: Regenerate Tippspiel tips
+        run: python tipps.py --preset check24
+      - name: Commit refreshed reports + tip state
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output/
+          git add output/ data/notifications.json data/tip_state.json data/our_tips.csv
           if ! git diff --staged --quiet; then
             git commit -m "chore: regenerate reports [skip ci]"
             git push

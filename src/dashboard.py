@@ -197,6 +197,15 @@ def _team_payload(t: Team, stats: Stats) -> dict:
     }
 
 
+def _load_notifications_safe() -> list:
+    """Notification feed (newest first); empty if the engine never ran."""
+    try:
+        from .notify import load_notifications
+        return load_notifications()
+    except Exception:
+        return []
+
+
 def _build_payload(stats: Stats, groups: dict[str, list[Team]],
                    params: ModelParams, n_sims: int, seed,
                    rule: ScoringRule, n_results: int = 0,
@@ -235,6 +244,7 @@ def _build_payload(stats: Stats, groups: dict[str, list[Team]],
         "market":        _market_data(teams_flat, stats),
         "tipps":         _tipps_data(groups, rule, params),
         "schedule":      _schedule_data(groups, rule, params, results),
+        "notifications": _load_notifications_safe(),
         "headline": {
             "final_a":     fa,
             "final_b":     fb,
@@ -689,6 +699,47 @@ h2 {
 .pts-badge.pts-3 { background: rgba(88,166,255,0.18); color: var(--accent-2); }
 .pts-badge.pts-4 { background: rgba(63,185,80,0.22); color: #3fb950; }
 
+/* --- notifications view --- */
+.notif-badge {
+  display: inline-block; margin-left: 6px; min-width: 16px; padding: 0 5px;
+  font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
+  border-radius: 8px; background: var(--accent); color: #0d1117;
+  vertical-align: middle;
+}
+.notif-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 10px;
+}
+.notif-head {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;
+}
+.notif-grp {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--accent); background: rgba(240,165,0,0.12);
+  border-radius: 4px; padding: 2px 7px;
+}
+.notif-match { font-weight: 600; color: var(--text); }
+.notif-ts {
+  margin-left: auto; font-family: ui-monospace, monospace;
+  font-size: 11px; color: var(--muted);
+}
+.notif-change {
+  display: flex; align-items: center; gap: 10px;
+  font-family: ui-monospace, monospace; font-weight: 700;
+}
+.notif-change .tip-old {
+  color: var(--muted); text-decoration: line-through; opacity: 0.8;
+  background: var(--bg-2); border-radius: 5px; padding: 2px 8px;
+}
+.notif-change .tip-new {
+  color: #3fb950; background: rgba(63,185,80,0.15);
+  border-radius: 5px; padding: 2px 8px;
+}
+.notif-change .notif-arrow { color: var(--accent); }
+.notif-trigger { margin-top: 8px; font-size: 11px; color: var(--muted); }
+.notif-trigger span { color: var(--text); }
+
 /* --- how-it-works (wiki) view --- */
 .wiki-pickers {
   display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;
@@ -1109,6 +1160,45 @@ function renderTipps() {
   });
 }
 
+// --- notifications view ---
+// Feed of recommendation changes (newest first), embedded from
+// data/notifications.json. A nav badge shows the count.
+function renderNotifications() {
+  const feed = $("#notif-feed");
+  const items = DATA.notifications || [];
+  const badge = $("#notif-badge");
+  if (badge) {
+    badge.textContent = items.length;
+    badge.style.display = items.length ? "" : "none";
+  }
+  if (!items.length) {
+    feed.innerHTML = `<div class="panel" style="color:var(--muted); font-size:13px">
+      No tip changes yet. As results come in and re-tune the model, any shift in a
+      recommended group-match tip will appear here.</div>`;
+    return;
+  }
+  let html = "";
+  items.forEach(n => {
+    const trig = (n.trigger && n.trigger.length)
+      ? `<div class="notif-trigger">triggered by ${n.trigger.map(t => `<span>${t}</span>`).join(", ")}</div>`
+      : "";
+    html += `<div class="notif-card">
+      <div class="notif-head">
+        <span class="notif-grp">Grp ${n.group}</span>
+        <span class="notif-match">${n.match}</span>
+        <span class="notif-ts">${n.ts}</span>
+      </div>
+      <div class="notif-change">
+        <span class="tip-old">${n.old[0]}–${n.old[1]}</span>
+        <span class="notif-arrow">→</span>
+        <span class="tip-new">${n.new[0]}–${n.new[1]}</span>
+      </div>
+      ${trig}
+    </div>`;
+  });
+  feed.innerHTML = html;
+}
+
 // CHECK24 scoring (mirrors src/tippspiel.py points(): 4 exact / 3 right
 // tendency+goal-diff, incl. non-exact draws / 2 right winner only).
 function tipPoints(tip, res) {
@@ -1505,6 +1595,7 @@ renderGroups();
 renderBracket();
 renderTipps();
 renderSchedule();
+renderNotifications();
 bindRiskToggle();
 bindLayoutToggle();
 applyLayout();
@@ -1563,6 +1654,7 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
   <button data-view="view-groups">📊 Groups</button>
   <button data-view="view-bracket">🪜 Bracket</button>
   <button data-view="view-tipps">🎯 Tipps</button>
+  <button data-view="view-notifs">🔔 Notifications<span id="notif-badge" class="notif-badge" style="display:none"></span></button>
   <button data-view="view-howto">📖 How it works</button>
 </nav>
 <main>
@@ -1644,6 +1736,19 @@ def build_dashboard_html(stats: Stats, groups: dict[str, list[Team]],
   </div>
   <div id="tipps-grid" class="tipps-grid" style="display:none"></div>
   <div id="tipps-schedule" class="panel"></div>
+</section>
+
+<section id="view-notifs" class="view">
+  <div class="panel" style="margin-bottom:14px">
+    <h2>🔔 Tip-change notifications</h2>
+    <div style="color:var(--muted); font-size:12px">
+      Each entry fires when freshly-added results re-tuned the model and shifted the
+      <b style="color:var(--text)">safe (EV-optimal) recommendation</b> for an upcoming group match.
+      When auto-update is on, the frozen tip in <code>data/our_tips.csv</code> is synced to the new pick —
+      remember to mirror it in your Tippspiel app before kickoff.
+    </div>
+  </div>
+  <div id="notif-feed"></div>
 </section>
 
 <section id="view-howto" class="view">

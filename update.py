@@ -67,6 +67,10 @@ def main(argv=None):
     ap.add_argument("--results", default=os.path.join(DATA_DIR, "results.csv"))
     ap.add_argument("--tips", default=os.path.join(DATA_DIR, "our_tips.csv"))
     ap.add_argument("--out", default=os.path.join("output", "live_status.md"))
+    ap.add_argument("--no-notify", action="store_true",
+                    help="skip tip-change detection / notifications.json")
+    ap.add_argument("--no-auto-tips", action="store_true",
+                    help="log notifications but do NOT auto-update our_tips.csv")
     args = ap.parse_args(argv)
 
     rule = PRESETS[args.preset]
@@ -99,6 +103,29 @@ def main(argv=None):
     groups_tuned = groups_from_teams(tuned)
     remaining = remaining_group_tips(groups_tuned, results, rule,
                                      DEFAULT_PARAMS, args.risk)
+
+    # Detect recommendation changes and (optionally) sync our frozen tips.
+    # Notifications always track the *safe* recommendation so the alert feed is
+    # stable regardless of --risk.
+    if not args.no_notify:
+        from src.notify import sync_and_notify
+        safe_remaining = remaining_group_tips(groups_tuned, results, rule,
+                                              DEFAULT_PARAMS, "safe")
+        group_of = {t.name: t.group for t in tuned}
+        new_notifs = sync_and_notify(safe_remaining, args.tips, results,
+                                     group_of=group_of,
+                                     auto_update=not args.no_auto_tips)
+        for n in new_notifs:
+            print(f"  📣 {n['match']}: {n['old'][0]}–{n['old'][1]} → "
+                  f"{n['new'][0]}–{n['new'][1]}")
+        if new_notifs:
+            verb = ("logged" if args.no_auto_tips
+                    else "logged + our_tips.csv updated")
+            print(f"{len(new_notifs)} tip change(s) {verb}")
+        # Re-load tips so the live report reflects any auto-update.
+        if new_notifs and not args.no_auto_tips:
+            our_tips = load_our_tips(args.tips)
+            scored, total = score_our_tips(our_tips, results, rule)
 
     report = build_live_report(results, rule, scored, total, calib,
                                champion_top, remaining, args.risk)

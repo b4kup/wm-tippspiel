@@ -1,0 +1,259 @@
+{
+  "updated": "2026-06-15",
+  "result_keys": [
+    "Australia|Türkiye",
+    "Bosnia & Herzegovina|Canada",
+    "Brazil|Morocco",
+    "Curaçao|Germany",
+    "Czechia|South Korea",
+    "Ecuador|Ivory Coast",
+    "Haiti|Scotland",
+    "Japan|Netherlands",
+    "Mexico|South Africa",
+    "Paraguay|United States",
+    "Qatar|Switzerland",
+    "Sweden|Tunisia"
+  ],
+  "tips": {
+    "Mexico|South Korea": [
+      2,
+      1
+    ],
+    "Czechia|Mexico": [
+      1,
+      2
+    ],
+    "South Africa|South Korea": [
+      1,
+      2
+    ],
+    "Czechia|South Africa": [
+      2,
+      1
+    ],
+    "Canada|Switzerland": [
+      1,
+      2
+    ],
+    "Bosnia & Herzegovina|Switzerland": [
+      1,
+      2
+    ],
+    "Canada|Qatar": [
+      2,
+      1
+    ],
+    "Bosnia & Herzegovina|Qatar": [
+      2,
+      1
+    ],
+    "Brazil|Scotland": [
+      2,
+      1
+    ],
+    "Brazil|Haiti": [
+      2,
+      0
+    ],
+    "Morocco|Scotland": [
+      2,
+      1
+    ],
+    "Haiti|Morocco": [
+      1,
+      2
+    ],
+    "Paraguay|Türkiye": [
+      1,
+      2
+    ],
+    "Türkiye|United States": [
+      1,
+      2
+    ],
+    "Australia|Paraguay": [
+      1,
+      0
+    ],
+    "Australia|United States": [
+      2,
+      1
+    ],
+    "Ecuador|Germany": [
+      1,
+      2
+    ],
+    "Germany|Ivory Coast": [
+      2,
+      1
+    ],
+    "Curaçao|Ecuador": [
+      0,
+      1
+    ],
+    "Curaçao|Ivory Coast": [
+      1,
+      2
+    ],
+    "Netherlands|Sweden": [
+      2,
+      1
+    ],
+    "Netherlands|Tunisia": [
+      2,
+      0
+    ],
+    "Japan|Sweden": [
+      2,
+      1
+    ],
+    "Japan|Tunisia": [
+      2,
+      0
+    ],
+    "Belgium|IR Iran": [
+      2,
+      1
+    ],
+    "Belgium|Egypt": [
+      2,
+      1
+    ],
+    "Belgium|New Zealand": [
+      2,
+      0
+    ],
+    "Egypt|IR Iran": [
+      1,
+      2
+    ],
+    "IR Iran|New Zealand": [
+      2,
+      1
+    ],
+    "Egypt|New Zealand": [
+      2,
+      1
+    ],
+    "Spain|Uruguay": [
+      2,
+      1
+    ],
+    "Cabo Verde|Spain": [
+      0,
+      3
+    ],
+    "Saudi Arabia|Spain": [
+      0,
+      3
+    ],
+    "Cabo Verde|Uruguay": [
+      0,
+      2
+    ],
+    "Saudi Arabia|Uruguay": [
+      0,
+      1
+    ],
+    "Cabo Verde|Saudi Arabia": [
+      1,
+      2
+    ],
+    "France|Senegal": [
+      2,
+      1
+    ],
+    "France|Norway": [
+      3,
+      1
+    ],
+    "France|Iraq": [
+      2,
+      0
+    ],
+    "Norway|Senegal": [
+      1,
+      2
+    ],
+    "Iraq|Senegal": [
+      1,
+      2
+    ],
+    "Iraq|Norway": [
+      1,
+      2
+    ],
+    "Argentina|Austria": [
+      2,
+      1
+    ],
+    "Algeria|Argentina": [
+      1,
+      3
+    ],
+    "Argentina|Jordan": [
+      2,
+      0
+    ],
+    "Algeria|Austria": [
+      1,
+      2
+    ],
+    "Austria|Jordan": [
+      2,
+      1
+    ],
+    "Algeria|Jordan": [
+      2,
+      1
+    ],
+    "Colombia|Portugal": [
+      1,
+      2
+    ],
+    "Portugal|Uzbekistan": [
+      2,
+      1
+    ],
+    "DR Congo|Portugal": [
+      1,
+      3
+    ],
+    "Colombia|Uzbekistan": [
+      2,
+      1
+    ],
+    "Colombia|DR Congo": [
+      2,
+      0
+    ],
+    "DR Congo|Uzbekistan": [
+      1,
+      2
+    ],
+    "Croatia|England": [
+      1,
+      2
+    ],
+    "England|Ghana": [
+      2,
+      0
+    ],
+    "England|Panama": [
+      2,
+      0
+    ],
+    "Croatia|Ghana": [
+      2,
+      1
+    ],
+    "Croatia|Panama": [
+      2,
+      1
+    ],
+    "Ghana|Panama": [
+      1,
+      2
+    ]
+  }
+}

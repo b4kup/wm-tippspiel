@@ -311,6 +311,41 @@ def test_conditioning_uses_real_group_score():
     assert spain.gf >= 5 and uruguay.ga >= 5     # the real 5-0 is included
 
 
+def test_notify_fires_on_recommendation_change():
+    import os
+    import tempfile
+    from src.notify import sync_and_notify, load_notifications
+    from src.results import MatchResult, Results
+    with tempfile.TemporaryDirectory() as tmp:
+        tips = os.path.join(tmp, "our_tips.csv")
+        notif = os.path.join(tmp, "notif.json")
+        state = os.path.join(tmp, "state.json")
+        with open(tips, "w") as fh:
+            fh.write("stage,team_a,team_b,tip_a,tip_b\ngroup,Aland,Bland,1,0\n")
+        gof = {"Aland": "X", "Bland": "X"}
+        kw = dict(group_of=gof, notif_path=notif, state_path=state)
+
+        # First run = baseline, no notification, tips untouched.
+        n0 = sync_and_notify([("Aland", "Bland", (1, 0), (0.5, 0.3, 0.2))],
+                             tips, Results([]), today="2026-06-15", **kw)
+        assert n0 == []
+
+        # A new result flips the recommendation -> one notification + auto-update.
+        res = Results([MatchResult("group", "Cland", "Dland", 3, 0)])
+        n1 = sync_and_notify([("Aland", "Bland", (2, 1), (0.4, 0.3, 0.3))],
+                             tips, res, today="2026-06-16", **kw)
+        assert len(n1) == 1
+        assert n1[0]["old"] == [1, 0] and n1[0]["new"] == [2, 1]
+        assert n1[0]["trigger"] == ["Cland 3–0 Dland"]
+        assert open(tips).read().strip().endswith("group,Aland,Bland,2,1")
+
+        # Same state again -> no duplicate notification.
+        n2 = sync_and_notify([("Aland", "Bland", (2, 1), (0.4, 0.3, 0.3))],
+                             tips, res, today="2026-06-17", **kw)
+        assert n2 == []
+        assert len(load_notifications(notif)) == 1
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):
