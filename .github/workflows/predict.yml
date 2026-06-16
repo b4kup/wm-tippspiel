@@ -57,7 +57,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add output/ data/notifications.json data/tip_state.json data/our_tips.csv
           if ! git diff --staged --quiet; then
-            git commit -m "chore: regenerate reports [skip ci]"
+            # [skip actions] stops THIS workflow from re-triggering on its own
+            # bot commit, but (unlike [skip ci]) does NOT stop the Cloudflare
+            # Pages deploy — so the live site still refreshes.
+            git commit -m "chore: regenerate reports [skip actions]"
             git push
           else
             echo "no changes to commit"
