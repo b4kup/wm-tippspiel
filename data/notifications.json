@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "ts": "2026-06-16",
+    "match": "Saudi Arabia – Spain",
+    "group": "H",
+    "old": [
+      0,
+      3
+    ],
+    "new": [
+      0,
+      2
+    ],
+    "trigger": [
+      "Spain 0–0 Cabo Verde",
+      "Belgium 1–1 Egypt",
+      "Saudi Arabia 1–1 Uruguay",
+      "IR Iran 2–2 New Zealand"
+    ]
+  }
+]
