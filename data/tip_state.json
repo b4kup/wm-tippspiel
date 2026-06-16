@@ -1,17 +1,21 @@
 {
-  "updated": "2026-06-15",
+  "updated": "2026-06-16",
   "result_keys": [
     "Australia|Türkiye",
+    "Belgium|Egypt",
     "Bosnia & Herzegovina|Canada",
     "Brazil|Morocco",
+    "Cabo Verde|Spain",
     "Curaçao|Germany",
     "Czechia|South Korea",
     "Ecuador|Ivory Coast",
     "Haiti|Scotland",
+    "IR Iran|New Zealand",
     "Japan|Netherlands",
     "Mexico|South Africa",
     "Paraguay|United States",
     "Qatar|Switzerland",
+    "Saudi Arabia|Uruguay",
     "Sweden|Tunisia"
   ],
   "tips": {
@@ -115,10 +119,6 @@
       2,
       1
     ],
-    "Belgium|Egypt": [
-      2,
-      1
-    ],
     "Belgium|New Zealand": [
       2,
       0
@@ -126,10 +126,6 @@
     "Egypt|IR Iran": [
       1,
       2
-    ],
-    "IR Iran|New Zealand": [
-      2,
-      1
     ],
     "Egypt|New Zealand": [
       2,
@@ -139,21 +135,13 @@
       2,
       1
     ],
-    "Cabo Verde|Spain": [
-      0,
-      3
-    ],
     "Saudi Arabia|Spain": [
       0,
-      3
+      2
     ],
     "Cabo Verde|Uruguay": [
       0,
       2
-    ],
-    "Saudi Arabia|Uruguay": [
-      0,
-      1
     ],
     "Cabo Verde|Saudi Arabia": [
       1,
