@@ -1,7 +1,9 @@
 {
-  "updated": "2026-06-16",
+  "updated": "2026-06-17",
   "result_keys": [
+    "Algeria|Argentina",
     "Australia|Türkiye",
+    "Austria|Jordan",
     "Belgium|Egypt",
     "Bosnia & Herzegovina|Canada",
     "Brazil|Morocco",
@@ -9,8 +11,10 @@
     "Curaçao|Germany",
     "Czechia|South Korea",
     "Ecuador|Ivory Coast",
+    "France|Senegal",
     "Haiti|Scotland",
     "IR Iran|New Zealand",
+    "Iraq|Norway",
     "Japan|Netherlands",
     "Mexico|South Africa",
     "Paraguay|United States",
@@ -147,16 +151,12 @@
       1,
       2
     ],
-    "France|Senegal": [
-      2,
-      1
-    ],
     "France|Norway": [
       3,
       1
     ],
     "France|Iraq": [
-      2,
+      3,
       0
     ],
     "Norway|Senegal": [
@@ -167,17 +167,9 @@
       1,
       2
     ],
-    "Iraq|Norway": [
-      1,
-      2
-    ],
     "Argentina|Austria": [
       2,
       1
-    ],
-    "Algeria|Argentina": [
-      1,
-      3
     ],
     "Argentina|Jordan": [
       2,
@@ -186,10 +178,6 @@
     "Algeria|Austria": [
       1,
       2
-    ],
-    "Austria|Jordan": [
-      2,
-      1
     ],
     "Algeria|Jordan": [
       2,

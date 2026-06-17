@@ -17,5 +17,24 @@
       "Saudi Arabia 1–1 Uruguay",
       "IR Iran 2–2 New Zealand"
     ]
+  },
+  {
+    "ts": "2026-06-17",
+    "match": "France – Iraq",
+    "group": "I",
+    "old": [
+      2,
+      0
+    ],
+    "new": [
+      3,
+      0
+    ],
+    "trigger": [
+      "France 3–1 Senegal",
+      "Iraq 1–4 Norway",
+      "Argentina 3–0 Algeria",
+      "Austria 3–1 Jordan"
+    ]
   }
 ]
