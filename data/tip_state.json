@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-17",
+  "updated": "2026-06-18",
   "result_keys": [
     "Algeria|Argentina",
     "Australia|Türkiye",
@@ -8,10 +8,14 @@
     "Bosnia & Herzegovina|Canada",
     "Brazil|Morocco",
     "Cabo Verde|Spain",
+    "Colombia|Uzbekistan",
+    "Croatia|England",
     "Curaçao|Germany",
     "Czechia|South Korea",
+    "DR Congo|Portugal",
     "Ecuador|Ivory Coast",
     "France|Senegal",
+    "Ghana|Panama",
     "Haiti|Scotland",
     "IR Iran|New Zealand",
     "Iraq|Norway",
@@ -184,18 +188,10 @@
       1
     ],
     "Colombia|Portugal": [
-      1,
-      2
-    ],
-    "Portugal|Uzbekistan": [
       2,
       1
     ],
-    "DR Congo|Portugal": [
-      1,
-      3
-    ],
-    "Colombia|Uzbekistan": [
+    "Portugal|Uzbekistan": [
       2,
       1
     ],
@@ -204,10 +200,6 @@
       0
     ],
     "DR Congo|Uzbekistan": [
-      1,
-      2
-    ],
-    "Croatia|England": [
       1,
       2
     ],
@@ -226,10 +218,6 @@
     "Croatia|Panama": [
       2,
       1
-    ],
-    "Ghana|Panama": [
-      1,
-      2
     ]
   }
 }

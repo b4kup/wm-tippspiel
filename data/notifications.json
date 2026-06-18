@@ -36,5 +36,24 @@
       "Argentina 3–0 Algeria",
       "Austria 3–1 Jordan"
     ]
+  },
+  {
+    "ts": "2026-06-18",
+    "match": "Colombia – Portugal",
+    "group": "K",
+    "old": [
+      1,
+      2
+    ],
+    "new": [
+      2,
+      1
+    ],
+    "trigger": [
+      "Portugal 1–1 DR Congo",
+      "England 4–2 Croatia",
+      "Ghana 1–0 Panama",
+      "Uzbekistan 1–3 Colombia"
+    ]
   }
 ]

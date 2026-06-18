@@ -1,10 +1,10 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-17. 20 matches recorded (20 group, 0 knockout).*
+*Generated 2026-06-18. 24 matches recorded (24 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**21 points** from 20 scored matches (avg 1.05/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
+**25 points** from 24 scored matches (avg 1.04/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
@@ -28,20 +28,25 @@
 | Norway – Iraq | 2–1 | 4–1 | 2 |
 | Argentina – Algeria | 2–0 | 3–0 | 2 |
 | Austria – Jordan | 1–0 | 3–1 | 2 |
+| Portugal – DR Congo | 2–1 | 1–1 | 0 |
+| Colombia – Uzbekistan | 1–0 | 3–1 | 2 |
+| England – Croatia | 1–0 | 4–2 | 2 |
+| Ghana – Panama | 1–2 | 1–0 | 0 |
 
 ## 📏 Did reality match our predictions?
 
-Over 20 played matches (vs our pre-tournament model):
+Over 24 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 45% (share where our favourite/draw call was right)
+- **Tendency accuracy:** 46% (share where our favourite/draw call was right)
 - **Brier score:** 0.683 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 1.128 (lower is better)
+- **Log-loss:** 1.125 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
 | Match | Result | Our prob. of that outcome |
 |-------|:------:|--------------------------:|
 | Spain – Cabo Verde | 0–0 | 5% |
+| Portugal – DR Congo | 1–1 | 12% |
 | Ivory Coast – Ecuador | 1–0 | 13% |
 | Belgium – Egypt | 1–1 | 18% |
 
@@ -51,18 +56,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 20.8% |
+| Argentina | 20.1% |
 | France | 15.5% |
-| Spain | 10.3% |
-| England | 8.6% |
-| Portugal | 5.4% |
-| Colombia | 5.3% |
+| England | 12.1% |
+| Spain | 10.5% |
+| Colombia | 6.3% |
+| Portugal | 3.8% |
 | Germany | 3.4% |
-| Mexico | 3.4% |
-| Brazil | 3.0% |
-| Croatia | 2.8% |
-| Netherlands | 2.7% |
-| Japan | 2.3% |
+| Mexico | 3.2% |
+| Brazil | 3.1% |
+| Netherlands | 2.5% |
+| Japan | 2.2% |
+| Belgium | 2.0% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -110,18 +115,14 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Argentina – Jordan | **2–0** | 83% · 12% · 6% |
 | Austria – Algeria | **2–1** | 56% · 22% · 23% |
 | Algeria – Jordan | **2–1** | 39% · 25% · 36% |
-| Portugal – Colombia | **2–1** | 39% · 23% · 38% |
+| Portugal – Colombia | **1–2** | 35% · 23% · 42% |
 | Portugal – Uzbekistan | **2–1** | 66% · 19% · 15% |
-| Portugal – DR Congo | **3–1** | 80% · 12% · 8% |
-| Colombia – Uzbekistan | **2–1** | 64% · 20% · 15% |
-| Colombia – DR Congo | **2–0** | 78% · 14% · 8% |
-| Uzbekistan – DR Congo | **2–1** | 50% · 24% · 26% |
-| England – Croatia | **2–1** | 50% · 25% · 25% |
+| Colombia – DR Congo | **2–0** | 78% · 14% · 9% |
+| Uzbekistan – DR Congo | **2–1** | 46% · 25% · 29% |
 | England – Ghana | **2–0** | 82% · 12% · 6% |
-| England – Panama | **2–0** | 73% · 17% · 10% |
-| Croatia – Ghana | **2–1** | 71% · 17% · 12% |
-| Croatia – Panama | **2–1** | 62% · 22% · 17% |
-| Ghana – Panama | **1–2** | 31% · 24% · 45% |
+| England – Panama | **2–0** | 79% · 14% · 7% |
+| Croatia – Ghana | **2–1** | 64% · 19% · 16% |
+| Croatia – Panama | **2–1** | 62% · 22% · 16% |
 
 ## 🧭 Strategy
 
