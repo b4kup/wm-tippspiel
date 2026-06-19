@@ -1,17 +1,21 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-18. 24 matches recorded (24 group, 0 knockout).*
+*Generated 2026-06-19. 28 matches recorded (28 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**25 points** from 24 scored matches (avg 1.04/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
+**32 points** from 28 scored matches (avg 1.14/match · 1 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
 | Czechia – South Korea | 1–2 | 1–2 | 4 |
+| Czechia – South Africa | 2–1 | 1–1 | 0 |
+| Mexico – South Korea | 2–1 | 1–0 | 3 |
 | Mexico – South Africa | 2–1 | 2–0 | 2 |
+| Switzerland – Bosnia & Herzegovina | 1–0 | 4–1 | 2 |
 | Switzerland – Qatar | 1–0 | 1–1 | 0 |
 | Canada – Bosnia & Herzegovina | 2–1 | 1–1 | 0 |
+| Canada – Qatar | 2–1 | 6–0 | 2 |
 | Brazil – Morocco | 2–1 | 1–1 | 0 |
 | Scotland – Haiti | 2–1 | 1–0 | 3 |
 | United States – Paraguay | 0–1 | 4–1 | 0 |
@@ -35,11 +39,11 @@
 
 ## 📏 Did reality match our predictions?
 
-Over 24 played matches (vs our pre-tournament model):
+Over 28 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 46% (share where our favourite/draw call was right)
-- **Brier score:** 0.683 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 1.125 (lower is better)
+- **Tendency accuracy:** 50% (share where our favourite/draw call was right)
+- **Brier score:** 0.649 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 1.078 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
@@ -56,18 +60,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 20.1% |
-| France | 15.5% |
-| England | 12.1% |
-| Spain | 10.5% |
-| Colombia | 6.3% |
-| Portugal | 3.8% |
-| Germany | 3.4% |
-| Mexico | 3.2% |
-| Brazil | 3.1% |
-| Netherlands | 2.5% |
-| Japan | 2.2% |
-| Belgium | 2.0% |
+| Argentina | 19.3% |
+| France | 15.6% |
+| England | 11.2% |
+| Spain | 10.1% |
+| Colombia | 6.1% |
+| Mexico | 4.0% |
+| Portugal | 3.7% |
+| Germany | 3.3% |
+| Brazil | 3.0% |
+| Netherlands | 2.7% |
+| Switzerland | 2.4% |
+| Japan | 2.1% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -75,14 +79,10 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Match | Tip | Win–Draw–Loss |
 |-------|:---:|:-------------:|
-| Mexico – South Korea | **2–1** | 53% · 23% · 24% |
-| Mexico – Czechia | **2–1** | 64% · 21% · 16% |
-| South Korea – South Africa | **2–1** | 60% · 21% · 19% |
-| Czechia – South Africa | **2–1** | 46% · 25% · 29% |
-| Switzerland – Canada | **2–1** | 41% · 26% · 33% |
-| Switzerland – Bosnia & Herzegovina | **2–1** | 53% · 24% · 23% |
-| Canada – Qatar | **2–1** | 56% · 21% · 23% |
-| Bosnia & Herzegovina – Qatar | **2–1** | 43% · 24% · 34% |
+| Mexico – Czechia | **2–1** | 66% · 20% · 14% |
+| South Korea – South Africa | **2–1** | 57% · 22% · 21% |
+| Switzerland – Canada | **2–1** | 39% · 26% · 34% |
+| Bosnia & Herzegovina – Qatar | **2–1** | 45% · 23% · 32% |
 | Brazil – Scotland | **2–1** | 60% · 21% · 19% |
 | Brazil – Haiti | **2–0** | 79% · 13% · 8% |
 | Morocco – Scotland | **2–1** | 48% · 26% · 26% |
