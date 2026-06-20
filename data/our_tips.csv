@@ -15,14 +15,14 @@ group,Brazil,Morocco,2,1
 group,Brazil,Scotland,2,1
 group,Brazil,Haiti,2,0
 group,Morocco,Scotland,1,0
-group,Morocco,Haiti,1,0
+group,Morocco,Haiti,2,0
 group,Scotland,Haiti,2,1
 group,United States,Türkiye,2,1
 group,United States,Paraguay,0,1
 group,United States,Australia,1,2
 group,Türkiye,Paraguay,1,0
 group,Türkiye,Australia,2,1
-group,Paraguay,Australia,1,1
+group,Paraguay,Australia,1,2
 group,Germany,Ecuador,2,1
 group,Germany,Ivory Coast,2,1
 group,Germany,Curaçao,2,0
