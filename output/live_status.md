@@ -1,10 +1,10 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-20. 32 matches recorded (32 group, 0 knockout).*
+*Generated 2026-06-21. 36 matches recorded (36 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**38 points** from 32 scored matches (avg 1.19/match · 2 exact hits). Bonus questions (10 pts each) are tracked separately.
+**46 points** from 36 scored matches (avg 1.28/match · 3 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
@@ -24,9 +24,13 @@
 | United States – Australia | 1–2 | 2–0 | 0 |
 | Türkiye – Paraguay | 1–0 | 0–1 | 0 |
 | Türkiye – Australia | 2–1 | 0–2 | 0 |
+| Germany – Ivory Coast | 2–1 | 2–1 | 4 |
 | Germany – Curaçao | 2–0 | 7–1 | 2 |
 | Ecuador – Ivory Coast | 1–0 | 0–1 | 0 |
+| Ecuador – Curaçao | 1–0 | 0–0 | 0 |
 | Netherlands – Japan | 2–1 | 2–2 | 0 |
+| Netherlands – Sweden | 2–1 | 5–1 | 2 |
+| Japan – Tunisia | 1–0 | 4–0 | 2 |
 | Sweden – Tunisia | 1–0 | 5–1 | 2 |
 | Belgium – Egypt | 2–1 | 1–1 | 0 |
 | IR Iran – New Zealand | 1–0 | 2–2 | 0 |
@@ -43,11 +47,11 @@
 
 ## 📏 Did reality match our predictions?
 
-Over 32 played matches (vs our pre-tournament model):
+Over 36 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 50% (share where our favourite/draw call was right)
-- **Brier score:** 0.626 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 1.044 (lower is better)
+- **Tendency accuracy:** 53% (share where our favourite/draw call was right)
+- **Brier score:** 0.600 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 1.003 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
@@ -57,6 +61,7 @@ Over 32 played matches (vs our pre-tournament model):
 | Portugal – DR Congo | 1–1 | 12% |
 | Ivory Coast – Ecuador | 1–0 | 13% |
 | Belgium – Egypt | 1–1 | 18% |
+| Ecuador – Curaçao | 0–0 | 19% |
 
 ## 🔮 Updated title odds (conditioned + re-tuned)
 
@@ -64,18 +69,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 19.1% |
-| France | 15.5% |
-| England | 11.0% |
-| Spain | 10.4% |
-| Colombia | 6.0% |
-| Mexico | 3.9% |
-| Brazil | 3.8% |
-| Portugal | 3.7% |
-| Germany | 3.1% |
+| Argentina | 19.6% |
+| France | 14.6% |
+| England | 11.4% |
+| Spain | 10.2% |
+| Colombia | 5.9% |
+| Mexico | 4.1% |
+| Germany | 3.7% |
+| Portugal | 3.6% |
+| Brazil | 3.4% |
+| Netherlands | 3.2% |
+| Japan | 2.7% |
 | Switzerland | 2.3% |
-| Netherlands | 2.2% |
-| United States | 2.2% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -91,14 +96,10 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Morocco – Haiti | **2–0** | 71% · 18% · 11% |
 | Türkiye – United States | **1–2** | 27% · 22% · 52% |
 | Paraguay – Australia | **1–2** | 31% · 28% · 41% |
-| Germany – Ecuador | **2–1** | 41% · 26% · 33% |
-| Germany – Ivory Coast | **2–1** | 69% · 17% · 14% |
-| Ecuador – Curaçao | **1–0** | 70% · 20% · 10% |
-| Ivory Coast – Curaçao | **2–1** | 54% · 23% · 23% |
-| Netherlands – Sweden | **2–1** | 66% · 18% · 15% |
-| Netherlands – Tunisia | **2–0** | 79% · 14% · 7% |
-| Japan – Sweden | **2–1** | 63% · 20% · 17% |
-| Japan – Tunisia | **2–0** | 77% · 15% · 8% |
+| Germany – Ecuador | **2–1** | 44% · 26% · 30% |
+| Ivory Coast – Curaçao | **2–1** | 50% · 24% · 26% |
+| Netherlands – Tunisia | **2–0** | 83% · 11% · 5% |
+| Japan – Sweden | **2–1** | 69% · 18% · 13% |
 | Belgium – IR Iran | **2–1** | 50% · 23% · 27% |
 | Belgium – New Zealand | **2–0** | 75% · 15% · 10% |
 | IR Iran – Egypt | **2–1** | 52% · 25% · 24% |
