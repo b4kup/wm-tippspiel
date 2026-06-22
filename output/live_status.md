@@ -1,10 +1,10 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-21. 36 matches recorded (36 group, 0 knockout).*
+*Generated 2026-06-22. 40 matches recorded (40 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**46 points** from 36 scored matches (avg 1.28/match · 3 exact hits). Bonus questions (10 pts each) are tracked separately.
+**50 points** from 40 scored matches (avg 1.25/match · 3 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
@@ -32,10 +32,14 @@
 | Netherlands – Sweden | 2–1 | 5–1 | 2 |
 | Japan – Tunisia | 1–0 | 4–0 | 2 |
 | Sweden – Tunisia | 1–0 | 5–1 | 2 |
+| Belgium – IR Iran | 1–0 | 0–0 | 0 |
 | Belgium – Egypt | 2–1 | 1–1 | 0 |
 | IR Iran – New Zealand | 1–0 | 2–2 | 0 |
+| Egypt – New Zealand | 1–0 | 3–1 | 2 |
+| Spain – Saudi Arabia | 2–0 | 4–0 | 2 |
 | Spain – Cabo Verde | 2–0 | 0–0 | 0 |
 | Uruguay – Saudi Arabia | 1–0 | 1–1 | 0 |
+| Uruguay – Cabo Verde | 1–0 | 2–2 | 0 |
 | France – Senegal | 2–1 | 3–1 | 2 |
 | Norway – Iraq | 2–1 | 4–1 | 2 |
 | Argentina – Algeria | 2–0 | 3–0 | 2 |
@@ -47,11 +51,11 @@
 
 ## 📏 Did reality match our predictions?
 
-Over 36 played matches (vs our pre-tournament model):
+Over 40 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 53% (share where our favourite/draw call was right)
-- **Brier score:** 0.600 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 1.003 (lower is better)
+- **Tendency accuracy:** 52% (share where our favourite/draw call was right)
+- **Brier score:** 0.605 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 1.006 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
@@ -60,6 +64,7 @@ Over 36 played matches (vs our pre-tournament model):
 | Spain – Cabo Verde | 0–0 | 5% |
 | Portugal – DR Congo | 1–1 | 12% |
 | Ivory Coast – Ecuador | 1–0 | 13% |
+| Uruguay – Cabo Verde | 2–2 | 17% |
 | Belgium – Egypt | 1–1 | 18% |
 | Ecuador – Curaçao | 0–0 | 19% |
 
@@ -69,17 +74,17 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 19.6% |
-| France | 14.6% |
-| England | 11.4% |
-| Spain | 10.2% |
+| Argentina | 20.5% |
+| France | 14.4% |
+| Spain | 11.1% |
+| England | 10.9% |
 | Colombia | 5.9% |
-| Mexico | 4.1% |
-| Germany | 3.7% |
-| Portugal | 3.6% |
+| Germany | 3.9% |
+| Mexico | 3.8% |
+| Portugal | 3.8% |
 | Brazil | 3.4% |
-| Netherlands | 3.2% |
-| Japan | 2.7% |
+| Netherlands | 3.0% |
+| Japan | 2.6% |
 | Switzerland | 2.3% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
@@ -100,14 +105,10 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 | Ivory Coast – Curaçao | **2–1** | 50% · 24% · 26% |
 | Netherlands – Tunisia | **2–0** | 83% · 11% · 5% |
 | Japan – Sweden | **2–1** | 69% · 18% · 13% |
-| Belgium – IR Iran | **2–1** | 50% · 23% · 27% |
-| Belgium – New Zealand | **2–0** | 75% · 15% · 10% |
-| IR Iran – Egypt | **2–1** | 52% · 25% · 24% |
-| Egypt – New Zealand | **2–1** | 45% · 26% · 29% |
-| Spain – Uruguay | **2–1** | 61% · 22% · 17% |
-| Spain – Saudi Arabia | **2–0** | 84% · 11% · 5% |
-| Uruguay – Cabo Verde | **2–0** | 70% · 19% · 11% |
-| Cabo Verde – Saudi Arabia | **1–2** | 28% · 26% · 46% |
+| Belgium – New Zealand | **2–0** | 76% · 14% · 9% |
+| IR Iran – Egypt | **2–1** | 50% · 25% · 25% |
+| Spain – Uruguay | **2–1** | 63% · 21% · 15% |
+| Cabo Verde – Saudi Arabia | **1–2** | 30% · 27% · 43% |
 | France – Norway | **3–1** | 76% · 14% · 10% |
 | France – Iraq | **3–0** | 87% · 9% · 4% |
 | Senegal – Norway | **2–1** | 43% · 23% · 34% |
