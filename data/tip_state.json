@@ -10,12 +10,14 @@
     "Austria|Jordan",
     "Belgium|Egypt",
     "Belgium|IR Iran",
+    "Belgium|New Zealand",
     "Bosnia & Herzegovina|Canada",
     "Bosnia & Herzegovina|Qatar",
     "Bosnia & Herzegovina|Switzerland",
     "Brazil|Haiti",
     "Brazil|Morocco",
     "Brazil|Scotland",
+    "Cabo Verde|Saudi Arabia",
     "Cabo Verde|Spain",
     "Cabo Verde|Uruguay",
     "Canada|Qatar",
@@ -33,9 +35,11 @@
     "DR Congo|Portugal",
     "Ecuador|Germany",
     "Ecuador|Ivory Coast",
+    "Egypt|IR Iran",
     "Egypt|New Zealand",
     "England|Ghana",
     "France|Iraq",
+    "France|Norway",
     "France|Senegal",
     "Germany|Ivory Coast",
     "Ghana|Panama",
@@ -43,6 +47,7 @@
     "Haiti|Scotland",
     "IR Iran|New Zealand",
     "Iraq|Norway",
+    "Iraq|Senegal",
     "Japan|Netherlands",
     "Japan|Sweden",
     "Japan|Tunisia",
@@ -59,34 +64,11 @@
     "Saudi Arabia|Spain",
     "Saudi Arabia|Uruguay",
     "South Africa|South Korea",
+    "Spain|Uruguay",
     "Sweden|Tunisia",
     "Türkiye|United States"
   ],
   "tips": {
-    "Belgium|New Zealand": [
-      2,
-      0
-    ],
-    "Egypt|IR Iran": [
-      1,
-      2
-    ],
-    "Spain|Uruguay": [
-      2,
-      1
-    ],
-    "Cabo Verde|Saudi Arabia": [
-      1,
-      2
-    ],
-    "France|Norway": [
-      3,
-      1
-    ],
-    "Iraq|Senegal": [
-      1,
-      2
-    ],
     "Argentina|Jordan": [
       2,
       0

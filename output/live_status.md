@@ -1,10 +1,10 @@
 # 2026 World Cup — live update
 
-*Generated 2026-06-27. 60 matches recorded (60 group, 0 knockout).*
+*Generated 2026-06-27. 66 matches recorded (66 group, 0 knockout).*
 
 ## 🎯 Our Tippspiel score
 
-**84 points** from 60 scored matches (avg 1.40/match · 5 exact hits). Bonus questions (10 pts each) are tracked separately.
+**97 points** from 66 scored matches (avg 1.47/match · 6 exact hits). Bonus questions (10 pts each) are tracked separately.
 
 | Match | Our tip | Result | Pts |
 |-------|:-------:|:------:|----:|
@@ -46,15 +46,21 @@
 | Sweden – Tunisia | 1–0 | 5–1 | 2 |
 | Belgium – IR Iran | 1–0 | 0–0 | 0 |
 | Belgium – Egypt | 2–1 | 1–1 | 0 |
+| Belgium – New Zealand | 2–0 | 5–1 | 2 |
+| IR Iran – Egypt | 1–1 | 1–1 | 4 |
 | IR Iran – New Zealand | 1–0 | 2–2 | 0 |
 | Egypt – New Zealand | 1–0 | 3–1 | 2 |
+| Spain – Uruguay | 2–1 | 1–0 | 3 |
 | Spain – Saudi Arabia | 2–0 | 4–0 | 2 |
 | Spain – Cabo Verde | 2–0 | 0–0 | 0 |
 | Uruguay – Saudi Arabia | 1–0 | 1–1 | 0 |
 | Uruguay – Cabo Verde | 1–0 | 2–2 | 0 |
+| Saudi Arabia – Cabo Verde | 1–0 | 0–0 | 0 |
 | France – Senegal | 2–1 | 3–1 | 2 |
+| France – Norway | 2–1 | 4–1 | 2 |
 | France – Iraq | 3–0 | 3–0 | 4 |
 | Senegal – Norway | 2–1 | 2–3 | 0 |
+| Senegal – Iraq | 1–0 | 5–0 | 2 |
 | Norway – Iraq | 2–1 | 4–1 | 2 |
 | Argentina – Austria | 2–1 | 2–0 | 2 |
 | Argentina – Algeria | 2–0 | 3–0 | 2 |
@@ -71,11 +77,11 @@
 
 ## 📏 Did reality match our predictions?
 
-Over 60 played matches (vs our pre-tournament model):
+Over 66 played matches (vs our pre-tournament model):
 
-- **Tendency accuracy:** 60% (share where our favourite/draw call was right)
-- **Brier score:** 0.561 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 0.941 (lower is better)
+- **Tendency accuracy:** 61% (share where our favourite/draw call was right)
+- **Brier score:** 0.546 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 0.920 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
@@ -96,18 +102,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 22.9% |
-| France | 14.8% |
-| Spain | 11.1% |
-| England | 8.1% |
-| Colombia | 5.7% |
-| Portugal | 4.8% |
-| Mexico | 4.7% |
-| Brazil | 4.1% |
-| Netherlands | 3.7% |
-| Germany | 2.6% |
-| Switzerland | 2.4% |
-| Japan | 1.9% |
+| Argentina | 25.0% |
+| France | 16.1% |
+| Spain | 11.7% |
+| England | 7.6% |
+| Colombia | 5.4% |
+| Mexico | 4.5% |
+| Brazil | 4.5% |
+| Portugal | 4.0% |
+| Netherlands | 2.9% |
+| Germany | 2.3% |
+| Switzerland | 2.3% |
+| Belgium | 2.0% |
 
 ## 📝 Updated tips for upcoming group matches (safe mode)
 
@@ -115,12 +121,6 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Match | Tip | Win–Draw–Loss |
 |-------|:---:|:-------------:|
-| Belgium – New Zealand | **2–0** | 76% · 14% · 9% |
-| IR Iran – Egypt | **2–1** | 50% · 25% · 25% |
-| Spain – Uruguay | **2–1** | 63% · 21% · 15% |
-| Cabo Verde – Saudi Arabia | **1–2** | 30% · 27% · 43% |
-| France – Norway | **3–1** | 73% · 15% · 12% |
-| Senegal – Iraq | **2–1** | 59% · 22% · 19% |
 | Argentina – Jordan | **2–0** | 85% · 10% · 5% |
 | Austria – Algeria | **2–1** | 52% · 23% · 26% |
 | Portugal – Colombia | **1–2** | 36% · 23% · 41% |
