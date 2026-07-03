@@ -2,7 +2,7 @@
 
 *Generated 2026-07-03 from 20,000 Monte Carlo simulations (seed `2026`).*
 
-> 🟢 **Live view** — conditioned on **82 played matches** (`data/results.csv`). Ratings re-tuned via Elo update; played fixtures use their real scoreline.
+> 🟢 **Live view** — conditioned on **85 played matches** (`data/results.csv`). Ratings re-tuned via Elo update; played fixtures use their real scoreline.
 
 > Hosts: United States · Canada · Mexico. 48 teams, 12 groups of 4. Top 2 of each group plus the 8 best third-placed teams reach the Round of 32.
 
@@ -12,60 +12,60 @@
 
 | # | Team | Champion | Final | Semi | Quarter | R16 |
 |--:|------|---------:|------:|-----:|--------:|----:|
-| 1 | Argentina | 24% ±0.6 | 37% | 57% | 80% | 96% |
-| 2 | France | 18% ±0.5 | 32% | 49% | 67% | 86% |
-| 3 | Spain | 10% ±0.4 | 20% | 34% | 48% | 75% |
-| 4 | England | 10% ±0.4 | 18% | 36% | 56% | 100% |
-| 5 | Brazil | 6.9% ±0.4 | 14% | 32% | 71% | 100% |
-| 6 | Colombia | 5.7% ±0.3 | 11% | 22% | 52% | 83% |
-| 7 | Mexico | 5.4% ±0.3 | 10% | 24% | 41% | 87% |
-| 8 | Portugal | 3.0% ±0.2 | 7.4% | 15% | 25% | 56% |
-| 9 | Belgium | 2.5% ±0.2 | 7.1% | 17% | 42% | 76% |
-| 10 | Morocco | 2.4% ±0.2 | 7.2% | 18% | 50% | 100% |
-| 11 | Canada | 2.3% ±0.2 | 7.2% | 17% | 50% | 100% |
-| 12 | United States | 2.0% ±0.2 | 6.2% | 15% | 43% | 88% |
-| 13 | Switzerland | 1.9% ±0.2 | 4.6% | 11% | 32% | 67% |
-| 14 | Germany | 1.5% ±0.2 | 4.2% | 9.5% | 18% | 51% |
-| 15 | Croatia | 1.5% ±0.2 | 4.2% | 9.5% | 18% | 44% |
-| 16 | Australia | 0.67% ±0.1 | 1.9% | 5.6% | 14% | 66% |
-| 17 | Norway | 0.61% ±0.1 | 1.8% | 7.4% | 29% | 100% |
-| 18 | Ecuador | 0.49% | 1.6% | 4.4% | 12% | 26% |
-| 19 | Austria | 0.43% | 1.6% | 4.1% | 9.2% | 25% |
-| 20 | Paraguay | 0.40% | 1.6% | 5.2% | 13% | 47% |
-| 21 | Senegal | 0.16% | 0.56% | 2.0% | 6.2% | 20% |
-| 22 | Algeria | 0.10% | 0.47% | 1.9% | 9.2% | 30% |
-| 23 | Egypt | 0.06% | 0.17% | 1.2% | 4.3% | 34% |
-| 24 | Sweden | 0.03% | 0.09% | 0.63% | 2.5% | 14% |
-| 25 | Ghana | 0.01% | 0.14% | 0.76% | 5.1% | 17% |
-| 26 | Bosnia & Herzegovina | 0.01% | 0.10% | 0.50% | 1.6% | 8.4% |
-| 27 | Cabo Verde | 0.01% | 0.01% | 0.22% | 1.1% | 4.5% |
-| 28 | South Korea | — | — | — | — | — |
-| 29 | Czechia | — | — | — | — | — |
-| 30 | South Africa | — | — | — | — | — |
-| 31 | Qatar | — | — | — | — | — |
-| 32 | Scotland | — | — | — | — | — |
-| 33 | Haiti | — | — | — | — | — |
-| 34 | Türkiye | — | — | — | — | — |
-| 35 | Ivory Coast | — | — | — | — | — |
-| 36 | Curaçao | — | — | — | — | — |
-| 37 | Netherlands | — | — | — | — | — |
-| 38 | Japan | — | — | — | — | — |
-| 39 | Tunisia | — | — | — | — | — |
-| 40 | IR Iran | — | — | — | — | — |
-| 41 | New Zealand | — | — | — | — | — |
-| 42 | Uruguay | — | — | — | — | — |
-| 43 | Saudi Arabia | — | — | — | — | — |
-| 44 | Iraq | — | — | — | — | — |
-| 45 | Jordan | — | — | — | — | — |
-| 46 | Uzbekistan | — | — | — | — | — |
-| 47 | DR Congo | — | — | — | — | — |
+| 1 | Argentina | 23% ±0.6 | 36% | 56% | 81% | 96% |
+| 2 | France | 17% ±0.5 | 30% | 50% | 67% | 87% |
+| 3 | Spain | 14% ±0.5 | 27% | 44% | 61% | 100% |
+| 4 | England | 9.7% ±0.4 | 18% | 36% | 57% | 100% |
+| 5 | Brazil | 6.6% ±0.3 | 14% | 32% | 71% | 100% |
+| 6 | Portugal | 5.5% ±0.3 | 12% | 24% | 39% | 100% |
+| 7 | Mexico | 5.3% ±0.3 | 11% | 24% | 41% | 87% |
+| 8 | Colombia | 4.6% ±0.3 | 10.0% | 20% | 47% | 83% |
+| 9 | Switzerland | 2.6% ±0.2 | 6.5% | 15% | 43% | 85% |
+| 10 | Morocco | 2.2% ±0.2 | 6.5% | 18% | 50% | 100% |
+| 11 | Belgium | 2.1% ±0.2 | 6.0% | 14% | 42% | 77% |
+| 12 | Canada | 2.0% ±0.2 | 6.1% | 17% | 50% | 100% |
+| 13 | United States | 1.8% ±0.2 | 5.3% | 14% | 44% | 88% |
+| 14 | Germany | 1.3% ±0.2 | 3.6% | 9.5% | 18% | 51% |
+| 15 | Australia | 0.56% ±0.1 | 1.8% | 5.3% | 14% | 65% |
+| 16 | Norway | 0.48% | 1.8% | 7.5% | 29% | 100% |
+| 17 | Paraguay | 0.42% | 1.4% | 4.9% | 12% | 46% |
+| 18 | Ecuador | 0.41% | 1.3% | 3.7% | 12% | 26% |
+| 19 | Senegal | 0.11% | 0.46% | 1.5% | 5.9% | 20% |
+| 20 | Sweden | 0.03% | 0.08% | 0.53% | 2.4% | 14% |
+| 21 | Egypt | 0.03% | 0.22% | 1.1% | 4.3% | 35% |
+| 22 | Algeria | 0.03% | 0.17% | 0.66% | 3.7% | 12% |
+| 23 | Bosnia & Herzegovina | 0.01% | 0.09% | 0.51% | 1.5% | 8.6% |
+| 24 | Ghana | 0.01% | 0.12% | 0.60% | 4.3% | 17% |
+| 25 | South Korea | — | — | — | — | — |
+| 26 | Czechia | — | — | — | — | — |
+| 27 | South Africa | — | — | — | — | — |
+| 28 | Qatar | — | — | — | — | — |
+| 29 | Scotland | — | — | — | — | — |
+| 30 | Haiti | — | — | — | — | — |
+| 31 | Türkiye | — | — | — | — | — |
+| 32 | Ivory Coast | — | — | — | — | — |
+| 33 | Curaçao | — | — | — | — | — |
+| 34 | Netherlands | — | — | — | — | — |
+| 35 | Japan | — | — | — | — | — |
+| 36 | Tunisia | — | — | — | — | — |
+| 37 | IR Iran | — | — | — | — | — |
+| 38 | New Zealand | — | — | — | — | — |
+| 39 | Uruguay | — | — | — | — | — |
+| 40 | Cabo Verde | — | 0.03% | 0.17% | 1.1% | 4.3% |
+| 41 | Saudi Arabia | — | — | — | — | — |
+| 42 | Iraq | — | — | — | — | — |
+| 43 | Austria | — | — | — | — | — |
+| 44 | Jordan | — | — | — | — | — |
+| 45 | Uzbekistan | — | — | — | — | — |
+| 46 | DR Congo | — | — | — | — | — |
+| 47 | Croatia | — | — | — | — | — |
 | 48 | Panama | — | — | — | — | — |
 
 ## 🎯 Headline calls
 
-- **Most likely champion:** Argentina (24%, ±0.6% Monte Carlo 95% CI)
-- **Most likely final pairing:** Argentina vs France (12% of simulations)
-- **Top contenders:** Argentina 24%, France 18%, Spain 10%, England 10%
+- **Most likely champion:** Argentina (23%, ±0.6% Monte Carlo 95% CI)
+- **Most likely final pairing:** Argentina vs France (11% of simulations)
+- **Top contenders:** Argentina 23%, France 17%, Spain 14%, England 9.7%
 
 ## 🩹 Injuries & availability
 
@@ -130,7 +130,7 @@ Probability each team **wins its group** / **advances** (top 2, before best-thir
 
 | Team | Elo | Att | Def | Win group | Advance |
 |------|----:|----:|----:|----------:|--------:|
-| Switzerland | 1915 | 1.87 | 1.11 | 100% | 100% |
+| Switzerland | 1934 | 1.95 | 1.07 | 100% | 100% |
 | Canada | 1800 | 1.69 | 1.61 | — | 100% |
 | Bosnia & Herzegovina | 1716 | 1.48 | 1.81 | — | 100% |
 | Qatar | 1640 | 1.37 | 2.19 | — | — |
@@ -196,7 +196,7 @@ Probability each team **wins its group** / **advances** (top 2, before best-thir
 
 | Team | Elo | Att | Def | Win group | Advance |
 |------|----:|----:|----:|----------:|--------:|
-| Spain | 2045 | 2.80 | 0.99 | 100% | 100% |
+| Spain | 2060 | 2.88 | 0.96 | 100% | 100% |
 | Cabo Verde | 1608 | 1.05 | 2.22 | — | 100% |
 | Uruguay | 1816 | 1.53 | 1.27 | — | — |
 | Saudi Arabia | 1589 | 1.14 | 1.92 | — | — |
@@ -219,8 +219,8 @@ Probability each team **wins its group** / **advances** (top 2, before best-thir
 | Team | Elo | Att | Def | Win group | Advance |
 |------|----:|----:|----:|----------:|--------:|
 | Argentina | 2090 | 3.08 | 0.91 | 100% | 100% |
-| Austria | 1814 | 1.87 | 1.46 | — | 100% |
-| Algeria | 1776 | 1.60 | 1.77 | — | 100% |
+| Austria | 1799 | 1.82 | 1.50 | — | 100% |
+| Algeria | 1758 | 1.54 | 1.83 | — | 100% |
 | Jordan | 1646 | 1.33 | 1.78 | — | — |
 
 *Most likely qualifiers: Argentina (1st) & Austria (2nd) — 100%.*
@@ -229,7 +229,7 @@ Probability each team **wins its group** / **advances** (top 2, before best-thir
 
 | Team | Elo | Att | Def | Win group | Advance |
 |------|----:|----:|----:|----------:|--------:|
-| Portugal | 1985 | 2.58 | 1.29 | — | 100% |
+| Portugal | 2001 | 2.66 | 1.25 | — | 100% |
 | Colombia | 1979 | 2.43 | 1.13 | 100% | 100% |
 | DR Congo | 1712 | 1.42 | 1.95 | — | 100% |
 | Uzbekistan | 1663 | 1.27 | 1.75 | — | — |
@@ -241,7 +241,7 @@ Probability each team **wins its group** / **advances** (top 2, before best-thir
 | Team | Elo | Att | Def | Win group | Advance |
 |------|----:|----:|----:|----------:|--------:|
 | England | 2014 | 2.53 | 0.95 | 100% | 100% |
-| Croatia | 1907 | 2.01 | 1.22 | — | 100% |
+| Croatia | 1891 | 1.95 | 1.26 | — | 100% |
 | Ghana | 1686 | 1.49 | 1.99 | — | 100% |
 | Panama | 1691 | 1.25 | 1.85 | — | — |
 
@@ -255,37 +255,37 @@ Model champion probability vs. the **de-vigged** market probability (`(1 / decim
 
 | Team | Model | Market (de-vig) | Polymarket | Decimal odds | Lean |
 |------|------:|----------------:|-----------:|-------------:|:-----|
-| Spain | 10% | 15% | 16.1% | 5.5 | market higher |
-| France | 18% | 14% | 17.0% | 5.75 | model higher |
-| England | 10% | 11% | 11.1% | 7.5 | ≈ agree |
-| Brazil | 6.9% | 9.2% | 8.4% | 9 | market higher |
-| Argentina | 24% | 9.2% | 9.0% | 9 | model higher |
-| Portugal | 3.0% | 6.9% | 9.5% | 12 | market higher |
-| Germany | 1.5% | 5.5% | 5.6% | 15 | market higher |
+| Spain | 14% | 15% | 16.1% | 5.5 | ≈ agree |
+| France | 17% | 14% | 17.0% | 5.75 | model higher |
+| England | 9.7% | 11% | 11.1% | 7.5 | ≈ agree |
+| Brazil | 6.6% | 9.2% | 8.4% | 9 | market higher |
+| Argentina | 23% | 9.2% | 9.0% | 9 | model higher |
+| Portugal | 5.5% | 6.9% | 9.5% | 12 | market higher |
+| Germany | 1.3% | 5.5% | 5.6% | 15 | market higher |
 | Netherlands | — | 3.7% | 3.9% | 22 | market higher |
-| Norway | 0.61% | 2.8% | — | 29 | market higher |
-| Belgium | 2.5% | 2.4% | 1.9% | 34 | ≈ agree |
-| Colombia | 5.7% | 2.3% | 0.7% | 36 | model higher |
-| Morocco | 2.4% | 1.6% | — | 51 | model higher |
+| Norway | 0.48% | 2.8% | — | 29 | market higher |
+| Belgium | 2.1% | 2.4% | 1.9% | 34 | ≈ agree |
+| Colombia | 4.6% | 2.3% | 0.7% | 36 | model higher |
+| Morocco | 2.2% | 1.6% | — | 51 | model higher |
 | Japan | — | 1.6% | — | 52 | market higher |
-| United States | 2.0% | 1.3% | — | 63 | model higher |
+| United States | 1.8% | 1.3% | — | 63 | model higher |
 | Uruguay | — | 1.3% | — | 65 | market higher |
-| Switzerland | 1.9% | 1.2% | — | 66 | model higher |
+| Switzerland | 2.6% | 1.2% | — | 66 | model higher |
 | Türkiye | — | 1.2% | — | 67 | market higher |
-| Croatia | 1.5% | 1.2% | — | 67 | model higher |
-| Mexico | 5.4% | 1.0% | — | 81 | model higher |
-| Senegal | 0.16% | 1.0% | — | 81 | market higher |
-| Ecuador | 0.49% | 0.82% | — | 101 | market higher |
-| Austria | 0.43% | 0.82% | — | 101 | market higher |
+| Croatia | — | 1.2% | — | 67 | market higher |
+| Mexico | 5.3% | 1.0% | — | 81 | model higher |
+| Senegal | 0.11% | 1.0% | — | 81 | market higher |
+| Ecuador | 0.41% | 0.82% | — | 101 | market higher |
+| Austria | — | 0.82% | — | 101 | market higher |
 | Scotland | — | 0.55% | — | 151 | market higher |
 | Sweden | 0.03% | 0.55% | — | 151 | market higher |
-| Egypt | 0.06% | 0.55% | — | 151 | market higher |
-| Algeria | 0.10% | 0.55% | — | 151 | market higher |
+| Egypt | 0.03% | 0.55% | — | 151 | market higher |
+| Algeria | 0.03% | 0.55% | — | 151 | market higher |
 | Ghana | 0.01% | 0.55% | — | 151 | market higher |
-| Australia | 0.67% | 0.41% | — | 201 | model higher |
+| Australia | 0.56% | 0.41% | — | 201 | model higher |
 | Ivory Coast | — | 0.41% | — | 201 | market higher |
 | South Korea | — | 0.33% | — | 251 | market higher |
-| Canada | 2.3% | 0.33% | — | 251 | model higher |
+| Canada | 2.0% | 0.33% | — | 251 | model higher |
 | IR Iran | — | 0.33% | — | 251 | market higher |
 
 ## 🔬 Methodology
