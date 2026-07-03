@@ -1,6 +1,6 @@
 # 2026 World Cup — live update
 
-*Generated 2026-07-02. 82 matches recorded (72 group, 10 knockout).*
+*Generated 2026-07-03. 82 matches recorded (72 group, 10 knockout).*
 
 ## 🎯 Our Tippspiel score
 
