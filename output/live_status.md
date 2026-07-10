@@ -1,6 +1,6 @@
 # 2026 World Cup — live update
 
-*Generated 2026-07-09. 96 matches recorded (72 group, 24 knockout).*
+*Generated 2026-07-10. 97 matches recorded (72 group, 25 knockout).*
 
 ## 🎯 Our Tippspiel score
 
@@ -83,11 +83,11 @@
 
 ## 📏 Did reality match our predictions?
 
-Over 96 played matches (vs our pre-tournament model):
+Over 97 played matches (vs our pre-tournament model):
 
 - **Tendency accuracy:** 64% (share where our favourite/draw call was right)
-- **Brier score:** 0.513 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
-- **Log-loss:** 0.874 (lower is better)
+- **Brier score:** 0.510 (0 = perfect, ~0.667 = uninformed guessing — lower is better)
+- **Log-loss:** 0.870 (lower is better)
 
 **Biggest surprises** (results our model rated unlikely):
 
@@ -108,18 +108,18 @@ Remaining tournament re-simulated given results so far, with ratings re-tuned fr
 
 | Team | Champion |
 |------|---------:|
-| Argentina | 27.1% |
-| Spain | 22.5% |
-| England | 18.1% |
-| France | 16.3% |
-| Morocco | 4.2% |
-| Switzerland | 4.1% |
-| Belgium | 3.5% |
-| Norway | 1.7% |
-| Germany | 1.0% |
-| Colombia | 0.8% |
-| Ecuador | 0.4% |
-| United States | 0.2% |
+| Argentina | 26.1% |
+| France | 25.0% |
+| Spain | 20.2% |
+| England | 16.7% |
+| Switzerland | 3.7% |
+| Belgium | 3.1% |
+| Norway | 1.6% |
+| Morocco | 1.3% |
+| Germany | 0.9% |
+| Colombia | 0.7% |
+| Ecuador | 0.3% |
+| Paraguay | 0.2% |
 
 ## 🧭 Strategy
 
