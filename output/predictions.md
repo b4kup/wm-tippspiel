@@ -1,6 +1,6 @@
 # 2026 FIFA World Cup — Statistical Predictions
 
-*Generated 2026-07-13 from 20,000 Monte Carlo simulations (seed `2026`).*
+*Generated 2026-07-14 from 20,000 Monte Carlo simulations (seed `2026`).*
 
 > 🟢 **Live view** — conditioned on **100 played matches** (`data/results.csv`). Ratings re-tuned via Elo update; played fixtures use their real scoreline.
 
