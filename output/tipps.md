@@ -1,6 +1,6 @@
 # 2026 World Cup — Tippspiel tips (point-maximizing)
 
-*Generated 2026-07-21. Scoring: **CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)** — exact 4, goal-difference 3, tendency 2 pts. Risk profile: **safe** (expected-value-maximizing).*
+*Generated 2026-07-22. Scoring: **CHECK24 (4 exact / 3 tendency+goal-diff / 2 winner)** — exact 4, goal-difference 3, tendency 2 pts. Risk profile: **safe** (expected-value-maximizing).*
 
 > For each match the **tip** below maximizes expected points under your scoring rule. It is **not always the most likely score** — when an exact score is unlikely, a safer tendency/goal-difference tip can score more on average. The most likely score is shown alongside for comparison.
 
